@@ -71,15 +71,26 @@ const Metrix = () => {
   const [profitTargetAbsolute, setProfitTargetAbsolute] = useState(null);
 
   // Obtener datos básicos del usuario con sus challenges
-  const { data: userData, error, isLoading } = useSWR(
+  let { data: userData, error, isLoading } = useSWR(
     session?.jwt && documentId
       ? [
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me?populate[challenges][populate]=*`,
+          session?.roleName === 'Webmaster'
+            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users?populate[challenges][populate]=*`
+            : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me?populate[challenges][populate]=*`,
           session.jwt,
         ]
       : null,
     ([url, token]) => fetcher(url, token)
   );
+  
+  // Modificar userData solo si el rol es 'Webmaster'
+  if (session?.roleName === 'Webmaster') {
+    userData = userData?.filter(user => 
+      user.challenges.some(challenge => challenge.documentId === documentId)
+    );
+
+    userData= userData?.[0]; // Tomar el primer usuario que cumpla la condición
+  }
 
   // Encontrar el challenge específico y obtener sus detalles completos
   useEffect(() => {
