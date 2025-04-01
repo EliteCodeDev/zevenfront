@@ -22,6 +22,37 @@ export default function Navbar() {
   const router = useRouter()
   const [currentPath, setCurrentPath] = useState(router.pathname)
   const { data: session } = useSession()
+
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return; // Evita errores en SSR
+
+    const updateTheme = () => {
+      setTheme(localStorage.getItem("theme") || "light");
+    };
+
+    // Establecer el tema inicial
+    updateTheme();
+
+    // Escucha cambios en localStorage en tiempo real
+    window.addEventListener("storage", updateTheme);
+
+    return () => window.removeEventListener("storage", updateTheme);
+  }, []);
+
+  // También escucha cambios en el DOM por si otro componente cambia el tema
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setTheme(localStorage.getItem("theme") || "light");
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
+
+
   //console.log(session);
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -73,7 +104,7 @@ export default function Navbar() {
                     />
                     <Image
                       className="hidden h-8 w-auto lg:block"
-                      src="/images/logo-dark.png"
+                      src={theme === "dark" ? "/images/logo-dark.png" : "/images/logo-light.png"}
                       alt="Logo"
                       width={236}
                       height={60}
