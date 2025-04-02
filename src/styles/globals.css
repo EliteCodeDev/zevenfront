@@ -37,7 +37,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
     --app-primary: theme('colors.blue.500');
-    --app-secondary: theme('colors.blue.500');
+    --app-secondary: theme('colors.blue.600');
   }
   .theme-swiss {
     --color-text-base: 255, 255, 255;

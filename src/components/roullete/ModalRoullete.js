@@ -15,11 +15,11 @@ export default function ModalRoullete() {
     <Dialog>
       <DialogTrigger className="p-1 bg-black text-[var(--app-primary)] rounded-full hover:bg-[var(--app-primary)] hover:text-black transition-colors duration-300">
         <img 
-          src="/images/sorteo.svg" 
+          src="/images/ruletaZeven.svg" 
           alt="Sorteo" 
           width={30} 
           height={30}
-          className="w-24 h-24"
+          className="w-24 h-24 rounded-full"
         />
       </DialogTrigger>
       <DialogContent className="bg-black text-[var(--app-primary)] p-0 rounded-lg border-2 border-[var(--app-primary)] shadow-[0_0_20px_rgba(255,215,0,0.3)] max-w-md w-full max-h-[90vh] overflow-hidden">

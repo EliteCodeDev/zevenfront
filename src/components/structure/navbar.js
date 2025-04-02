@@ -104,7 +104,7 @@ export default function Navbar() {
                     />
                     <Image
                       className="hidden h-8 w-auto lg:block"
-                      src={theme === "dark" ? "/images/logo-dark.png" : "/images/logo-light.png"}
+                      src="/images/logo-light.png"
                       alt="Logo"
                       width={236}
                       height={60}

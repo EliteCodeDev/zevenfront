@@ -79,7 +79,7 @@ export default function Sidebar() {
 
             <div 
                 ref={scrollableRef}
-                className="flex flex-col overflow-y-auto [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-amber-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-amber-600"
+                className="flex flex-col overflow-y-auto [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-blue-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-blue-600"
                 style={{ 
                     maxHeight: windowHeight ? `${windowHeight - 240}px` : 'none', // Altura reducida según feedback visual
                     overscrollBehavior: 'contain' // Previene el scroll-chaining
@@ -91,7 +91,7 @@ export default function Sidebar() {
                         key={id}
                         className={`w-full flex items-center py-4 px-6 font-semibold transition duration-200 last:rounded-b-md relative h-16 text-sm
                         ${router.pathname === href
-                            ? 'bg-gradient-to-r from-amber-50 via-white to-transparent border-l-4 border-[var(--app-primary)] dark:bg-gradient-to-r dark:from-amber-800 dark:via-zinc-800 dark:to-transparent dark:border-l-4 dark:border-[var(--app-primary)]'
+                            ? 'bg-gradient-to-r from-blue-50 via-white to-transparent border-l-4 border-[var(--app-primary)] dark:bg-gradient-to-r dark:from-blue-800 dark:via-zinc-800 dark:to-transparent dark:border-l-4 dark:border-[var(--app-primary)]'
                             : 'hover:bg-zinc-300 dark:hover:bg-zinc-700'
                         }`}
                     >

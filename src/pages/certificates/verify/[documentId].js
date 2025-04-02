@@ -64,7 +64,7 @@ export default function CertificateVerify() {
           <Link href="/">
             <Image
               src="/images/logo-dark.png"
-              alt="NeoCapital Logo"
+              alt="ZevenGlobalLogo"
               width={236}
               height={60}
               className="h-8 w-auto"

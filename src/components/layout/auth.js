@@ -34,19 +34,27 @@ const Layout = ({ children }) => {
           <div className="mx-auto w-full max-w-sm lg:w-96 flex flex-col items-center">
             <Link href="/" className="flex justify-center">
               <Image
+                className="h-10 w-auto"
+                src="/images/logo-light.png"
+                alt="Logo"
+                width={236}
+                height={60}
+              />
+
+              {/* <Image
                 className="h-10 w-auto dark:hidden"
                 src="/images/logo-light.png"
                 alt="Logo"
                 width={236}
                 height={60}
               />
-              <Image
+              {/* <Image
                 className="h-10 w-auto hidden dark:block"
                 src="/images/logo-dark.png"
                 alt="Logo"
                 width={236}
                 height={60}
-              />
+              /> */}
             </Link>
             <main className="mt-6 w-full">{children}</main>
           </div>

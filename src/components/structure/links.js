@@ -22,7 +22,7 @@ export const userNavigation = [
 
 // Puedes colocar esta constante en un archivo de configuración o en el mismo componente
 export const principalButton = [
-    { name: 'Nuevo desafío NEO', href: '/start-challenge' }
+    { name: 'Nuevo desafío Zeven', href: '/start-challenge' }
 ];
 
 export const FooterNav = [

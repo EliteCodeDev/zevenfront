@@ -1,0 +1,394 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <!-- Gradientes futuristas avanzados -->
+    <linearGradient id="cyberGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#01F7FF" />
+      <stop offset="50%" stop-color="#01A0FF" />
+      <stop offset="100%" stop-color="#0B41FF" />
+    </linearGradient>
+    
+    <linearGradient id="energyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0500FF" />
+      <stop offset="50%" stop-color="#0097FF" />
+      <stop offset="100%" stop-color="#00FBFF" />
+    </linearGradient>
+    
+    <linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4400FF" />
+      <stop offset="100%" stop-color="#01F7FF" />
+    </linearGradient>
+    
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%" fx="25%" fy="25%">
+      <stop offset="0%" stop-color="#00FBFF" />
+      <stop offset="10%" stop-color="#01A0FF" />
+      <stop offset="30%" stop-color="#0052FF" />
+      <stop offset="100%" stop-color="#000B14" />
+    </radialGradient>
+    
+    <radialGradient id="darkCore" cx="50%" cy="50%" r="70%" fx="40%" fy="40%">
+      <stop offset="0%" stop-color="#001018" />
+      <stop offset="100%" stop-color="#000208" />
+    </radialGradient>
+    
+    <!-- Efectos quantum y holográficos -->
+    <filter id="quantumBlur" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feFlood flood-color="#01F7FF" flood-opacity="1" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="softGlow"/>
+      <feComposite in="SourceGraphic" in2="softGlow" operator="over" />
+    </filter>
+    
+    <!-- Filtro simple para el logo -->
+    <filter id="logoGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feFlood flood-color="#00A9F4" flood-opacity="0.5" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="softGlow"/>
+      <feComposite in="SourceGraphic" in2="softGlow" operator="over" />
+    </filter>
+    
+    <filter id="dataStream" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="5" stitchTiles="stitch" result="turbulence"/>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="5" xChannelSelector="R" yChannelSelector="G" result="displacedGraphic"/>
+      <feComposite in="displacedGraphic" in2="SourceGraphic" operator="arithmetic" k1="0.5" k2="0.5" k3="0" k4="0"/>
+    </filter>
+    
+    <!-- Patrones y texturas -->
+    <pattern id="circuitPattern" patternUnits="userSpaceOnUse" width="50" height="50">
+      <rect width="50" height="50" fill="#000208" />
+      <path d="M0,0 L25,0 L50,25 L50,50 L25,50 L0,25 Z" fill="#010A14" />
+      <path d="M10,5 h5 v15 h15 v5" stroke="#01A0FF" stroke-width="0.5" fill="none" opacity="0.3" />
+      <path d="M30,10 h10 v20 h-5 v10" stroke="#01A0FF" stroke-width="0.5" fill="none" opacity="0.2" />
+      <path d="M5,30 h10 v10 h20" stroke="#01A0FF" stroke-width="0.5" fill="none" opacity="0.4" />
+      <circle cx="10" cy="5" r="1" fill="#01F7FF" opacity="0.5" />
+      <circle cx="45" cy="30" r="1" fill="#01F7FF" opacity="0.6" />
+      <circle cx="25" cy="40" r="1" fill="#01F7FF" opacity="0.4" />
+    </pattern>
+    
+    <!-- Máscaras para recortar -->
+    <clipPath id="innerWheel">
+      <circle cx="200" cy="200" r="120" />
+    </clipPath>
+    
+    <clipPath id="outerRing">
+      <path d="M200,200 m-150,0 a150,150 0 1,0 300,0 a150,150 0 1,0 -300,0 z M200,200 m-120,0 a120,120 0 1,0 240,0 a120,120 0 1,0 -240,0 z" />
+    </clipPath>
+  </defs>
+
+  <!-- Fondo con patrón de circuitos -->
+  <rect x="0" y="0" width="400" height="400" fill="url(#circuitPattern)" />
+  
+  <!-- Base esférica 3D -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#000B14" stroke-width="2" />
+  <circle cx="200" cy="200" r="168" fill="url(#darkCore)" />
+  
+  <!-- Anillos de energía externos -->
+  <g>
+    <circle cx="200" cy="200" r="160" fill="none" stroke="url(#energyGradient)" stroke-width="1" opacity="0.4" />
+    <circle cx="200" cy="200" r="155" fill="none" stroke="url(#energyGradient)" stroke-width="0.5" opacity="0.3" />
+    
+    <!-- Anillo orbital externo -->
+    <circle cx="200" cy="200" r="152" fill="none" stroke="url(#cyberGradient)" stroke-width="0.5" stroke-dasharray="1,2" opacity="0.6">
+      <animateTransform 
+        attributeName="transform"
+        type="rotate"
+        from="0 200 200"
+        to="360 200 200"
+        dur="120s"
+        repeatCount="indefinite"
+        additive="sum"
+      />
+    </circle>
+  </g>
+  
+  <!-- Anillo de datos holográfico -->
+  <g clip-path="url(#outerRing)">
+    <!-- Fondo del anillo -->
+    <circle cx="200" cy="200" r="150" fill="none" stroke="#001018" stroke-width="60" opacity="0.7" />
+    
+    <!-- Efecto de datos fluidos -->
+    <g filter="url(#dataStream)">
+      <!-- Grid lines dinámicas -->
+      <g stroke="url(#cyberGradient)" stroke-width="0.5" opacity="0.5">
+        <circle cx="200" cy="200" r="135" fill="none">
+          <animate attributeName="opacity" values="0.1;0.5;0.1" dur="8s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="200" cy="200" r="140" fill="none">
+          <animate attributeName="opacity" values="0.3;0.1;0.3" dur="5s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="200" cy="200" r="145" fill="none">
+          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="7s" repeatCount="indefinite" />
+        </circle>
+      </g>
+      
+      <!-- Marcadores de secciones -->
+      <g>
+        <path d="M200,70 A130,130 0 0,1 312.6,130" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+        <path d="M312.6,130 A130,130 0 0,1 312.6,270" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+        <path d="M312.6,270 A130,130 0 0,1 200,330" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+        <path d="M200,330 A130,130 0 0,1 87.4,270" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+        <path d="M87.4,270 A130,130 0 0,1 87.4,130" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+        <path d="M87.4,130 A130,130 0 0,1 200,70" fill="none" stroke="url(#cyberGradient)" stroke-width="1.5" />
+      </g>
+      
+      <!-- Nodos holográficos pulsantes -->
+      <g fill="url(#energyGradient)" filter="url(#quantumBlur)">
+        <circle cx="200" cy="70" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="312.6" cy="130" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" begin="0.3s" />
+        </circle>
+        <circle cx="312.6" cy="270" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" begin="0.6s" />
+        </circle>
+        <circle cx="200" cy="330" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" begin="0.9s" />
+        </circle>
+        <circle cx="87.4" cy="270" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" begin="1.2s" />
+        </circle>
+        <circle cx="87.4" cy="130" r="6">
+          <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite" begin="1.5s" />
+        </circle>
+      </g>
+      
+      <!-- Líneas de conexión vibrantes -->
+      <g stroke="url(#pulseGradient)" stroke-width="1.5" opacity="0.7">
+        <line x1="200" y1="70" x2="312.6" y2="130">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" />
+        </line>
+        <line x1="312.6" y1="130" x2="312.6" y2="270">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" begin="0.5s" />
+        </line>
+        <line x1="312.6" y1="270" x2="200" y2="330">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" begin="1s" />
+        </line>
+        <line x1="200" y1="330" x2="87.4" y2="270">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" begin="1.5s" />
+        </line>
+        <line x1="87.4" y1="270" x2="87.4" y2="130">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" begin="2s" />
+        </line>
+        <line x1="87.4" y1="130" x2="200" y2="70">
+          <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite" begin="2.5s" />
+        </line>
+      </g>
+      
+      <!-- Vector points pulsantes -->
+      <g fill="#FFFFFF" filter="url(#quantumBlur)">
+        <circle cx="256.3" cy="100" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="312.6" cy="200" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" begin="0.25s" />
+        </circle>
+        <circle cx="256.3" cy="300" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" begin="0.5s" />
+        </circle>
+        <circle cx="143.7" cy="300" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" begin="0.75s" />
+        </circle>
+        <circle cx="87.4" cy="200" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" begin="1s" />
+        </circle>
+        <circle cx="143.7" cy="100" r="3">
+          <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite" begin="1.25s" />
+        </circle>
+      </g>
+      
+      <!-- Partículas en movimiento -->
+      <g fill="#01F7FF" opacity="0.8">
+        <circle cx="0" cy="0" r="1.5">
+          <animateMotion path="M200,70 A130,130 0 0,1 312.6,130 A130,130 0 0,1 312.6,270 A130,130 0 0,1 200,330 A130,130 0 0,1 87.4,270 A130,130 0 0,1 87.4,130 A130,130 0 0,1 200,70 z" dur="10s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="10s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="0" cy="0" r="1.5">
+          <animateMotion path="M200,70 A130,130 0 0,1 312.6,130 A130,130 0 0,1 312.6,270 A130,130 0 0,1 200,330 A130,130 0 0,1 87.4,270 A130,130 0 0,1 87.4,130 A130,130 0 0,1 200,70 z" dur="10s" repeatCount="indefinite" begin="2s" />
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="10s" repeatCount="indefinite" begin="2s" />
+        </circle>
+        <circle cx="0" cy="0" r="1.5">
+          <animateMotion path="M200,70 A130,130 0 0,1 312.6,130 A130,130 0 0,1 312.6,270 A130,130 0 0,1 200,330 A130,130 0 0,1 87.4,270 A130,130 0 0,1 87.4,130 A130,130 0 0,1 200,70 z" dur="10s" repeatCount="indefinite" begin="4s" />
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="10s" repeatCount="indefinite" begin="4s" />
+        </circle>
+        <circle cx="0" cy="0" r="1.5">
+          <animateMotion path="M200,70 A130,130 0 0,1 312.6,130 A130,130 0 0,1 312.6,270 A130,130 0 0,1 200,330 A130,130 0 0,1 87.4,270 A130,130 0 0,1 87.4,130 A130,130 0 0,1 200,70 z" dur="10s" repeatCount="indefinite" begin="6s" />
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="10s" repeatCount="indefinite" begin="6s" />
+        </circle>
+        <circle cx="0" cy="0" r="1.5">
+          <animateMotion path="M200,70 A130,130 0 0,1 312.6,130 A130,130 0 0,1 312.6,270 A130,130 0 0,1 200,330 A130,130 0 0,1 87.4,270 A130,130 0 0,1 87.4,130 A130,130 0 0,1 200,70 z" dur="10s" repeatCount="indefinite" begin="8s" />
+          <animate attributeName="opacity" values="0.2;0.8;0.2" dur="10s" repeatCount="indefinite" begin="8s" />
+        </circle>
+      </g>
+      
+      <!-- Animación del anillo exterior -->
+      <animateTransform 
+        attributeName="transform"
+        type="rotate"
+        from="0 200 200"
+        to="360 200 200"
+        dur="180s"
+        repeatCount="indefinite"
+        additive="sum"
+      />
+    </g>
+  </g>
+  
+  <!-- Ruleta central holográfica -->
+  <g clip-path="url(#innerWheel)">
+    <!-- Core central -->
+    <circle cx="200" cy="200" r="120" fill="url(#darkCore)" />
+    
+    <!-- Grid de fondo -->
+    <g stroke="url(#cyberGradient)" stroke-width="0.2" opacity="0.2">
+      <line x1="80" y1="200" x2="320" y2="200" />
+      <line x1="200" y1="80" x2="200" y2="320" />
+      <circle cx="200" cy="200" r="30" fill="none" />
+      <circle cx="200" cy="200" r="60" fill="none" />
+      <circle cx="200" cy="200" r="90" fill="none" />
+    </g>
+    
+    <!-- Segmentos holográficos -->
+    <g transform="translate(200, 200)">
+      <!-- 8 segmentos principales -->
+      <path d="M0,0 L0,-120 A120,120 0 0,1 84.85,-84.85 z" fill="#050A14" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L84.85,-84.85 A120,120 0 0,1 120,0 z" fill="#070C18" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L120,0 A120,120 0 0,1 84.85,84.85 z" fill="#050A14" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L84.85,84.85 A120,120 0 0,1 0,120 z" fill="#070C18" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L0,120 A120,120 0 0,1 -84.85,84.85 z" fill="#050A14" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L-84.85,84.85 A120,120 0 0,1 -120,0 z" fill="#070C18" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L-120,0 A120,120 0 0,1 -84.85,-84.85 z" fill="#050A14" stroke="#0097FF" stroke-width="0.5" />
+      <path d="M0,0 L-84.85,-84.85 A120,120 0 0,1 0,-120 z" fill="#070C18" stroke="#0097FF" stroke-width="0.5" />
+      
+      <!-- Elementos resonantes -->
+      <g filter="url(#quantumBlur)" opacity="0.9">
+        <circle cx="0" cy="-90" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="90" cy="0" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="0.4s" />
+        </circle>
+        <circle cx="0" cy="90" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="0.8s" />
+        </circle>
+        <circle cx="-90" cy="0" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="1.2s" />
+        </circle>
+        <circle cx="63.64" cy="-63.64" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="1.6s" />
+        </circle>
+        <circle cx="63.64" cy="63.64" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="2s" />
+        </circle>
+        <circle cx="-63.64" cy="63.64" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="2.4s" />
+        </circle>
+        <circle cx="-63.64" cy="-63.64" r="10" fill="url(#energyGradient)">
+          <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite" begin="2.8s" />
+        </circle>
+      </g>
+      
+      <!-- Líneas de división brillantes -->
+      <g stroke="url(#cyberGradient)" stroke-width="1" opacity="0.7">
+        <line x1="0" y1="0" x2="0" y2="-120" />
+        <line x1="0" y1="0" x2="84.85" y2="-84.85" />
+        <line x1="0" y1="0" x2="120" y2="0" />
+        <line x1="0" y1="0" x2="84.85" y2="84.85" />
+        <line x1="0" y1="0" x2="0" y2="120" />
+        <line x1="0" y1="0" x2="-84.85" y2="84.85" />
+        <line x1="0" y1="0" x2="-120" y2="0" />
+        <line x1="0" y1="0" x2="-84.85" y2="-84.85" />
+      </g>
+      
+      <!-- Animación de ruleta principal -->
+      <animateTransform 
+        id="quantum-spin"
+        attributeName="transform"
+        type="rotate"
+        from="0"
+        to="3600"
+        dur="12s"
+        begin="0s"
+        repeatCount="1"
+        calcMode="spline"
+        keySplines="0.32, 0.95, 0.6, 1"
+        fill="freeze"
+      />
+      
+      <!-- Giro continuo -->
+      <animateTransform 
+        attributeName="transform"
+        type="rotate"
+        from="3600"
+        to="3960"
+        dur="30s"
+        begin="quantum-spin.end"
+        repeatCount="indefinite"
+        calcMode="spline"
+        keySplines="0.1, 0.8, 0.2, 1"
+      />
+    </g>
+    
+    <!-- Partículas de energía orbitantes -->
+    <g>
+      <circle cx="0" cy="0" r="1" fill="#01F7FF" opacity="0.9">
+        <animateMotion path="M 0,0 m -90,0 a 90,90 0 1,0 180,0 a 90,90 0 1,0 -180,0 z" dur="8s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="0" r="1.5" fill="#01F7FF" opacity="0.9">
+        <animateMotion path="M 0,0 m -90,0 a 90,90 0 1,0 180,0 a 90,90 0 1,0 -180,0 z" dur="8s" repeatCount="indefinite" begin="2s" />
+      </circle>
+      <circle cx="0" cy="0" r="1" fill="#01F7FF" opacity="0.9">
+        <animateMotion path="M 0,0 m -90,0 a 90,90 0 1,0 180,0 a 90,90 0 1,0 -180,0 z" dur="8s" repeatCount="indefinite" begin="4s" />
+      </circle>
+      <circle cx="0" cy="0" r="1.5" fill="#01F7FF" opacity="0.9">
+        <animateMotion path="M 0,0 m -90,0 a 90,90 0 1,0 180,0 a 90,90 0 1,0 -180,0 z" dur="8s" repeatCount="indefinite" begin="6s" />
+      </circle>
+    </g>
+  </g>
+  
+  <!-- Core central de energía -->
+  <circle cx="200" cy="200" r="40" fill="url(#coreGlow)" filter="url(#quantumBlur)" />
+  
+  <!-- Fondo circular para el logo -->
+  <circle cx="200" cy="200" r="55" fill="#000000" opacity="0.7" />
+  
+  <!-- Logo Zeven oficial integrado en el centro -->
+  <g transform="translate(200, 200) scale(0.2) translate(-125, -240)" filter="url(#logoGlow)">
+    <!-- Path del logo oficial exactamente como está en el SVG proporcionado -->
+    <path d="M0 0 C5.78185251 4.07546051 10.95803848 8.63940003 16.15234375 13.43359375 C18.82808836 15.84506729 21.56563425 18.12178235 24.375 20.375 C29.1714071 24.24218863 33.6704146 28.34980716 38.16357422 32.55810547 C41.51081785 35.67539336 44.92995906 38.63566482 48.5 41.5 C53.26108478 45.31994011 57.71273025 49.38938819 62.1640625 53.55859375 C65.51116869 56.67568554 68.93014141 59.63581113 72.5 62.5 C77.26108478 66.31994011 81.71273025 70.38938819 86.1640625 74.55859375 C89.51116869 77.67568554 92.93014141 80.63581113 96.5 83.5 C101.26108478 87.31994011 105.71273025 91.38938819 110.1640625 95.55859375 C113.51116869 98.67568554 116.93014141 101.63581113 120.5 104.5 C125.26108478 108.31994011 129.71273025 112.38938819 134.1640625 116.55859375 C137.51116869 119.67568554 140.93014141 122.63581113 144.5 125.5 C149.25257435 129.31311198 153.70365029 133.36872997 158.13769531 137.54101562 C162.54572833 141.66082092 167.15415271 145.4008564 171.953125 149.0625 C174.09778223 151.09255723 174.66490291 152.11300971 175 155 C174.37996094 155.49886719 173.75992188 155.99773437 173.12109375 156.51171875 C167.4901773 161.07710516 161.96294452 165.73581227 156.5 170.5 C152.21785961 174.23406932 147.9166866 177.92458704 143.5 181.5 C138.46651459 185.57757127 133.57666691 189.80505915 128.69189453 194.05810547 C123.03735121 198.9787765 117.32527914 203.82781099 111.59277344 208.65722656 C108.35118644 211.39001756 105.11647873 214.13095393 101.88110352 216.87109375 C99.1395679 219.19228537 96.39502413 221.5097388 93.64453125 223.8203125 C90.92462397 226.10581219 88.21894727 228.40739856 85.51806641 230.71533203 C84.07120521 231.93974239 82.60440042 233.14046951 81.13671875 234.33984375 C73.05421566 241.1530945 68.80709615 248.52126058 67 259 C63.15293549 304.64364096 83.66799689 348.89684046 103 389 C103.4419873 389.92248535 103.88397461 390.8449707 104.33935547 391.79541016 C110.46219962 404.52164969 117.28618551 416.80020066 124.31347656 429.04589844 C126.01399388 432.02451158 127.69375241 435.01390974 129.3671875 438.0078125 C134.73689863 447.60280575 140.12428726 457.13147632 146.1940918 466.30639648 C147.1866699 467.8352353 148.10258833 469.41342769 149 471 C148.67 471.66 148.34 472.32 148 473 C141.95496511 468.20273784 136.12939996 463.27393852 130.5 458 C126.60426525 454.3510772 122.66665634 450.84301497 118.5 447.5 C113.73891522 443.68005989 109.28726975 439.61061181 104.8359375 435.44140625 C101.48883131 432.32431446 98.06985859 429.36418887 94.5 426.5 C89.73891522 422.68005989 85.28726975 418.61061181 80.8359375 414.44140625 C77.48883131 411.32431446 74.06985859 408.36418887 70.5 405.5 C65.73891522 401.68005989 61.28726975 397.61061181 56.8359375 393.44140625 C53.48883131 390.32431446 50.06985859 387.36418887 46.5 384.5 C41.73891522 380.68005989 37.28726975 376.61061181 32.8359375 372.44140625 C29.48883131 369.32431446 26.06985859 366.36418887 22.5 363.5 C17.73891522 359.68005989 13.28726975 355.61061181 8.8359375 351.44140625 C5.48883131 348.32431446 2.06985859 345.36418887 -1.5 342.5 C-6.33878685 338.61763515 -10.89288616 334.49472254 -15.41015625 330.24804688 C-18.84030991 327.03011232 -22.36110275 323.98074095 -26 321 C-24.50282382 317.28601048 -22.44574726 315.50259241 -19.3125 313.0625 C-14.65210865 309.35246296 -10.11215271 305.5426849 -5.625 301.625 C0.67200573 296.14051114 7.0209946 290.72292824 13.40722656 285.34277344 C16.10814812 283.06578561 18.80377244 280.78254206 21.5 278.5 C22.58330865 277.58330416 23.66664196 276.66663747 24.75 275.75 C25.554375 275.069375 25.554375 275.069375 26.375 274.375 C31.25 270.25 31.25 270.25 32.87475586 268.87524414 C33.95895238 267.95782203 35.04309945 267.04034148 36.12719727 266.12280273 C38.82192311 263.84221456 41.51747812 261.56262185 44.21484375 259.28515625 C51.61632073 253.03349951 58.99781373 246.75859344 66.33007812 240.42578125 C67.50058927 239.42639747 68.68267027 238.44048088 69.87304688 237.46484375 C80.08768749 229.01134807 81.94783718 217.2257074 83.25 204.5703125 C83.31927177 202.3449568 83.19538686 200.2190365 83 198 C82.9071875 196.82953125 82.814375 195.6590625 82.71875 194.453125 C77.05707666 132.85531576 42.84287454 72.05328281 10.875 20.3125 C8.21627158 15.99873983 5.58419701 11.67138652 3 7.3125 C2.4225 6.33925781 1.845 5.36601563 1.25 4.36328125 C0 2 0 2 0 0 Z" fill="#00A9F4" transform="translate(26,0)">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
+    </path>
+  </g>
+  
+  <!-- Efecto de resplandor externo -->
+  <circle cx="200" cy="200" r="180" fill="none" stroke="url(#energyGradient)" stroke-width="0.5" opacity="0.3">
+    <animate attributeName="opacity" values="0.1;0.3;0.1" dur="5s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Destellos de energía aleatorios -->
+  <g>
+    <circle cx="300" cy="100" r="1" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.2s" />
+    </circle>
+    <circle cx="120" cy="320" r="1" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.5s" repeatCount="indefinite" begin="1.3s" />
+    </circle>
+    <circle cx="320" cy="270" r="1.5" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.7s" repeatCount="indefinite" begin="0.7s" />
+    </circle>
+    <circle cx="90" cy="120" r="1" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.6s" repeatCount="indefinite" begin="1s" />
+    </circle>
+    <circle cx="350" cy="200" r="1.2" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.9s" repeatCount="indefinite" begin="0.5s" />
+    </circle>
+    <circle cx="200" cy="350" r="1.2" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.7s" repeatCount="indefinite" begin="1.5s" />
+    </circle>
+    <circle cx="50" cy="200" r="1.2" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.3s" />
+    </circle>
+    <circle cx="200" cy="50" r="1.2" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" begin="1.8s" />
+    </circle>
+  </g>
+</svg>
