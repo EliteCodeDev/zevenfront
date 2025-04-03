@@ -24,16 +24,26 @@ const SocialsPage = () => {
     // Si los datos se cargaron correctamente, los mostramos
     return (
         <Layout>
-            <div className="p-6 dark:bg-zinc-800 bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
-                <h2 className="text-xl font-semibold mb-4 flex items-center">
-                    <HeartIcon className="h-6 w-6 mr-2" />
-                    Redes Sociales
-                </h2>
-                <p className="text-gray-600 dark:text-white">
-                    Síguenos en nuestras redes sociales, donde podrás ver las
-                    actualizaciones de nuestra comunidad, eventos y mucho más. Puedes
-                    encontrarnos en las principales plataformas, ¡solo elige tu favorita!
-                </p>
+            {/* Cabecera de Redes Sociales */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-white to-gray-50 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-all">
+                <div className="absolute h-1 top-0 left-0 right-0 bg-[var(--app-primary)]"></div>
+
+                <div className="p-6">
+                    <div className="flex items-center space-x-3 mb-4">
+                        <div className="p-2 rounded-full bg-[var(--app-primary)]/10">
+                            <HeartIcon className="w-5 h-5 text-[var(--app-primary)]" />
+                        </div>
+                        <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
+                            Redes Sociales
+                        </h1>
+                    </div>
+
+                    <p className="text-gray-600 dark:text-gray-300 ml-10">
+                        Síguenos en nuestras redes sociales, donde podrás ver las
+                        actualizaciones de nuestra comunidad, eventos y mucho más. Puedes
+                        encontrarnos en las principales plataformas, ¡solo elige tu favorita!
+                    </p>
+                </div>
             </div>
 
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">

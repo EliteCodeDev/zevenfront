@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <SessionProvider session={session}>
           <ProgressBar
             height="4px"
-            color="#ffb800"
+            color="#3b82f6"
             options={{ showSpinner: false }}
             shallowRouting
           />

@@ -209,6 +209,7 @@ export default function Historial() {
     return (
         <Layout>
             {/* Cabecera del historial - Mejorada para ambos modos */}
+            {/*
             <div className="bg-gradient-to-r from-white to-gray-50 p-5 rounded-lg shadow-md border border-gray-100 dark:border-zinc-700/50 dark:bg-gradient-to-r dark:from-zinc-800 dark:to-zinc-900 dark:shadow-black dark:text-white transition-all duration-200">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-2">
@@ -218,6 +219,30 @@ export default function Historial() {
                     <button
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                         className="bg-[var(--app-primary)] rounded-lg text-black font-medium hover:bg-[var(--app-secondary)] inline-flex items-center px-4 py-2 space-x-2 transition-all duration-200 shadow-sm"
+                    >
+                        <FunnelIcon className="h-5 w-5" />
+                        <span className="font-medium">Filtros</span>
+                    </button>
+                </div>
+            </div>
+            */}
+            {/* Cabecera del historial */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-white to-gray-50 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-all">
+                <div className="absolute h-1 top-0 left-0 right-0 bg-[var(--app-primary)]"></div>
+
+                <div className="p-6 flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                        <div className="p-2 rounded-full bg-[var(--app-primary)]/10">
+                            <ClockIcon className="w-5 h-5 text-[var(--app-primary)]" />
+                        </div>
+                        <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
+                            Historial de Challenges
+                        </h1>
+                    </div>
+
+                    <button
+                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        className="bg-[var(--app-primary)] hover:bg-[var(--app-secondary)] text-black px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2 transition-all"
                     >
                         <FunnelIcon className="h-5 w-5" />
                         <span className="font-medium">Filtros</span>
