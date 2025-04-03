@@ -1,3 +1,4 @@
+// src/pages/billing/index.js
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import Layout from '../../components/layout/dashboard';
@@ -105,11 +106,18 @@ const WithdrawalsPage = () => {
 
     return (
         <Layout>
-            <div className="p-6 dark:bg-zinc-800 bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <BanknotesIcon className="w-6 h-6 text-gray-600 dark:text-gray-200" />
-                        <h1 className="text-xl font-semibold">Mis Retiros</h1>
+            {/* Cabecera de Mis Retiros */}
+            <div className="relative overflow-hidden bg-gradient-to-r from-white to-gray-50 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-all">
+                <div className="absolute h-1 top-0 left-0 right-0 bg-[var(--app-primary)]"></div>
+
+                <div className="p-6 flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                        <div className="p-2 rounded-full bg-[var(--app-primary)]/10">
+                            <BanknotesIcon className="w-5 h-5 text-[var(--app-primary)]" />
+                        </div>
+                        <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
+                            Mis Retiros
+                        </h1>
                     </div>
                 </div>
             </div>
