@@ -14,7 +14,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import DashboardLayout from "../..";
-import { AlertCircle, UserCircle } from "lucide-react";
+import { AlertCircle, AlertOctagon, UserCircle } from "lucide-react";
 
 const fetcher = async (url, token) => {
     // console.log("Fetching data from:", url); // Depuración
