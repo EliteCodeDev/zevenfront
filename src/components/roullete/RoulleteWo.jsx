@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStrapiData } from "src/services/strapiService";
 import { useSession } from "next-auth/react";
-import { ClipboardDocumentIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ClipboardDocumentIcon, CheckIcon } from "@heroicons/react/24/outline";
 
 export default function RuletaSorteo({
   customOptions,
@@ -13,26 +13,31 @@ export default function RuletaSorteo({
   documentId,
   onClose, // Added onClose prop for the Exit button
 }) {
-  // Hooks y estados
-  // console.log("documentId", documentId);
   const { data: session } = useSession();
   const { data, error, loading } = useStrapiData("rewards");
-  // console.log("document" + data);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [startAngle, setStartAngle] = useState(0);
   const canvasRef = useRef(null);
   const [centerImageLoaded, setCenterImageLoaded] = useState(false);
   const centerImageRef = useRef(null);
-  const [hasSpun, setHasSpun] = useState(false); // New state to track if wheel has been spun successfully
+  const [hasSpun, setHasSpun] = useState(false);
   const [ticketError, setTicketError] = useState("");
   const [codigoCopiad, setCodigoCopiad] = useState(false);
-  // Refs para controlar la animación
+
   const animationRef = useRef(null);
   const celebrationRef = useRef(null);
   const currentAngleRef = useRef(startAngle);
   const winningIndexRef = useRef(null);
   const codigoRef = useRef(null);
+
+  // Variables de colores usando theme colors
+  const primaryColor = "var(--app-primary)";      // theme('colors.blue.500')
+  const secondaryColor = "var(--app-secondary)";  // theme('colors.blue.600')
+  const lighterColor = "#93c5fd";                 // theme('colors.blue.300')
+  const darkerColor = "#1d4ed8";                  // theme('colors.blue.700')
+  const brightColor = "#3b82f6";                  // theme('colors.blue.500')
+  const deepColor = "#2563eb";                    // theme('colors.blue.600')
 
   // Opciones: si vienen personalizadas, se usan; de lo contrario se obtienen del endpoint
   let opciones = [];
@@ -40,18 +45,14 @@ export default function RuletaSorteo({
     opciones = customOptions;
   } else if (data) {
     opciones = data.map((item) => ({
-      name: String(item.procentaje),
+      name: String(item.nombre),
       documentId: item.documentId,
     }));
   }
 
   // Constante: El puntero ahora está en la parte inferior (π/2 rad o 90 grados)
-  const angleOffset = Math.PI / 2; // 90 grados en radianes
+  const angleOffset = Math.PI / 2;
 
-  // ---------------------------
-  // Funciones de CÁLCULO y EASING
-  // ---------------------------
-  // Función de easing (easeOutCubic) para una transición suave
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
   // Normaliza un ángulo para que esté entre 0 y 2π
@@ -65,7 +66,6 @@ export default function RuletaSorteo({
     // Centro del sector ganador
     const sectorCenter = winningIndex * arcSize + arcSize / 2;
     const normalizedCurrent = normalizeAngle(currentAngle);
-    // Se busca que: normalize(finalAngle + sectorCenter) = angleOffset => finalAngle = angleOffset - sectorCenter (mod 2π)
     let delta = normalizeAngle(angleOffset - sectorCenter - normalizedCurrent);
     // Añadimos vueltas extras para efecto visual (por ejemplo, 5 vueltas completas)
     const extraSpins = 5 * 2 * Math.PI;
@@ -74,7 +74,8 @@ export default function RuletaSorteo({
 
   const copiarCodigoAlPortapapeles = () => {
     if (codigoRef.current) {
-      navigator.clipboard.writeText(codigoRef.current)
+      navigator.clipboard
+        .writeText(codigoRef.current)
         .then(() => {
           setCodigoCopiad(true);
           // Reinicia el estado después de 2 segundos
@@ -82,8 +83,8 @@ export default function RuletaSorteo({
             setCodigoCopiad(false);
           }, 2000);
         })
-        .catch(err => {
-          console.error('Error al copiar el código: ', err);
+        .catch((err) => {
+          console.error("Error al copiar el código: ", err);
         });
     }
   };
@@ -116,19 +117,19 @@ export default function RuletaSorteo({
     // Efectos de brillo y resplandor exterior
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius + 15, 0, 2 * Math.PI);
-    ctx.fillStyle = "rgba(255, 235, 59, 0.1)";
+    ctx.fillStyle = "rgba(59, 130, 246, 0.1)"; // Azul con transparencia
     ctx.fill();
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius + 5, 0, 2 * Math.PI);
-    ctx.strokeStyle = "rgba(255, 235, 59, 0.5)";
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.5)"; // Azul con transparencia
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Paleta de colores en tonos amarillos
+    // Paleta de colores en tonos azules
     const colors = [
-      { main: "#F9A825", light: "#FFD54F", shadow: "#F57F17" },
-      { main: "#FBC02D", light: "#FFEE58", shadow: "#F9A825" },
-      { main: "#FFD54F", light: "#FFF59D", shadow: "#FBC02D" },
+      { main: deepColor, light: lighterColor, shadow: darkerColor },
+      { main: brightColor, light: lighterColor, shadow: deepColor },
+      { main: lighterColor, light: "#bfdbfe", shadow: brightColor },
     ];
 
     // Sombra para efecto 3D (base)
@@ -148,9 +149,9 @@ export default function RuletaSorteo({
       centerX + radius,
       centerY + radius
     );
-    outerEdge.addColorStop(0, "#F57F17");
-    outerEdge.addColorStop(0.5, "#FFEB3B");
-    outerEdge.addColorStop(1, "#F57F17");
+    outerEdge.addColorStop(0, darkerColor);
+    outerEdge.addColorStop(0.5, brightColor);
+    outerEdge.addColorStop(1, darkerColor);
     ctx.strokeStyle = outerEdge;
     ctx.lineWidth = 5;
     ctx.stroke();
@@ -209,14 +210,146 @@ export default function RuletaSorteo({
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Texto del sector (rotado para mejor legibilidad)
+      // Texto del sector - CÓDIGO MEJORADO PARA TEXTOS LARGOS
+      const textRadius = radius * 0.65; // Radio ligeramente reducido para dar más espacio
+      const textAngle = angle + arcSize / 2;
+      const textX = centerX + Math.cos(textAngle) * textRadius;
+      const textY = centerY + Math.sin(textAngle) * textRadius;
+
       ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(angle + arcSize / 2);
-      ctx.textAlign = "right";
+      ctx.translate(textX, textY);
+
+      // Determinar la rotación correcta para que el texto siempre esté derecho
+      let textRotation = textAngle;
+      // Ajustar la rotación para que el texto esté siempre derecho
+      if (textAngle > Math.PI / 2 && textAngle < (Math.PI * 3) / 2) {
+        textRotation += Math.PI; // Rotar 180 grados para la parte inferior de la rueda
+      }
+
+      ctx.rotate(textRotation);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       ctx.fillStyle = "#212121";
-      ctx.font = "bold 18px 'Arial', sans-serif";
-      ctx.fillText(options[i].name, radius * 0.85, 6);
+
+      // Calcular el ancho máximo para el texto basado en el tamaño del sector
+      const maxTextWidth = Math.min(radius * 0.75 * Math.sin(arcSize / 2) * 2, 100);
+
+      // Usar un tamaño de fuente fijo para mantener la consistencia
+      const fontSize = 12; // Tamaño de fuente fijo para todos los textos
+      ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
+
+      const text = options[i].name;
+      
+      // Dividir el texto en múltiples líneas según sea necesario
+      if (text.length > 5) {
+        // Calcular cuántas líneas necesitamos
+        const lines = [];
+        
+        if (text.includes(' ')) {
+          // Dividir por palabras
+          const words = text.split(' ');
+          let currentLine = '';
+          
+          for (let n = 0; n < words.length; n++) {
+            const word = words[n];
+            const testLine = currentLine + (currentLine ? ' ' : '') + word;
+            
+            if (ctx.measureText(testLine).width <= maxTextWidth) {
+              currentLine = testLine;
+            } else {
+              // Si la línea actual más esta palabra es demasiado larga
+              if (currentLine !== '') {
+                lines.push(currentLine);
+                currentLine = word;
+              } else {
+                // Si una sola palabra es más larga que maxTextWidth, dividirla
+                const chars = word.split('');
+                let partWord = '';
+                
+                for (let c = 0; c < chars.length; c++) {
+                  const testPartWord = partWord + chars[c];
+                  if (ctx.measureText(testPartWord).width <= maxTextWidth) {
+                    partWord = testPartWord;
+                  } else {
+                    lines.push(partWord);
+                    partWord = chars[c];
+                  }
+                }
+                
+                if (partWord) {
+                  currentLine = partWord;
+                }
+              }
+            }
+          }
+          
+          // Añadir la última línea
+          if (currentLine) {
+            lines.push(currentLine);
+          }
+        } else {
+          // Si no hay espacios, dividir por caracteres
+          let currentLine = '';
+          const chars = text.split('');
+          
+          for (let c = 0; c < chars.length; c++) {
+            const testLine = currentLine + chars[c];
+            
+            if (ctx.measureText(testLine).width <= maxTextWidth) {
+              currentLine = testLine;
+            } else {
+              lines.push(currentLine);
+              currentLine = chars[c];
+            }
+          }
+          
+          // Añadir la última línea
+          if (currentLine) {
+            lines.push(currentLine);
+          }
+        }
+        
+        // Limitar a un máximo de 4 líneas si hay más
+        const maxLines = 4;
+        const usedLines = lines.slice(0, maxLines);
+        
+        // Si tenemos que truncar, añadir "..." al final
+        if (lines.length > maxLines) {
+          const lastLine = usedLines[maxLines - 1];
+          // Solo añadir "..." si hay espacio
+          if (ctx.measureText(lastLine + "...").width <= maxTextWidth) {
+            usedLines[maxLines - 1] = lastLine + "...";
+          } else {
+            // Si no hay espacio, acortar la última línea y añadir "..."
+            let shortenedLine = lastLine;
+            while (shortenedLine.length > 0 && 
+                   ctx.measureText(shortenedLine + "...").width > maxTextWidth) {
+              shortenedLine = shortenedLine.slice(0, -1);
+            }
+            
+            if (shortenedLine.length > 0) {
+              usedLines[maxLines - 1] = shortenedLine + "...";
+            }
+          }
+        }
+        
+        // Dibujar todas las líneas
+        const lineSpacing = fontSize * 1.2;
+        const totalHeight = (usedLines.length - 1) * lineSpacing;
+        const startY = -totalHeight / 2;
+        
+        for (let i = 0; i < usedLines.length; i++) {
+          ctx.fillText(
+            usedLines[i], 
+            0, 
+            startY + i * lineSpacing
+          );
+        }
+      } else {
+        // Si el texto es corto, mostrarlo en una sola línea
+        ctx.fillText(text, 0, 0);
+      }
+
       ctx.restore();
     }
 
@@ -261,27 +394,27 @@ export default function RuletaSorteo({
       // Añade borde al círculo
       ctx.beginPath();
       ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "#5D4037";
+      ctx.strokeStyle = "#1e40af"; // Blue-800
       ctx.lineWidth = 3;
       ctx.stroke();
     } else {
-      // Dibuja el centro con gradiente (original)
+      // Dibuja el centro con gradiente (original - ahora en azul)
       const centerGradient = ctx.createLinearGradient(
         centerX - centerRadius,
         centerY - centerRadius,
         centerX + centerRadius,
         centerY + centerRadius
       );
-      centerGradient.addColorStop(0, "#FDD835");
-      centerGradient.addColorStop(0.5, "#F9A825");
-      centerGradient.addColorStop(1, "#F57F17");
+      centerGradient.addColorStop(0, brightColor);
+      centerGradient.addColorStop(0.5, deepColor);
+      centerGradient.addColorStop(1, darkerColor);
       ctx.beginPath();
       ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
       ctx.fillStyle = centerGradient;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
-      ctx.strokeStyle = "#5D4037";
+      ctx.strokeStyle = "#1e40af"; // Blue-800
       ctx.lineWidth = 3;
       ctx.stroke();
       ctx.beginPath();
@@ -320,8 +453,8 @@ export default function RuletaSorteo({
       const particleAlpha = 0.6 + Math.random() * 0.4;
       ctx.fillStyle =
         Math.random() > 0.5
-          ? `rgba(255, 215, 0, ${particleAlpha})`
-          : `rgba(255, 235, 59, ${particleAlpha})`;
+          ? `rgba(59, 130, 246, ${particleAlpha})` // Blue-500
+          : `rgba(37, 99, 235, ${particleAlpha})`; // Blue-600
       ctx.fill();
     }
   };
@@ -349,8 +482,8 @@ export default function RuletaSorteo({
       );
       ctx.fillStyle =
         Math.random() > 0.5
-          ? "rgba(255, 215, 0, 0.8)"
-          : "rgba(255, 235, 59, 0.8)";
+          ? "rgba(59, 130, 246, 0.8)" // Blue-500
+          : "rgba(37, 99, 235, 0.8)"; // Blue-600
       ctx.fill();
     }
   };
@@ -370,7 +503,7 @@ export default function RuletaSorteo({
 
     const ctx = canvas.getContext("2d");
     ctx.fillStyle =
-      count % 2 === 0 ? "rgba(255, 215, 0, 0.15)" : "rgba(255, 235, 59, 0.1)";
+      count % 2 === 0 ? "rgba(59, 130, 246, 0.15)" : "rgba(37, 99, 235, 0.1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const breathScale = 1 + Math.sin(count * 0.4) * 0.005;
@@ -449,13 +582,11 @@ export default function RuletaSorteo({
         setHasSpun(true); // Disable spin button
         return;
       }
-
       const winningIndex = winningOption.indice;
 
       if (winningIndex < 0 || winningIndex >= opciones.length) {
         throw new Error("El índice ganador está fuera de rango");
       }
-
       // Guardamos el índice ganador en el ref para usarlo en la celebración
       winningIndexRef.current = winningIndex;
       codigoRef.current = winningOption.cupon;
@@ -583,7 +714,7 @@ export default function RuletaSorteo({
         background: "#000",
         padding: "10px",
         // borderRadius: "10px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.8)",
+        // boxShadow: "0 4px 12px rgba(0, 0, 0, 0.8)",
         maxWidth: "400px",
         width: "100%", // Added width: 100% for full width
         margin: "auto",
@@ -609,15 +740,15 @@ export default function RuletaSorteo({
             <canvas
               ref={canvasRef}
               style={{
-                border: "5px solid #F57F17",
+                border: `5px solid ${deepColor}`,
                 borderRadius: "50%",
                 boxShadow:
-                  "0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 235, 59, 0.4), inset 0 0 15px rgba(255, 235, 59, 0.3)",
+                  `0 0 20px rgba(59, 130, 246, 0.7), 0 0 40px rgba(37, 99, 235, 0.4), inset 0 0 15px rgba(59, 130, 246, 0.3)`,
                 transition: "box-shadow 0.3s ease, transform 0.3s ease",
                 transform: isSpinning ? "scale(1.03)" : "scale(1)",
               }}
             />
-            {/* Flecha indicadora posicionada en la parte inferior central */}
+            {/* Flecha indicadora azul posicionada en la parte inferior central */}
             <motion.div
               initial={{ y: -5 }}
               animate={{
@@ -631,7 +762,7 @@ export default function RuletaSorteo({
               style={{
                 position: "absolute",
                 bottom: "-65px",
-                left: "34%", // 
+                left: "35%", //
                 transform: "translateX(-50%)",
                 width: 80,
                 height: 30, // Increased height for the icon container
@@ -641,15 +772,15 @@ export default function RuletaSorteo({
                 zIndex: 10,
               }}
             >
-              <img
-                src="/images/icon-dark.png"
-                alt=""
-                style={{
-                  width: "80%",
-                  maxWidth: "80px",
-                  display: "block"
-                }}
-              />
+              {/* Flecha azul (triángulo SVG) */}
+              <svg width="40" height="40" viewBox="0 0 40 40">
+                <polygon 
+                  points="20,0 40,30 0,30" 
+                  fill="#3b82f6" 
+                  stroke="#2563eb" 
+                  strokeWidth="2"
+                />
+              </svg>
             </motion.div>
           </div>
           <div className="mt-10"></div>
@@ -665,14 +796,31 @@ export default function RuletaSorteo({
                   fontSize: "20px",
                   marginTop: "10px",
                   marginBottom: "20px",
-                  color: "#FFEB3B",
+                  color: primaryColor, // Color primario azul
                   fontWeight: "bold",
                   textAlign: "center",
-                  width: "100%"
+                  width: "100%",
                 }}
               >
-                <p>¡Ganaste un descuento de: {selectedOption.name}%!</p>
+                {
+                  // Verifica si selectedOption.name es un valor numérico (con o sin "%")
+                  /^\d+%?$/.test(selectedOption.name) ? (
+                    <p>
+                      ¡Ganaste un descuento de:{" "}
+                      {selectedOption.name.endsWith("%")
+                        ? selectedOption.name
+                        : `${selectedOption.name}%`}
+                      !
+                    </p>
+                  ) : (
+                    <p>
+                      ¡Ganaste un descuento de {selectedOption.descuento}% en{" "}
+                      {selectedOption.name}!
+                    </p>
+                  )
+                }
 
+                {/* Resto del contenido (por ejemplo, botón para copiar el código, etc.) */}
                 <div className="flex items-center justify-center mt-2 w-full">
                   <span className="mr-2">Código: {codigoRef.current}</span>
                   <motion.button
@@ -692,7 +840,7 @@ export default function RuletaSorteo({
                     {codigoCopiad ? (
                       <CheckIcon className="h-5 w-5 text-green-500" />
                     ) : (
-                      <ClipboardDocumentIcon className="h-5 w-5 text-[#FFEB3B]" />
+                      <ClipboardDocumentIcon className="h-5 w-5" style={{ color: primaryColor }} />
                     )}
                   </motion.button>
                 </div>
@@ -747,17 +895,17 @@ export default function RuletaSorteo({
                 whileHover={!isSpinning ? { scale: 1.05 } : {}}
                 whileTap={!isSpinning ? { scale: 0.95 } : {}}
                 style={{
-                  marginTop: "20px",
-                  padding: "12px 30px",
-                  background: isSpinning ? "#777" : "#FFEB3B",
-                  color: "#000",
+                  marginTop: "13px",
+                  padding: "10px 40px",
+                  background: isSpinning ? "#777" : primaryColor,
+                  color: "#fff",
                   fontSize: "16px",
                   fontWeight: "bold",
                   border: "none",
                   borderRadius: "30px",
                   cursor: isSpinning ? "not-allowed" : "pointer",
                   transition: "background 0.3s, transform 0.3s",
-                  boxShadow: "0 4px 8px rgba(255,235,59,0.6)",
+                  boxShadow: `0 4px 8px rgba(37, 99, 235, 0.6)`,
                 }}
               >
                 {isSpinning ? "Girando..." : "Girar"}

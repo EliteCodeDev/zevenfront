@@ -357,7 +357,7 @@ const Metrix = () => {
       <div>
         <div className="flex flex-col items-center justify-center py-20 text-center text-white">
           <div className="p-8 bg-white dark:bg-zinc-800 rounded-lg shadow-lg w-full">
-            <h1 className="text-2xl font-bold text-yellow-600">⚠️ Challenge no encontrado ⚠️</h1>
+            <h1 className="text-2xl font-bold text-blue-600">⚠️ Challenge no encontrado ⚠️</h1>
             <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">
               No se encontró ningún challenge con el ID proporcionado en tu cuenta.
               Verifica que el ID sea correcto y que tengas acceso a este challenge.
@@ -502,7 +502,7 @@ const Metrix = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <h3 className="text-sm font-medium">Tipo de cuenta</h3>
-                  <span className="bg-amber-100 text-[var(--app-secondary)] text-xs px-2 py-1 rounded">
+                  <span className="bg-blue-100 text-[var(--app-secondary)] text-xs px-2 py-1 rounded">
                     {currentStage?.name || "-"}
                   </span>
                 </div>
