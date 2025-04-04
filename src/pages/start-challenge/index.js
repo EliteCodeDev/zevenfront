@@ -1,12 +1,9 @@
 // src/pages/start-challenge/index.js
 import { useStrapiData } from '../../services/strapiService';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { CheckIcon, ChevronRightIcon, InformationCircleIcon, TicketIcon } from '@heroicons/react/20/solid';
+import { useState, useEffect, useMemo } from 'react';
+import { CheckIcon, ChevronRightIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 import { useStrapiData as strapiJWT } from 'src/services/strapiServiceJWT';
-import useSWR from 'swr';
-import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
 import Loader from '../../components/loaders/loader';
 import { useSession, signIn } from "next-auth/react";
 import Layout from '../../components/layout/dashboard';
@@ -14,114 +11,89 @@ import Layout from '../../components/layout/dashboard';
 // Definimos las constantes de colores
 const appPrimary = 'text-blue-500'; // Para texto
 const appPrimaryBg = 'bg-blue-500'; // Para fondos
-const appPrimaryBorder = 'border-blue-500'; // Para bordes
-const appSecondary = 'text-blue-600'; // Para texto
 const appSecondaryBg = 'bg-blue-600'; // Para fondos
 const appSecondaryBorder = 'border-blue-600'; // Para bordes
 
-// Helper function to create a WooCommerce API instance
-const createWooCommerceApi = (url, consumerKey, consumerSecret, version = 'wc/v3') => {
-  if (!url) throw new Error('URL no proporcionada para WooCommerce API');
-  if (!consumerKey || !consumerSecret) {
-    throw new Error('Credenciales de WooCommerce no proporcionadas (consumerKey o consumerSecret)');
-  }
-
-  return new WooCommerceRestApi({
-    url,
-    consumerKey,
-    consumerSecret,
-    version,
-    timeout: 10000,
-  });
-};
-
-// Fetcher function for WooCommerce API
-const wooFetcher = async ([endpoint, config]) => {
-  try {
-    const url = config.url || process.env.NEXT_PUBLIC_WOOCOMMERCE_URL || process.env.NEXT_PUBLIC_WP_URL;
-    const consumerKey = config.consumerKey ||
-      process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY ||
-      process.env.NEXT_PUBLIC_WC_CONSUMER_KEY;
-    const consumerSecret = config.consumerSecret ||
-      process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET ||
-      process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET;
-
-    if (!url) throw new Error('URL de WordPress no configurada');
-    if (!consumerKey || !consumerSecret) {
-      throw new Error('Credenciales de WooCommerce no configuradas (consumer key/secret)');
-    }
-
-    const api = createWooCommerceApi(url, consumerKey, consumerSecret, config.version || 'wc/v3');
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-
-    const response = await api.get(cleanEndpoint, config.params || {});
-    if (!response || !response.data) {
-      throw new Error('Respuesta vacía de WooCommerce');
-    }
-
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(`Error de WooCommerce API: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
-    } else if (error.request) {
-      throw new Error('Timeout o error de conexión con la API de WooCommerce');
-    } else {
-      throw new Error(`Error en la solicitud a WooCommerce: ${error.message}`);
-    }
-  }
-};
-
 const ChallengeRelations = () => {
-  // console.log('ChallengeRelations');
-  const { data: relations, error, isLoading } = useStrapiData('challenge-relations?populate=*');
-  // console.log('relations', relations);
-  const { data: allproducts, error: allproductserror, isLoading: allproductsisLoading } = useStrapiData('challenge-products');
+  // Fetch all necessary data
+  const {
+    data: relations,
+    error: relationsError,
+    isLoading: isLoadingRelations
+  } = useStrapiData('challenge-relations?populate=*');
 
-  const { data: session, status } = useSession();
-  // console.log('session', session);
-  const { data: user, status: statusUser } = strapiJWT('users/me', session?.jwt || '');
-  // console.log('user', user);
-  // Estados para manejar las selecciones, cupón y términos
+  const {
+    data: allproducts,
+    error: allproductsError,
+    isLoading: isLoadingProducts
+  } = useStrapiData('challenge-products');
+
+  const {
+    data: productConfigs,
+    error: productConfigsError,
+    isLoading: isLoadingProductConfigs
+  } = useStrapiData('product-configs?populate=*');
+
+  const { data: session } = useSession();
+  const { data: user } = strapiJWT('users/me', session?.jwt || '');
+
+  // State variables
   const [selectedStep, setSelectedStep] = useState(null);
   const [selectedRelationId, setSelectedRelationId] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
-  const [selectedStage, setSelectedStage] = useState(null); // New state for selected stage
-  const [couponCode, setCouponCode] = useState('');
+  const [selectedStage, setSelectedStage] = useState(null);
 
-  const stepsData = relations
-    ? [...new Set(relations.map(relation => relation.challenge_step.name))].map(stepName => {
-      const stepRelations = relations.filter(relation => relation.challenge_step.name === stepName);
-      // Obtener todas las etapas de todas las relaciones del step y eliminar duplicados
-      const allStages = stepRelations.flatMap(relation => relation.challenge_stages || []);
-      const uniqueStages = [...new Set(allStages.map(stage => stage.id))];
-      const numberOfStages = uniqueStages.length;
-      return {
-        step: stepName,
-        relations: stepRelations,
-        numberOfStages,
-      };
-    }).sort((a, b) => a.numberOfStages - b.numberOfStages) // Ordenar de menor a mayor
-    : [];
+  // Memoized steps data with error handling
+  const stepsData = useMemo(() => {
+    if (!relations || relations.length === 0) return [];
 
-  // Seleccionar el primer step, relación y producto por defecto al cargar los datos
+    return [...new Set(relations.map(relation => relation.challenge_step.name))]
+      .map(stepName => {
+        const stepRelations = relations.filter(relation => relation.challenge_step.name === stepName);
+        const allStages = stepRelations.flatMap(relation => relation.challenge_stages || []);
+        const uniqueStages = [...new Set(allStages.map(stage => stage.id))];
+
+        return {
+          step: stepName,
+          relations: stepRelations,
+          numberOfStages: uniqueStages.length,
+        };
+      })
+      .sort((a, b) => a.numberOfStages - b.numberOfStages);
+  }, [relations]);
+
+  // Find matching product configuration
+  const matchingVariation = useMemo(() => {
+    if (!selectedProduct || !selectedRelation || !productConfigs) return null;
+
+    return productConfigs.find(
+      config =>
+        config.challenge_product?.id === selectedProduct.id &&
+        config.challenge_relation?.id === selectedRelation.id
+    );
+  }, [selectedProduct, selectedRelation, productConfigs]);
+
+  // Initial data setup effect
   useEffect(() => {
+    // Only set initial data if we have steps and haven't already selected a step
     if (stepsData.length > 0 && selectedStep === null) {
       const firstStep = stepsData[0].step;
       setSelectedStep(firstStep);
 
       const firstStepRelations = stepsData[0].relations;
       if (firstStepRelations.length > 0) {
-        setSelectedRelationId(firstStepRelations[0].id);
-        setSelectedRelation(firstStepRelations[0]);
+        const firstRelation = firstStepRelations[0];
+        setSelectedRelationId(firstRelation.id);
+        setSelectedRelation(firstRelation);
 
-        const firstRelationProducts = firstStepRelations[0].challenge_products;
+        const firstRelationProducts = firstRelation.challenge_products;
         if (firstRelationProducts.length > 0) {
           setSelectedProduct(firstRelationProducts[0]);
         }
 
         // Set first stage by default
-        const stages = getRelationStages(firstStepRelations[0]);
+        const stages = getRelationStages(firstRelation);
         if (stages.length > 0) {
           setSelectedStage(stages[0]);
         }
@@ -129,49 +101,8 @@ const ChallengeRelations = () => {
     }
   }, [stepsData]);
 
-  // WooCommerce variations fetching logic
-  // console.log("Selected Product:", selectedProduct);
-
-  // Set the endpoint only if selectedProduct and WoocomerceId are valid (fixed typo)
-  const endpoint = selectedProduct && selectedProduct.WoocomerceId
-    ? `products/${selectedProduct.WoocomerceId}/variations?per_page=100`
-    : null;
-
-  // Check for credentials
-  const consumerKey = process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY ||
-    process.env.NEXT_PUBLIC_WC_CONSUMER_KEY;
-  const hasCredentials = !!consumerKey;
-  const shouldFetch = endpoint && hasCredentials;
-
-  // console.log("consumerKey", consumerKey)
-  // console.log("hasCredentials", hasCredentials)
-  // console.log("shouldFetch", shouldFetch)
-
-  // Use useSWR unconditionally to fetch variations
-  const {
-    data: productsvariations,
-    error: productsErrorvariations,
-    isLoading: productsLoadingvariations,
-  } = useSWR(
-    shouldFetch ? [endpoint, {}] : null,
-    wooFetcher,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000,
-    }
-  );
-
-  // console.log("Productos variaciones:", productsvariations);
-
-  // Find the matching variation based on selectedStep and selectedRelation.challenge_subcategory.name
-  const matchingVariation = productsvariations?.find(variation =>
-    variation.attributes.some(attr => attr.name === "step" && attr.option.toLowerCase() === selectedStep?.toLowerCase()) &&
-    variation.attributes.some(attr => attr.name === "subcategory" && attr.option.toLowerCase() === selectedRelation?.challenge_subcategory.name.toLowerCase())
-  );
-
-  // console.log("Matching Variation:", matchingVariation);
-
-  if (isLoading) {
+  // Loading and error states
+  if (isLoadingRelations || isLoadingProducts || isLoadingProductConfigs) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -181,145 +112,107 @@ const ChallengeRelations = () => {
     );
   }
 
-  if (error) return (
-    <Layout>
-      <p className="text-red-500">Error: {error.message}</p>
-    </Layout>
-  );
+  // Error handling
+  const errorMessages = [
+    relationsError && `Relations Error: ${relationsError.message}`,
+    allproductsError && `Products Error: ${allproductsError.message}`,
+    productConfigsError && `Product Configs Error: ${productConfigsError.message}`
+  ].filter(Boolean);
 
-  if (allproductserror) return (
-    <Layout>
-      <p className="text-red-500">Error: {allproductserror.message}</p>
-    </Layout>
-  );
+  if (errorMessages.length > 0) {
+    return (
+      <Layout>
+        <div className="p-6 bg-red-50 rounded-lg">
+          <h2 className="text-red-800 font-bold mb-4">Errors Occurred:</h2>
+          {errorMessages.map((message, index) => (
+            <p key={index} className="text-red-600 mb-2">{message}</p>
+          ))}
+        </div>
+      </Layout>
+    );
+  }
 
-  // Función para manejar el clic en un step
+  // Verify we have minimum required data
+  if (!stepsData.length || !allproducts || allproducts.length === 0) {
+    return (
+      <Layout>
+        <div className="p-6 bg-yellow-50 rounded-lg">
+          <h2 className="text-yellow-800 font-bold mb-4">No Data Available</h2>
+          <p className="text-yellow-600">
+            Unable to load challenge data. Please check your configuration or contact support.
+          </p>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Handle step click
   const handleStepClick = (step) => {
-    setSelectedStep(step);
-
     const stepRelations = stepsData.find(item => item.step === step).relations;
-    if (stepRelations.length > 0) {
-      setSelectedRelationId(stepRelations[0].id);
-      setSelectedRelation(stepRelations[0]);
+    if (stepRelations.length === 0) return;
 
-      // Check if the current product exists in the new relation
-      const currentProductName = selectedProduct?.name;
-      const firstRelationProducts = stepRelations[0].challenge_products;
+    setSelectedStep(step);
+    const firstRelation = stepRelations[0];
+    setSelectedRelationId(firstRelation.id);
+    setSelectedRelation(firstRelation);
 
-      if (currentProductName && firstRelationProducts.some(product => product.name === currentProductName)) {
-        // If the current product exists in the new relation, keep it selected
-        const existingProduct = firstRelationProducts.find(product => product.name === currentProductName);
-        setSelectedProduct(existingProduct);
-      } else if (firstRelationProducts.length > 0) {
-        // Otherwise, select the first product
-        setSelectedProduct(firstRelationProducts[0]);
-      }
+    // Find a suitable product
+    const firstRelationProducts = firstRelation.challenge_products;
+    if (firstRelationProducts.length > 0) {
+      const productToSelect =
+        // Try to keep current product if it exists in this relation
+        (selectedProduct && firstRelationProducts.some(p => p.id === selectedProduct.id))
+          ? selectedProduct
+          : firstRelationProducts[0];
 
-      // Reset stage selection
-      const stages = getRelationStages(stepRelations[0]);
-      if (stages.length > 0) {
-        setSelectedStage(stages[0]);
-      } else {
-        setSelectedStage(null);
-      }
-    }
-  };
-
-  // Función para manejar el clic en una relación (subcategoría)
-  const handleRelationClick = (relationId) => {
-    setSelectedRelationId(relationId);
-    const stepRelations = stepsData.find(item => item.step === selectedStep).relations;
-    const relation = stepRelations.find(r => r.id === relationId);
-    // console.log('Relación seleccionada:', relation);
-    setSelectedRelation(relation);
-
-    // Check if the current product exists in the new relation
-    const currentProductName = selectedProduct?.name;
-
-    if (relation && relation.challenge_products.length > 0) {
-      if (currentProductName && relation.challenge_products.some(product => product.name === currentProductName)) {
-        // If the current product exists in the new relation, keep it selected
-        const existingProduct = relation.challenge_products.find(product => product.name === currentProductName);
-        setSelectedProduct(existingProduct);
-      } else {
-        // Otherwise, select the first product
-        setSelectedProduct(relation.challenge_products[0]);
-      }
+      setSelectedProduct(productToSelect);
     } else {
       setSelectedProduct(null);
     }
 
-    // Reset stage selection for the new relation
-    const stages = getRelationStages(relation);
-    if (stages.length > 0) {
-      setSelectedStage(stages[0]);
-    } else {
-      setSelectedStage(null);
-    }
+    // Reset stage
+    const stages = getRelationStages(firstRelation);
+    setSelectedStage(stages.length > 0 ? stages[0] : null);
   };
 
-  // Función para manejar el clic en un producto
+  // Handle product click
   const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
 
-  // Función para manejar el clic en un stage
-  const handleStageClick = (stage) => {
-    // console.log('Stage seleccionado:', stage);
-    setSelectedStage(stage);
-  };
-
-  // Función para manejar el envío del formulario
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (selectedProduct) {
-      // console.log('Producto seleccionado:', selectedProduct);
-      // console.log('Variación seleccionada:', matchingVariation);
-      // console.log('Stage seleccionado:', selectedStage);
-    }
-  };
-
-  // Función para aplicar el cupón
-  const applyCoupon = () => {
-    if (couponCode) {
-      // console.log('Cupón aplicado:', couponCode);
-    }
-  };
-
-  // Use the matching variation's ID for checkout
-  const handleContinue = () => {
-    if (!session) {
-      // Redireccionar al login con la URL actual como callback
-      signIn(undefined, {
-        callbackUrl: window.location.href
-      });
-      return; // Detener la ejecución aquí
-    }
-
-    if (selectedProduct) {
-      const woocommerceId = matchingVariation?.id || selectedProduct.woocommerceId;
-      window.location.href = `https://neocapitalfunding.com/checkout/?add-to-cart=${woocommerceId}&quantity=1&document_id=${selectedRelation.documentId}&user_id=${user.documentId}`;
-    }
-  };
-
-  // Función modificada para obtener los challenge stages completos, no solo sus nombres
+  // Get relation stages
   const getRelationStages = (relation = selectedRelation) => {
     if (!relation || !relations) return [];
 
-    // Verificar si la relación tiene challenge_stages directamente
+    // Check for direct stages
     if (relation.challenge_stages && Array.isArray(relation.challenge_stages)) {
       return relation.challenge_stages;
     }
 
-    // Si no tiene challenge_stages directamente, intentar buscar los stages relacionados
-    // basados en el documentId o algún otro identificador que relacione los stages con esta relación
+    // Find stages through other relations
     const stagesForThisRelation = relations.filter(r =>
       r.challenge_subcategory.id === relation.challenge_subcategory.id &&
       r.documentId === relation.documentId
     );
 
-    // Extraer los objetos stage completos
     return stagesForThisRelation.map(r => r.challenge_stage).filter(Boolean);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (selectedProduct) {
+    }
+  };
+  // Continue to checkout
+  const handleContinue = () => {
+    if (!session) {
+      signIn(undefined, { callbackUrl: window.location.href });
+      return;
+    }
+
+    if (selectedProduct && matchingVariation) {
+      const woocommerceId = matchingVariation.wooId;
+      window.location.href = `${process.env.NEXT_PUBLIC_WOOCOMMERCE_URL || ""}/checkout/?add-to-cart=${woocommerceId}&quantity=1&document_id=${selectedRelation.documentId}&user_id=${user.documentId}`;
+    }
   };
 
   return (
@@ -382,56 +275,6 @@ const ChallengeRelations = () => {
                 ))}
               </div>
             </section>
-
-            {/* Subcategorías Section */}
-            {/* {selectedStep && stepsData.length > 0 && (
-              <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
-                <div className="flex items-center mb-3">
-                  <h3 className={appPrimary + " font-medium"}>Tipo</h3>
-                  <div className="relative ml-2 group">
-                    <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
-                    <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
-                      Elige el tipo de challenge
-                    </div>
-                  </div>
-                </div>
-                <p className="text-zinc-600 mb-4 text-sm dark:text-zinc-400">
-                  Selecciona el tipo para el challenge {selectedStep}.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {stepsData
-                    .find(item => item.step === selectedStep)
-                    .relations.map((relation, index) => (
-                      <div key={relation.id} className="relative">
-                        <input
-                          type="radio"
-                          id={`subcategory-${relation.id}`}
-                          name="subcategory"
-                          checked={selectedRelationId === relation.id}
-                          onChange={() => handleRelationClick(relation.id)}
-                          className="sr-only"
-                        />
-                        <label
-                          htmlFor={`subcategory-${relation.id}`}
-                          className={classNames(
-                            "block p-4 rounded-lg border cursor-pointer transition-all",
-                            selectedRelationId === relation.id
-                              ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-semibold"
-                              : "bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
-                          )}
-                        >
-                          <span className="block font-medium">{relation.challenge_subcategory?.name}</span>
-                          {selectedRelationId === relation.id && (
-                            <CheckIcon className="absolute top-4 right-4 h-5 w-5 text-black" />
-                          )}
-                        </label>
-                      </div>
-                    ))}
-                </div>
-              </section>
-            )} */}
-
             {selectedRelationId && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <div className="flex items-center mb-3">
@@ -527,122 +370,16 @@ const ChallengeRelations = () => {
                     )}
                   </h3>
                 </header>
-
-                {/* {selectedRelation && (
-                  <div className="bg-gray-50 p-4 border-b border-gray-200 dark:bg-zinc-800 dark:border-zinc-700">
-                    <h4 className={appPrimary + " font-medium mb-2"}>Información Adicional</h4>
-                    <div className="text-gray-700 dark:text-zinc-300">
-                      <p className="flex justify-between mb-2">
-                        <span>Subcategoría:</span>
-                        <span className="font-medium">{selectedRelation.challenge_subcategory?.name}</span>
-                      </p>
-                      <div className="mb-2">
-                        <p className="mb-2">Etapas:</p>
-                        <div className="grid grid-cols-3 gap-2">
-                          {(() => {
-                            const stages = getRelationStages();
-                            return stages.length > 0 ? (
-                              stages.map((stage, index) => (
-                                <div key={index} className="relative">
-                                  <input
-                                    type="radio"
-                                    id={`stage-${index}`}
-                                    name="stage"
-                                    checked={selectedStage && selectedStage.id === stage.id}
-                                    onChange={() => handleStageClick(stage)}
-                                    className="sr-only"
-                                  />
-                                  <label
-                                    htmlFor={`stage-${index}`}
-                                    className={classNames(
-                                      "block text-center py-1 px-2 rounded-md border cursor-pointer transition-all text-sm",
-                                      selectedStage && selectedStage.id === stage.id
-                                        ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-medium"
-                                        : "bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200 dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-600"
-                                    )}
-                                  >
-                                    {stage.name}
-                                  </label>
-                                </div>
-                              ))
-                            ) : (
-                              <span className="text-zinc-500 col-span-3">No hay etapas disponibles</span>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )} */}
-
                 {selectedProduct && selectedStage && (
                   <>
                     {selectedRelation && (
                       <div className="p-5">
                         <div className="grid grid-cols-1 gap-6">
-                          {/*  <div>
-                            <section>
-                              <h3 className={"text-lg font-medium " + appPrimary + " mb-4"}>Características:</h3>
-                              <ul className="space-y-3">
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Leverage:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.leverage ? (selectedStage.leverage + " %") : "-"}
-                                  </strong>
-                                </li>
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Maximum Daily Loss:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.maximumDailyLoss ? (selectedStage.maximumDailyLoss + " %") : "-"}
-                                  </strong>
-                                </li>
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Minimum Trading Days:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.minimumTradingDays ? (selectedStage.minimumTradingDays + " %") : "-"}
-                                  </strong>
-                                </li>
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Profit Target:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.profitTarget ? (selectedStage.profitTarget + " %") : "-"}
-                                  </strong>
-                                </li>
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Maximum Total Loss:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.maximumTotalLoss ? (selectedStage.maximumTotalLoss + " %") : "-"}
-                                  </strong>
-                                </li>
-                                <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
-                                  <span>Maximum Loss Per Trade:</span>
-                                  <strong className="ml-auto">
-                                    {selectedStage.maximumLossPerTrade ? (selectedStage.maximumLossPerTrade + " %") : "-"}
-                                  </strong>
-                                </li>
-                              </ul>
-                            </section>
-                          </div> */}
-
                           <div className="space-y-6">
-                            {/* <div className="h-px bg-gray-200 dark:bg-zinc-800"></div> */}
-
                             <section>
-                              {/* <h4 className="text-gray-700 dark:text-zinc-300 font-medium mb-4">Subtotal</h4>
-                              <div className="flex justify-between mb-2 text-gray-700 dark:text-zinc-300">
-                                <span>{selectedProduct.name}</span>
-                                <span>${matchingVariation?.price || "N/A"}</span>
-                              </div> */}
-                              {/* <div className="h-px bg-gray-200 dark:bg-zinc-800 my-4"></div> */}
                               <div className="flex justify-between items-center mb-1">
                                 <span className="text-gray-700 dark:text-zinc-300">Total</span>
-                                <p className={"text-2xl font-semibold " + appPrimary}>${matchingVariation?.price || "N/A"}</p>
+                                <p className={"text-2xl font-semibold " + appPrimary}>${matchingVariation?.precio || "N/A"}</p>
                               </div>
                               <p className="text-xs text-gray-500 dark:text-zinc-500 text-right">*Precio no incluye tarifa de servicio de pago.</p>
                             </section>
@@ -650,9 +387,7 @@ const ChallengeRelations = () => {
                         </div>
                       </div>
                     )}
-
                     {/* Terms section removed */}
-
                     <div className="p-5">
                       <button
                         onClick={handleContinue}
@@ -677,5 +412,4 @@ const ChallengeRelations = () => {
     </Layout>
   );
 };
-
 export default ChallengeRelations;
