@@ -87,6 +87,26 @@ export default function Index() {
   }, [selectedTimeframe]);
 
   // Consultas a las APIs con filtrado por timeframe
+  // const {
+  //   data: filteredOrders,
+  //   error: filteredOrdersError,
+  //   isLoading: filteredOrdersLoading,
+  //   mutate: refetchFilteredOrders
+  // } = useWooCommerce(
+  //   dateRange.startDate && dateRange.endDate
+  //     ? 'orders'
+  //     : null,
+  //   {
+  //     params: dateRange.startDate && dateRange.endDate
+  //       ? {
+  //         after: dateRange.startDate,
+  //         before: dateRange.endDate,
+  //         per_page: 100
+  //       }
+  //       : {},
+  //     useApiEndpoint: true // Usar el nuevo endpoint personalizado
+  //   }
+  // );
   const {
     data: filteredOrders,
     error: filteredOrdersError,
@@ -98,11 +118,11 @@ export default function Index() {
       : null
   );
 
-  const {
-    data: products,
-    error: productsError,
-    isLoading: productsLoading,
-  } = useWooCommerce("products/10576/variations?per_page=100");
+  // const {
+  //   data: products,
+  //   error: productsError,
+  //   isLoading: productsLoading,
+  // } = useWooCommerce("products/10576/variations?per_page=100");
 
   const {
     data: filteredChallenges,

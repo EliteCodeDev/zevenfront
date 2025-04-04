@@ -10,12 +10,18 @@ export function useAllOrders(perPage = 100) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Obtener la página actual de órdenes
+  // Obtener la página actual de órdenes usando la nueva estructura
   const {
     data: pageOrders,
     error: pageError,
     isLoading: pageLoading
-  } = useWooCommerce(`orders?per_page=${perPage}&page=${currentPage}`);
+  } = useWooCommerce('orders', {
+    params: {
+      per_page: perPage,
+      page: currentPage
+    },
+    useApiEndpoint: true // Usar el nuevo endpoint personalizado
+  });
 
   // Efecto para manejar la paginación
   useEffect(() => {
@@ -37,5 +43,56 @@ export function useAllOrders(perPage = 100) {
     }
   }, [pageOrders, pageError]);
 
-  return { allOrders, isLoading, isComplete, error };
+  // Método para crear órdenes de forma masiva
+  const createBulkOrders = async (ordersData) => {
+    try {
+      // Suponiendo que el endpoint soporta creación masiva
+      const { post } = useWooCommerce('orders/batch', { useApiEndpoint: true });
+      const result = await post({ create: ordersData });
+
+      // Actualizar el estado local si es necesario
+      if (result && result.create) {
+        setAllOrders(prev => [...prev, ...result.create]);
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Error al crear órdenes masivas:', error);
+      throw error;
+    }
+  };
+
+  // Método para actualizar órdenes de forma masiva
+  const updateBulkOrders = async (ordersData) => {
+    try {
+      const { post } = useWooCommerce('orders/batch', { useApiEndpoint: true });
+      const result = await post({ update: ordersData });
+
+      // Actualizar órdenes localmente si es necesario
+      return result;
+    } catch (error) {
+      console.error('Error al actualizar órdenes masivas:', error);
+      throw error;
+    }
+  };
+
+  // Método para reiniciar y cargar desde la primera página
+  const refresh = () => {
+    setAllOrders([]);
+    setCurrentPage(1);
+    setIsComplete(false);
+    setIsLoading(true);
+    setError(null);
+  };
+
+  return {
+    allOrders,
+    isLoading,
+    isComplete,
+    error,
+    // Agregar métodos útiles
+    refresh,
+    createBulkOrders,
+    updateBulkOrders
+  };
 }

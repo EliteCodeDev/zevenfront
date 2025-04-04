@@ -224,7 +224,7 @@ export default function StepsOrganizado() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-yellow-100">
+        <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-blue-100">
           <div className="flex items-center justify-center h-32">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--app-secondary)] mb-3"></div>
@@ -239,9 +239,9 @@ export default function StepsOrganizado() {
   return (
     <DashboardLayout>
       {/* Fondo general con un degradado para modo claro y oscuro */}
-      <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-yellow-100">
+      <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-blue-100">
         <div className="max-w-7xl mx-auto space-y-8">
-          <h2 className="text-2xl font-bold text-center text-zinc-800 dark:text-yellow-100 border-b-2 border-[var(--app-secondary)] pb-2 w-fit mx-auto">
+          <h2 className="text-2xl font-bold text-center text-zinc-800 dark:text-blue-100 border-b-2 border-[var(--app-secondary)] pb-2 w-fit mx-auto">
             Step → Subcategory → Products & Stages & Parameters
           </h2>
 
@@ -267,7 +267,7 @@ export default function StepsOrganizado() {
                       "px-4 py-2 rounded-lg transition shadow-sm",
                       selectedStepIndex === index
                         ? "bg-[var(--app-secondary)] text-black"
-                        : "bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-yellow-100 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                        : "bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-blue-100 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                     )}
                   >
                     {stepObj.step.name}
@@ -306,7 +306,7 @@ export default function StepsOrganizado() {
                         "px-4 py-2 rounded-lg transition shadow-sm",
                         selectedSubcatIndex === index
                           ? "bg-[var(--app-secondary)] text-black"
-                          : "bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-yellow-100 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                          : "bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-blue-100 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                       )}
                     >
                       {sc.name}
@@ -335,18 +335,18 @@ export default function StepsOrganizado() {
             >
               {/* PRODUCTS */}
               <Card className={cn(
-                "bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-yellow-100 border border-zinc-200 dark:border-zinc-700",
+                "bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-blue-100 border border-zinc-200 dark:border-zinc-700",
                 selectedSubcat.stages.length === 1 ? "w-full md:w-1/2" : "flex-1"
               )}>
                 <CardHeader>
-                  <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">Products Relacionados</CardTitle>
+                  <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">Products Relacionados</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3 flex-wrap">
                     {selectedSubcat.products && selectedSubcat.products.length > 0 ? (
                       <>
                         {selectedSubcat.products.map((p) => (
-                          <div key={p.id} className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-yellow-100">
+                          <div key={p.id} className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-blue-100">
                             {p.name}
                           </div>
                         ))}
@@ -374,18 +374,18 @@ export default function StepsOrganizado() {
 
               {/* STAGES */}
               <Card className={cn(
-                "bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-yellow-100 border border-zinc-200 dark:border-zinc-700",
+                "bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-blue-100 border border-zinc-200 dark:border-zinc-700",
                 selectedSubcat.stages.length === 1 ? "w-full md:w-1/2" : "flex-1"
               )}>
                 <CardHeader>
-                  <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">Stages Relacionados</CardTitle>
+                  <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">Stages Relacionados</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3 flex-wrap">
                     {selectedSubcat.stages.length > 0 ? (
                       <>
                         {selectedSubcat.stages.map((sg) => (
-                          <div key={sg.id} className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-yellow-100">
+                          <div key={sg.id} className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-800 dark:text-blue-100">
                             {sg.name}
                           </div>
                         ))}
@@ -419,46 +419,46 @@ export default function StepsOrganizado() {
               {selectedSubcat.stages.length === 1 ? (
                 <div className="flex justify-center">
                   <div className="w-full md:w-1/2">
-                    <Card className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-yellow-100 border border-zinc-200 dark:border-zinc-700 w-full">
+                    <Card className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-blue-100 border border-zinc-200 dark:border-zinc-700 w-full">
                       <CardHeader>
-                        <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">{selectedSubcat.stages[0].name}</CardTitle>
+                        <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">{selectedSubcat.stages[0].name}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2 text-sm">
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Sub Categoría: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Sub Categoría: </span>
                             {selectedSubcat.name ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Min Trading Days: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Min Trading Days: </span>
                             {selectedSubcat.stages[0].parametros.minimumTradingDays ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Max Daily Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Max Daily Loss: </span>
                             {formatPercentage(selectedSubcat.stages[0].parametros.maximumDailyLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Profit Target: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Profit Target: </span>
                             {formatPercentage(selectedSubcat.stages[0].parametros.profitTarget)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Leverage: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Leverage: </span>
                             {selectedSubcat.stages[0].parametros.leverage ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Total Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Total Loss: </span>
                             {formatPercentage(selectedSubcat.stages[0].parametros.maximumTotalLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Loss Per Trade: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Loss Per Trade: </span>
                             {formatPercentage(selectedSubcat.stages[0].parametros.maximumLossPerTrade)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Creado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Creado: </span>
                             {formatDate(selectedSubcat.stages[0].parametros.createdAt)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Actualizado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Actualizado: </span>
                             {formatDate(selectedSubcat.stages[0].parametros.updatedAt)}
                           </div>
                         </div>
@@ -471,47 +471,47 @@ export default function StepsOrganizado() {
                   {selectedSubcat.stages.map((sg) => (
                     <Card
                       key={sg.id}
-                      className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-yellow-100 border border-zinc-200 dark:border-zinc-700 w-full"
+                      className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-blue-100 border border-zinc-200 dark:border-zinc-700 w-full"
                     >
                       <CardHeader>
-                        <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">{sg.name}</CardTitle>
+                        <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">{sg.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2 text-sm">
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Sub Categoría: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Sub Categoría: </span>
                             {selectedSubcat.name ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Min Trading Days: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Min Trading Days: </span>
                             {sg.parametros.minimumTradingDays ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Max Daily Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Max Daily Loss: </span>
                             {formatPercentage(sg.parametros.maximumDailyLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Profit Target: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Profit Target: </span>
                             {formatPercentage(sg.parametros.profitTarget)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Leverage: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Leverage: </span>
                             {sg.parametros.leverage ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Total Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Total Loss: </span>
                             {formatPercentage(sg.parametros.maximumTotalLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Loss Per Trade: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Loss Per Trade: </span>
                             {formatPercentage(sg.parametros.maximumLossPerTrade)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Creado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Creado: </span>
                             {formatDate(sg.parametros.createdAt)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Actualizado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Actualizado: </span>
                             {formatDate(sg.parametros.updatedAt)}
                           </div>
                         </div>
@@ -524,47 +524,47 @@ export default function StepsOrganizado() {
                   {selectedSubcat.stages.map((sg) => (
                     <Card
                       key={sg.id}
-                      className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-yellow-100 border border-zinc-200 dark:border-zinc-700 w-full"
+                      className="bg-white dark:bg-zinc-900 rounded-lg shadow-md p-4 text-zinc-800 dark:text-blue-100 border border-zinc-200 dark:border-zinc-700 w-full"
                     >
                       <CardHeader>
-                        <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">{sg.name}</CardTitle>
+                        <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">{sg.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2 text-sm">
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Sub Categoría: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Sub Categoría: </span>
                             {selectedSubcat.name ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Min Trading Days: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Min Trading Days: </span>
                             {sg.parametros.minimumTradingDays ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Max Daily Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Max Daily Loss: </span>
                             {formatPercentage(sg.parametros.maximumDailyLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Profit Target: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Profit Target: </span>
                             {formatPercentage(sg.parametros.profitTarget)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Leverage: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Leverage: </span>
                             {sg.parametros.leverage ?? "—"}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Total Loss: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Total Loss: </span>
                             {formatPercentage(sg.parametros.maximumTotalLoss)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Maximum Loss Per Trade: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Maximum Loss Per Trade: </span>
                             {formatPercentage(sg.parametros.maximumLossPerTrade)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Creado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Creado: </span>
                             {formatDate(sg.parametros.createdAt)}
                           </div>
                           <div>
-                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-amber-300">Actualizado: </span>
+                            <span className="font-medium text-[var(--app-secondary)]/90 dark:text-blue-300">Actualizado: </span>
                             {formatDate(sg.parametros.updatedAt)}
                           </div>
                         </div>
