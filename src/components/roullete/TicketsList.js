@@ -10,6 +10,7 @@ import { useStrapiData } from '@/services/strapiService';
 import { useSession } from "next-auth/react";
 import { createPortal } from 'react-dom';
 import { ClipboardDocumentIcon, CheckIcon } from '@heroicons/react/24/outline';
+
 // Minimalistic TicketCard component
 const TicketCard = ({ ticket, onOpenRoulette }) => {
   const formatDate = (dateString) => {
@@ -46,63 +47,56 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
           </div>
 
           {/* Center: Ticket info */}
-          <div className="flex-1 min-w-0 p-3  rounded-lg shadow-md ">
-  <div className="flex flex-col">
-    {/* Encabezado con ID, porcentaje y estado */}
-    <div className="flex justify-between items-center">
-      <span className="text-sm font-medium text-gray-600">#{ticket.id}</span>
-      <div className="flex items-center text-xs">
-        <div className={`w-3 h-3 rounded-full mr-2 ${ticket.habilitado ? 'bg-green-500' : 'bg-red-500'}`}></div>
-        <span className={`font-medium ${ticket.habilitado ? 'text-green-600' : 'text-red-500'}`}>
-          {ticket.habilitado ? 'Disponible' : 'Utilizado'}
-        </span>
-      </div>
-    </div>
+          <div className="flex-1 min-w-0 p-3 rounded-lg shadow-md">
+            <div className="flex flex-col">
+              {/* Encabezado con ID, porcentaje y estado */}
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600">#{ticket.id}</span>
+                <div className="flex items-center text-xs">
+                  <div className={`w-3 h-3 rounded-full mr-2 ${ticket.habilitado ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className={`font-medium ${ticket.habilitado ? 'text-green-600' : 'text-red-500'}`}>
+                    {ticket.habilitado ? 'Disponible' : 'Utilizado'}
+                  </span>
+                </div>
+              </div>
 
+              {/* Código y botón de copiar */}
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-2xl font-semibold text-[var(--app-primary)]">{ticket.porcentaje}%</span>
 
+                <div className='flex'>
+                  <h3 className="font-bold text-xl text-gray-400 truncate">
+                    {ticket.codigo || 'No definido'}
+                  </h3>
+                  
+                  <div className="relative flex-shrink-0 flex items-center">
+                    <button
+                      onClick={copiarCodigo}
+                      className="p-2 rounded-full transition-all"
+                      title="Copiar código"
+                    >
+                      {copiado ? (
+                        <CheckIcon className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <ClipboardDocumentIcon className="h-5 w-5 text-gray-600" />
+                      )}
+                    </button>
+                    {copiado && (
+                      <div className="ml-2 text-xs text-green-600 bg-gray-800/80 py-1 px-2 rounded-md whitespace-nowrap">
+                        ¡Copiado!
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-    {/* Código y botón de copiar */}
-    <div className="flex items-center justify-between mt-2">
-
-  <span className="text-2xl font-semibold text-amber-500">{ticket.porcentaje}%</span>
-
- <div className='flex'>
- <h3 className="font-bold text-xl text-gray-400 truncate">
-    {ticket.codigo || 'No definido'}
-  </h3>
-      
-      <div className="relative flex-shrink-0 flex items-center">
-        <button
-          onClick={copiarCodigo}
-          className="p-2 rounded-full transition-all"
-          title="Copiar código"
-        >
-          {copiado ? (
-            <CheckIcon className="h-5 w-5 text-green-500" />
-          ) : (
-            <ClipboardDocumentIcon className="h-5 w-5 text-gray-600" />
-          )}
-        </button>
-        {copiado && (
-          <div className="ml-2 text-xs text-green-600 bg-gray-800/80 py-1 px-2 rounded-md whitespace-nowrap">
-            ¡Copiado!
+              {/* Fecha de expiración */}
+              <div className="flex items-center text-xs text-gray-500 mt-2">
+                <ClockIcon className="h-4 w-4 mr-1" />
+                <span>Válido hasta: {formatDate(ticket.fechaExpiracionTicket)}</span>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-
- </div>
-
-
-    </div>
-
-    {/* Fecha de expiración */}
-    <div className="flex items-center text-xs text-gray-500 mt-2">
-      <ClockIcon className="h-4 w-4 mr-1" />
-      <span>Válido hasta: {formatDate(ticket.fechaExpiracionTicket)}</span>
-    </div>
-  </div>
-</div>
-
         </div>
 
         {/* Bottom action section */}
@@ -113,7 +107,6 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
               <div className="flex-1 truncate">
                 <span className="text-xs text-gray-400">Premio:</span>
                 <p className="font-medium text-[var(--app-primary)] truncate">{ticket.premio}</p>
-                
               </div>
             </div>
           ) : (
@@ -142,7 +135,7 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
 };
 
 // Independent RouletteModal Component
-const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => { // Añadido onTicketUsed
+const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
   if (!isOpen || typeof document === 'undefined') return null;
 
   // Using portal to render the modal outside of the parent DOM hierarchy
@@ -160,12 +153,12 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => { // Añadi
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      {/* Contenido del modal con dimensiones responsivas */}
+      {/* Contenido del modal con dimensiones responsivas - Cambiado de amarillo a azul */}
       <div
         className="relative z-10 bg-black rounded-lg w-full max-w-md mx-auto flex flex-col items-center overflow-hidden"
         style={{
-          border: '2px solid #FFD700',
-          boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+          border: '2px solid var(--app-primary)',
+          boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)',
           height: '520px',
           maxHeight: '90vh'
         }}
@@ -175,7 +168,7 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => { // Añadi
         <div className="absolute top-4 right-4 z-20">
           <button
             onClick={onClose}
-            className="text-yellow-500 hover:text-white bg-black/80 rounded-full p-1 transition-colors"
+            className="text-[var(--app-primary)] hover:text-white bg-black/80 rounded-full p-1 transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -183,9 +176,9 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => { // Añadi
           </button>
         </div>
 
-        {/* Header text - Mejor centrado */}
+        {/* Header text - Cambiado de amarillo a azul */}
         <div className="relative z-10 text-center pt-4 pb-2">
-          <h3 className="text-2xl font-bold text-yellow-400">¡Gira la Ruleta!</h3>
+          <h3 className="text-2xl font-bold text-[var(--app-primary)]">¡Gira la Ruleta!</h3>
         </div>
 
         {/* Sección para la ruleta - Centrada verticalmente */}
