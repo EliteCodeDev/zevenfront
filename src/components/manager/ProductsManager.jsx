@@ -30,6 +30,9 @@ import {
 // Importar toast desde sonner
 import { toast } from "sonner";
 
+// Importar useWooCommerce hook
+import { useWooCommerce } from "@/services/useWoo";
+
 // Validación
 const productSchema = z.object({
   name: z.string().nonempty("El nombre es requerido"),
@@ -46,6 +49,12 @@ export function ProductsManager({ pageSize }) {
   const [products, setProducts] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Inicializar hook de WooCommerce
+  const wooCommerce = useWooCommerce("products", {
+    // Configuración adicional si es necesaria
+  });
 
   // Form
   const form = useForm({
@@ -70,6 +79,7 @@ export function ProductsManager({ pageSize }) {
       );
     }
     const json = await res.json();
+    console.log(json.data);
     return json.data;
   }
 
@@ -115,13 +125,16 @@ export function ProductsManager({ pageSize }) {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const data = await fetchStrapiData("challenge-products");
+        const data = await fetchStrapiData(
+          "challenge-products?populate=product_config"
+        );
         setProducts(
           data.map((item) => ({
             id: item.id,
             documentId: item.documentId,
             name: item.name,
-            precio: item.precio, // Asegúrate de que el API incluya este campo
+            precio: item.precio,
+            woocommerceId: item.woocommerceId, // Asegúrate de que este campo existe en la respuesta
           }))
         );
       } catch (error) {
@@ -145,12 +158,14 @@ export function ProductsManager({ pageSize }) {
       docId: item.documentId,
       name: item.name,
       precio: item.precio,
+      woocommerceId: item.woocommerceId,
     });
     form.reset({ name: item.name, precio: item.precio });
     setOpenModal(true);
   }
 
   async function onSubmit(formValues) {
+    setLoading(true);
     const payload = {
       name: formValues.name,
       precio: formValues.precio,
@@ -160,13 +175,73 @@ export function ProductsManager({ pageSize }) {
     try {
       if (editItem) {
         // Editar
-        await updateStrapiItem(endpoint, editItem.docId, payload);
+        // 1. Actualizar en Strapi
+        const strapiResponse = await updateStrapiItem(
+          endpoint,
+          editItem.docId,
+          payload
+        );
+
+        // 2. Si ya tiene woocommerceId, actualizar en WooCommerce
+        if (editItem.woocommerceId) {
+          const wooPayload = {
+            name: formValues.name,
+            regular_price: formValues.precio.toString(),
+          };
+
+          await wooCommerce.put(
+            `products/${editItem.woocommerceId}`,
+            wooPayload
+          );
+        } else {
+          // Si no tiene woocommerceId, crear en WooCommerce
+          const wooPayload = {
+            name: formValues.name,
+            regular_price: formValues.precio.toString(),
+            type: "simple",
+          };
+
+          const wooResponse = await wooCommerce.post("products", wooPayload);
+
+          // Guardar el woocommerceId en Strapi
+          if (wooResponse && wooResponse.id) {
+            await updateStrapiItem(endpoint, editItem.docId, {
+              ...payload,
+              WoocomerceId: wooResponse.id,
+            });
+          }
+        }
+
         toast.success("Producto editado exitosamente");
       } else {
         // Crear
-        await createStrapiItem(endpoint, payload);
+        // 1. Primero en Strapi
+        const strapiResponse = await createStrapiItem(endpoint, payload);
+        console.log("Strapi Response:", strapiResponse);
+        // 2. Crear en WooCommerce
+        const wooPayload = {
+          name: formValues.name,
+          regular_price: formValues.precio.toString(),
+          type: "simple",
+        };
+
+        const wooResponse = await wooCommerce.post("products", wooPayload);
+        console.log("WooCommerce Response:", wooResponse);
+        // 3. Actualizar el Strapi con el id de WooCommerce
+        if (
+          strapiResponse.data &&
+          strapiResponse.data.id &&
+          wooResponse &&
+          wooResponse.id
+        ) {
+          await updateStrapiItem(endpoint, strapiResponse.data.documentId, {
+            WoocomerceId: wooResponse.id,
+          });
+        }
+
         toast.success("Producto creado exitosamente");
       }
+
       setOpenModal(false);
 
       // Refrescar datos
@@ -177,11 +252,14 @@ export function ProductsManager({ pageSize }) {
           documentId: item.documentId,
           name: item.name,
           precio: item.precio,
+          woocommerceId: item.woocommerceId,
         }))
       );
     } catch (error) {
       console.error("Error al guardar:", error);
       toast.error("Ocurrió un error al guardar. Revisa la consola.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -214,15 +292,15 @@ export function ProductsManager({ pageSize }) {
       />
 
       <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogContent className="bg-white dark:bg-black text-zinc-800 dark:text-white border border-[var(--app-secondary)]/70 dark:border-yellow-500 max-w-md mx-auto shadow-lg">
+        <DialogContent className="bg-white dark:bg-black text-zinc-800 dark:text-white border border-[var(--app-secondary)]/70 dark:border-blue-500 max-w-md mx-auto shadow-lg">
           <DialogHeader>
-            <DialogTitle className="text-[var(--app-secondary)] dark:text-yellow-400 text-sm sm:text-base md:text-lg font-semibold">
-              {editItem ? "Editar" : "Crear"} Product
+            <DialogTitle className="text-[var(--app-secondary)] dark:text-blue-400 text-sm sm:text-base md:text-lg font-semibold">
+              {editItem ? "Editar" : "Crear"} Balance
             </DialogTitle>
             <DialogDescription className="text-zinc-600 dark:text-gray-300 text-xs sm:text-sm md:text-base">
               {editItem
-                ? "Modifica el nombre y el precio y confirma para guardar cambios."
-                : "Ingresa el nombre y el precio para crear un nuevo registro."}
+                ? "Modifica el nombre y el valor y confirma para guardar cambios."
+                : "Ingresa el nombre y el valor para crear un nuevo registro."}
             </DialogDescription>
           </DialogHeader>
 
@@ -236,7 +314,7 @@ export function ProductsManager({ pageSize }) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[var(--app-secondary)] dark:text-yellow-500 text-sm">
+                    <FormLabel className="text-[var(--app-secondary)] dark:text-blue-500 text-sm">
                       Nombre
                     </FormLabel>
                     <FormControl>
@@ -257,8 +335,8 @@ export function ProductsManager({ pageSize }) {
                 name="precio"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[var(--app-secondary)] dark:text-yellow-500 text-sm">
-                      Precio
+                    <FormLabel className="text-[var(--app-secondary)] dark:text-blue-500 text-sm">
+                      Valor
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -273,6 +351,13 @@ export function ProductsManager({ pageSize }) {
                 )}
               />
 
+              {/* Mostrar ID de WooCommerce si existe */}
+              {editItem && editItem.woocommerceId && (
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  ID en WooCommerce: {editItem.woocommerceId}
+                </div>
+              )}
+
               <DialogFooter className="mt-4">
                 <Button
                   type="button"
@@ -284,9 +369,10 @@ export function ProductsManager({ pageSize }) {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-[var(--app-secondary)] dark:bg-yellow-500 text-black hover:bg-[var(--app-secondary)]/90 dark:hover:bg-yellow-400 px-3 py-1 text-sm shadow-sm"
+                  disabled={loading}
+                  className="bg-[var(--app-secondary)] dark:bg-blue-500 text-black hover:bg-[var(--app-secondary)]/90 dark:hover:bg-blue-400 px-3 py-1 text-sm shadow-sm"
                 >
-                  {editItem ? "Guardar" : "Crear"}
+                  {loading ? "Guardando..." : editItem ? "Guardar" : "Crear"}
                 </Button>
               </DialogFooter>
             </form>

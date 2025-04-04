@@ -26,7 +26,7 @@ export default function IndexPage() {
         </div>
 
         {/* Grid con las 3 tablas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Subcategorías */}
           <div className="bg-white dark:bg-zinc-900 rounded-lg border border-[var(--app-primary)]/20 dark:border-zinc-700 shadow-sm overflow-hidden flex flex-col">
             <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-3 border-b border-[var(--app-primary)]/20 dark:border-zinc-700 flex items-center">
@@ -42,7 +42,7 @@ export default function IndexPage() {
           <div className="bg-white dark:bg-zinc-900 rounded-lg border border-[var(--app-primary)]/20 dark:border-zinc-700 shadow-sm overflow-hidden flex flex-col">
             <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-3 border-b border-[var(--app-primary)]/20 dark:border-zinc-700 flex items-center">
               <PackageIcon className="w-5 h-5 text-[var(--app-secondary)] mr-2" />
-              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">Productos</h2>
+              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">Balances</h2>
             </div>
             <div className="p-4 flex-grow bg-white dark:bg-zinc-900">
               <ProductsManager pageSize={pageSize} />

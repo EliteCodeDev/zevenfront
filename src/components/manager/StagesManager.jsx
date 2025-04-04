@@ -201,9 +201,9 @@ export function StagesManager({ pageSize }) {
       />
 
       <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogContent className="bg-white dark:bg-black text-zinc-800 dark:text-white border border-[var(--app-secondary)]/70 dark:border-yellow-500 max-w-md mx-auto shadow-lg">
+        <DialogContent className="bg-white dark:bg-black text-zinc-800 dark:text-white border border-[var(--app-secondary)]/70 dark:border-blue-500 max-w-md mx-auto shadow-lg">
           <DialogHeader>
-            <DialogTitle className="text-[var(--app-secondary)] dark:text-yellow-400 text-sm sm:text-base md:text-lg font-semibold">
+            <DialogTitle className="text-[var(--app-secondary)] dark:text-blue-400 text-sm sm:text-base md:text-lg font-semibold">
               {editItem ? "Editar" : "Crear"} Stage
             </DialogTitle>
             <DialogDescription className="text-zinc-600 dark:text-gray-300 text-xs sm:text-sm md:text-base">
@@ -223,7 +223,7 @@ export function StagesManager({ pageSize }) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[var(--app-secondary)] dark:text-yellow-500 text-sm">
+                    <FormLabel className="text-[var(--app-secondary)] dark:text-blue-500 text-sm">
                       Nombre
                     </FormLabel>
                     <FormControl>
@@ -249,7 +249,7 @@ export function StagesManager({ pageSize }) {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-[var(--app-secondary)] dark:bg-yellow-500 text-black hover:bg-[var(--app-secondary)]/90 dark:hover:bg-yellow-400 px-3 py-1 text-sm shadow-sm"
+                  className="bg-[var(--app-secondary)] dark:bg-blue-500 text-black hover:bg-[var(--app-secondary)]/90 dark:hover:bg-blue-400 px-3 py-1 text-sm shadow-sm"
                 >
                   {editItem ? "Guardar" : "Crear"}
                 </Button>

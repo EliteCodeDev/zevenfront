@@ -11,8 +11,6 @@ const createWooCommerceApi = (url, consumerKey, consumerSecret, version = 'wc/v3
     console.error('Error: Credenciales de WooCommerce no proporcionadas (consumerKey o consumerSecret)');
   }
 
-  // // console.log(`Creando API con URL: ${url}, Key: ${consumerKey ? '✓ presente' : '❌ falta'}, Secret: ${consumerSecret ? '✓ presente' : '❌ falta'}`);
-
   return new WooCommerceRestApi({
     url,
     consumerKey,
@@ -23,37 +21,36 @@ const createWooCommerceApi = (url, consumerKey, consumerSecret, version = 'wc/v3
   });
 };
 
+// Función para verificar y obtener las credenciales de WooCommerce
+const getWooCredentials = (config) => {
+  const url = config.url ||
+    process.env.NEXT_PUBLIC_WOOCOMMERCE_URL ||
+    process.env.NEXT_PUBLIC_WP_URL;
+
+  const consumerKey = config.consumerKey ||
+    process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY ||
+    process.env.NEXT_PUBLIC_WC_CONSUMER_KEY;
+
+  const consumerSecret = config.consumerSecret ||
+    process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET ||
+    process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET;
+
+  // Verificación de parámetros esenciales
+  if (!url) {
+    throw new Error('URL de WordPress no configurada');
+  }
+
+  if (!consumerKey || !consumerSecret) {
+    throw new Error('Credenciales de WooCommerce no configuradas (consumer key/secret)');
+  }
+
+  return { url, consumerKey, consumerSecret };
+};
+
 // Función fetcher mejorada para WooCommerce con mejor manejo de errores
 const wooFetcher = async ([endpoint, config]) => {
   try {
-    // Verificar y usar variables de entorno como respaldo, con múltiples nombres posibles
-    const url = config.url ||
-      process.env.NEXT_PUBLIC_WOOCOMMERCE_URL ||
-      process.env.NEXT_PUBLIC_WP_URL;
-
-    const consumerKey = config.consumerKey ||
-      process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_KEY ||
-      process.env.NEXT_PUBLIC_WC_CONSUMER_KEY;
-
-    const consumerSecret = config.consumerSecret ||
-      process.env.NEXT_PUBLIC_WOOCOMMERCE_CONSUMER_SECRET ||
-      process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET;
-
-    // Verificación de parámetros esenciales
-    if (!url) {
-      throw new Error('URL de WordPress no configurada');
-    }
-
-    if (!consumerKey || !consumerSecret) {
-      throw new Error('Credenciales de WooCommerce no configuradas (consumer key/secret)');
-    }
-
-    // // console.log(`Configuración WooCommerce:
-    //   URL: ${url}
-    //   Endpoint: ${endpoint}
-    //   Consumer Key: ${consumerKey.substring(0, 3)}...${consumerKey.substring(consumerKey.length - 3)}
-    //   Params: ${JSON.stringify(config.params || {})}
-    // `);
+    const { url, consumerKey, consumerSecret } = getWooCredentials(config);
 
     const api = createWooCommerceApi(
       url,
@@ -61,8 +58,6 @@ const wooFetcher = async ([endpoint, config]) => {
       consumerSecret,
       config.version || 'wc/v3'
     );
-
-    // // console.log(`Fetching WooCommerce endpoint: ${endpoint}`);
 
     // Asegurarse de que el endpoint no comienza con '/' (la biblioteca lo añade)
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
@@ -74,7 +69,6 @@ const wooFetcher = async ([endpoint, config]) => {
       throw new Error('Respuesta vacía de WooCommerce');
     }
 
-    // // console.log(`WooCommerce respuesta recibida:`, typeof response.data, Array.isArray(response.data) ? `Array con ${response.data.length} elementos` : 'Objeto');
     return response.data;
   } catch (error) {
     // Mejor manejo de errores específicos de WooCommerce
@@ -121,11 +115,77 @@ export function useWooCommerce(endpoint, options = {}) {
     }
   );
 
+  // Función para realizar operaciones CRUD
+  const wooRequest = async (method, endpointPath, data = null, customParams = {}) => {
+    try {
+      // Usar el mismo endpoint si no se proporciona uno nuevo
+      const targetEndpoint = endpointPath || endpoint;
+      if (!targetEndpoint) {
+        throw new Error('Endpoint no proporcionado para la solicitud');
+      }
+
+      const { url, consumerKey, consumerSecret } = getWooCredentials(options);
+
+      const api = createWooCommerceApi(
+        url,
+        consumerKey,
+        consumerSecret,
+        options.version || 'wc/v3'
+      );
+
+      // Asegurarse de que el endpoint no comienza con '/'
+      const cleanEndpoint = targetEndpoint.startsWith('/') ? targetEndpoint.substring(1) : targetEndpoint;
+
+      let response;
+
+      // Ejecutar el método correspondiente
+      switch (method.toLowerCase()) {
+        case 'get':
+          response = await api.get(cleanEndpoint, { ...options.params, ...customParams });
+          break;
+        case 'post':
+          response = await api.post(cleanEndpoint, data, customParams);
+          break;
+        case 'put':
+          response = await api.put(cleanEndpoint, data, customParams);
+          break;
+        case 'delete':
+          response = await api.delete(cleanEndpoint, { ...options.params, ...customParams });
+          break;
+        default:
+          throw new Error(`Método ${method} no soportado`);
+      }
+
+      // Revalidar los datos después de mutaciones
+      if (method.toLowerCase() !== 'get') {
+        mutate();
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        console.error(`Error de WooCommerce API (${error.response.status}):`, error.response.data);
+        throw new Error(`Error de WooCommerce API: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+      } else if (error.request) {
+        console.error('No se recibió respuesta del servidor:', error.request);
+        throw new Error('Timeout o error de conexión con la API de WooCommerce');
+      } else {
+        console.error(`Error en la solicitud ${method} a WooCommerce:`, error.message);
+        throw error;
+      }
+    }
+  };
+
   return {
     data,
     error,
     mutate,
     isLoading: shouldFetch && !error && !data,
+    // Métodos CRUD
+    get: (endpointPath, params) => wooRequest('get', endpointPath, null, params),
+    post: (endpointPath, data, params) => wooRequest('post', endpointPath, data, params),
+    put: (endpointPath, data, params) => wooRequest('put', endpointPath, data, params),
+    delete: (endpointPath, params) => wooRequest('delete', endpointPath, null, params),
     // Agregar información para depuración
     debug: {
       hasCredentials: !!hasCredentials,
@@ -145,8 +205,6 @@ const wpFetcher = async ([url, params = {}, headers = {}]) => {
     const queryString = new URLSearchParams(params).toString();
     const fullUrl = queryString ? `${url}?${queryString}` : url;
 
-    // // console.log(`Fetching WordPress endpoint: ${fullUrl}`);
-
     const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +218,6 @@ const wpFetcher = async ([url, params = {}, headers = {}]) => {
     }
 
     const data = await response.json();
-    // console.log('WordPress response:', typeof data, Array.isArray(data) ? `Array con ${data.length} elementos` : 'Objeto');
     return data;
   } catch (error) {
     console.error('Error fetching from WordPress:', error);
@@ -170,6 +227,7 @@ const wpFetcher = async ([url, params = {}, headers = {}]) => {
 
 /**
  * Hook mejorado para obtener datos de WordPress REST API
+ * con soporte para métodos POST, PUT y DELETE
  * 
  * @param {string} endpoint - El endpoint de WordPress (sin el prefijo wp-json)
  * @param {object} params - Parámetros de consulta (opcional)
@@ -177,7 +235,7 @@ const wpFetcher = async ([url, params = {}, headers = {}]) => {
  * @param {string} options.baseUrl - URL base (opcional)
  * @param {object} options.headers - Headers adicionales (opcional)
  * @param {object} options.swrOptions - Opciones para SWR (opcional)
- * @returns {object} - { data, error, isLoading, mutate }
+ * @returns {object} - { data, error, isLoading, mutate, post, put, delete }
  */
 export function useWordPress(endpoint, params = {}, options = {}) {
   const baseUrl = options.baseUrl || process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
@@ -195,8 +253,6 @@ export function useWordPress(endpoint, params = {}, options = {}) {
 
   const apiUrl = `${baseUrl}/${apiEndpoint}`;
 
-  // console.log(`WordPress URL configurada: ${apiUrl}`);
-
   const { data, error, mutate } = useSWR(
     baseUrl ? [apiUrl, params, options.headers] : null,
     wpFetcher,
@@ -206,11 +262,76 @@ export function useWordPress(endpoint, params = {}, options = {}) {
     }
   );
 
+  // Función para realizar solicitudes HTTP a WordPress
+  const wpRequest = async (method, endpointPath = null, body = null, customParams = {}, customHeaders = {}) => {
+    try {
+      // Usar el endpoint proporcionado o el original
+      let targetEndpoint = endpointPath || cleanEndpoint;
+
+      // Asegurarse de que el endpoint no comienza con '/' para evitar doble barra
+      targetEndpoint = targetEndpoint.startsWith('/') ? targetEndpoint.substring(1) : targetEndpoint;
+
+      // Asegurarse de que el endpoint incluye 'wp-json' al principio
+      const finalApiEndpoint = targetEndpoint.startsWith('wp-json/')
+        ? targetEndpoint
+        : `wp-json/${targetEndpoint}`;
+
+      const finalApiUrl = `${baseUrl}/${finalApiEndpoint}`;
+
+      // Construir la URL con parámetros para métodos GET y DELETE
+      let url = finalApiUrl;
+      if ((method === 'GET' || method === 'DELETE') && Object.keys(customParams).length > 0) {
+        const queryString = new URLSearchParams({ ...params, ...customParams }).toString();
+        url = `${finalApiUrl}?${queryString}`;
+      }
+
+      const fetchOptions = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+          ...customHeaders
+        }
+      };
+
+      // Añadir body para métodos POST y PUT
+      if ((method === 'POST' || method === 'PUT') && body !== null) {
+        fetchOptions.body = JSON.stringify(body);
+      }
+
+      const response = await fetch(url, fetchOptions);
+
+      if (!response.ok) {
+        console.error(`WordPress API error: ${response.status} ${response.statusText}`);
+        throw new Error(`WordPress API error: ${response.status} ${response.statusText}`);
+      }
+
+      // Revalidar los datos después de mutaciones
+      if (method !== 'GET') {
+        mutate();
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error(`Error en solicitud ${method} a WordPress:`, error);
+      throw error;
+    }
+  };
+
   return {
     data,
     error,
     mutate,
     isLoading: baseUrl && !error && !data,
+    // Métodos CRUD
+    get: (endpointPath, customParams, customHeaders) =>
+      wpRequest('GET', endpointPath, null, customParams, customHeaders),
+    post: (endpointPath, body, customParams, customHeaders) =>
+      wpRequest('POST', endpointPath, body, customParams, customHeaders),
+    put: (endpointPath, body, customParams, customHeaders) =>
+      wpRequest('PUT', endpointPath, body, customParams, customHeaders),
+    delete: (endpointPath, customParams, customHeaders) =>
+      wpRequest('DELETE', endpointPath, null, customParams, customHeaders),
     // Agregar información para depuración
     debug: {
       fullUrl: apiUrl,
