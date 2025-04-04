@@ -11,6 +11,14 @@ import Loader from '../../components/loaders/loader';
 import { useSession, signIn } from "next-auth/react";
 import Layout from '../../components/layout/dashboard';
 
+// Definimos las constantes de colores
+const appPrimary = 'text-blue-500'; // Para texto
+const appPrimaryBg = 'bg-blue-500'; // Para fondos
+const appPrimaryBorder = 'border-blue-500'; // Para bordes
+const appSecondary = 'text-blue-600'; // Para texto
+const appSecondaryBg = 'bg-blue-600'; // Para fondos
+const appSecondaryBorder = 'border-blue-600'; // Para bordes
+
 // Helper function to create a WooCommerce API instance
 const createWooCommerceApi = (url, consumerKey, consumerSecret, version = 'wc/v3') => {
   if (!url) throw new Error('URL no proporcionada para WooCommerce API');
@@ -330,7 +338,7 @@ const ChallengeRelations = () => {
             {/* Steps Section */}
             <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
               <div className="flex items-center mb-3">
-                <h3 className="text-[var(--app-primary)] font-medium">Challenge</h3>
+                <h3 className={appPrimary + " font-medium"}>Challenge</h3>
                 <div className="relative ml-2 group">
                   <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                   <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
@@ -356,7 +364,7 @@ const ChallengeRelations = () => {
                       className={classNames(
                         "block p-4 rounded-lg border cursor-pointer transition-all",
                         selectedStep === item.step
-                          ? "bg-amber-500 border-amber-600 text-black font-semibold"
+                          ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-semibold"
                           : "bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
                       )}
                     >
@@ -379,7 +387,7 @@ const ChallengeRelations = () => {
             {/* {selectedStep && stepsData.length > 0 && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <div className="flex items-center mb-3">
-                  <h3 className="text-[var(--app-primary)] font-medium">Tipo</h3>
+                  <h3 className={appPrimary + " font-medium"}>Tipo</h3>
                   <div className="relative ml-2 group">
                     <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                     <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
@@ -409,7 +417,7 @@ const ChallengeRelations = () => {
                           className={classNames(
                             "block p-4 rounded-lg border cursor-pointer transition-all",
                             selectedRelationId === relation.id
-                              ? "bg-amber-500 border-amber-600 text-black font-semibold"
+                              ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-semibold"
                               : "bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
                           )}
                         >
@@ -427,7 +435,7 @@ const ChallengeRelations = () => {
             {selectedRelationId && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <div className="flex items-center mb-3">
-                  <h3 className="text-[var(--app-primary)] font-medium">Saldo de la Cuenta</h3>
+                  <h3 className={appPrimary + " font-medium"}>Saldo de la Cuenta</h3>
                   <div className="relative ml-2 group">
                     <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                     <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
@@ -466,7 +474,7 @@ const ChallengeRelations = () => {
                               className={classNames(
                                 "block p-4 rounded-lg border cursor-pointer transition-all",
                                 selectedProduct && selectedProduct.name === product.name
-                                  ? "bg-amber-500 border-amber-600 text-black font-semibold"
+                                  ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-semibold"
                                   : isInRelation
                                     ? "bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
                                     : "bg-gray-100 border-gray-200 text-gray-500 opacity-50 dark:bg-gray-900/20 dark:border-gray-700"
@@ -479,7 +487,7 @@ const ChallengeRelations = () => {
                                 </span>
                               )}
                               {product.isPremium && (
-                                <span className="inline-block bg-amber-600 text-white text-xs px-2 py-1 rounded mt-2 font-semibold">
+                                <span className={"inline-block " + appSecondaryBg + " text-white text-xs px-2 py-1 rounded mt-2 font-semibold"}>
                                   Premium
                                 </span>
                               )}
@@ -508,7 +516,7 @@ const ChallengeRelations = () => {
             <div className="sticky top-4 space-y-6">
               <div className="bg-white rounded-lg shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800 overflow-hidden">
                 <header className="p-5 border-b border-gray-200 dark:border-zinc-800">
-                  <h3 className="text-[var(--app-primary)] font-medium text-xl flex gap-4 items-center">
+                  <h3 className={appPrimary + " font-medium text-xl flex gap-4 items-center"}>
                     <span>Saldo de Cuenta Seleccionado:</span>
                     {selectedProduct ? (
                       <>
@@ -522,7 +530,7 @@ const ChallengeRelations = () => {
 
                 {/* {selectedRelation && (
                   <div className="bg-gray-50 p-4 border-b border-gray-200 dark:bg-zinc-800 dark:border-zinc-700">
-                    <h4 className="text-[var(--app-primary)] font-medium mb-2">Información Adicional</h4>
+                    <h4 className={appPrimary + " font-medium mb-2"}>Información Adicional</h4>
                     <div className="text-gray-700 dark:text-zinc-300">
                       <p className="flex justify-between mb-2">
                         <span>Subcategoría:</span>
@@ -549,7 +557,7 @@ const ChallengeRelations = () => {
                                     className={classNames(
                                       "block text-center py-1 px-2 rounded-md border cursor-pointer transition-all text-sm",
                                       selectedStage && selectedStage.id === stage.id
-                                        ? "bg-amber-500 border-amber-600 text-black font-medium"
+                                        ? appPrimaryBg + " " + appSecondaryBorder + " text-black font-medium"
                                         : "bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200 dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-600"
                                     )}
                                   >
@@ -574,45 +582,45 @@ const ChallengeRelations = () => {
                         <div className="grid grid-cols-1 gap-6">
                           {/*  <div>
                             <section>
-                              <h3 className="text-lg font-medium text-[var(--app-primary)] mb-4">Características:</h3>
+                              <h3 className={"text-lg font-medium " + appPrimary + " mb-4"}>Características:</h3>
                               <ul className="space-y-3">
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Leverage:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.leverage ? (selectedStage.leverage + " %") : "-"}
                                   </strong>
                                 </li>
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Maximum Daily Loss:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.maximumDailyLoss ? (selectedStage.maximumDailyLoss + " %") : "-"}
                                   </strong>
                                 </li>
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Minimum Trading Days:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.minimumTradingDays ? (selectedStage.minimumTradingDays + " %") : "-"}
                                   </strong>
                                 </li>
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Profit Target:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.profitTarget ? (selectedStage.profitTarget + " %") : "-"}
                                   </strong>
                                 </li>
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Maximum Total Loss:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.maximumTotalLoss ? (selectedStage.maximumTotalLoss + " %") : "-"}
                                   </strong>
                                 </li>
                                 <li className="flex items-center text-gray-700 dark:text-zinc-300">
-                                  <CheckIcon className="h-5 w-5 text-amber-500 mr-3 flex-shrink-0" />
+                                  <CheckIcon className={"h-5 w-5 " + appPrimary + " mr-3 flex-shrink-0"} />
                                   <span>Maximum Loss Per Trade:</span>
                                   <strong className="ml-auto">
                                     {selectedStage.maximumLossPerTrade ? (selectedStage.maximumLossPerTrade + " %") : "-"}
@@ -634,7 +642,7 @@ const ChallengeRelations = () => {
                               {/* <div className="h-px bg-gray-200 dark:bg-zinc-800 my-4"></div> */}
                               <div className="flex justify-between items-center mb-1">
                                 <span className="text-gray-700 dark:text-zinc-300">Total</span>
-                                <p className="text-2xl font-semibold text-[var(--app-primary)]">${matchingVariation?.price || "N/A"}</p>
+                                <p className={"text-2xl font-semibold " + appPrimary}>${matchingVariation?.price || "N/A"}</p>
                               </div>
                               <p className="text-xs text-gray-500 dark:text-zinc-500 text-right">*Precio no incluye tarifa de servicio de pago.</p>
                             </section>
@@ -651,7 +659,7 @@ const ChallengeRelations = () => {
                         type="submit"
                         disabled={!selectedProduct}
                         className={`w-full flex items-center justify-center transition-colors py-3 px-4 rounded ${selectedProduct
-                          ? "bg-[var(--app-primary)] hover:bg-[var(--app-secondary)] text-black font-bold"
+                          ? appPrimaryBg + " hover:" + appSecondaryBg + " text-black font-bold"
                           : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500"
                           }`}
                       >

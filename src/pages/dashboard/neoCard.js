@@ -26,9 +26,9 @@ export default function NeoChallengeCard() {
                     </p>
                 </div>
                 
-                {/* Contenedor centrado para la lista de características */}
-                <div className="flex justify-center w-full mt-6">
-                    <div className="space-y-3 flex flex-col items-center md:items-start md:w-3/4 bg-white/60 dark:bg-zinc-800/60 p-4 rounded-lg border border-gray-100 dark:border-zinc-700/50">
+                {/* Contenedor centrado en desktop, contenido siempre alineado a la izquierda */}
+                <div className="flex justify-start md:justify-center mx-auto w-full mt-6">
+                    <div className="mx-auto space-y-3 flex flex-col items-start md:w-3/4 bg-white/60 dark:bg-zinc-800/60 p-4 rounded-lg border border-gray-100 dark:border-zinc-700/50">
                         <div className="flex items-center space-x-2">
                             <div className="p-1 rounded-full bg-[var(--app-primary)]/10">
                                 <CheckIcon className="h-4 w-4 text-[var(--app-primary)]" />
