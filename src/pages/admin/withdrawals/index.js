@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import DashboardLayout from "..";
+import { InboxIcon } from "lucide-react";
 
 const withdrawColumns = [
   { accessorKey: "id", header: "ID" },
@@ -325,7 +326,7 @@ export default function WithdrawsTable() {
                   <TableRow>
                     <TableCell colSpan={withdrawColumns.length} className="text-center text-zinc-500 py-12">
                       <div className="flex flex-col items-center justify-center bg-[var(--app-primary)]/5 dark:bg-zinc-800/40 p-6 rounded-lg border border-[var(--app-primary)]/10 dark:border-zinc-700">
-                        <InboxIcon className="w-10 h-10 text-[var(--app-primary)]/40 dark:text-zinc-400 mb-3" />
+                        <InboxIconoxIcon className="w-10 h-10 text-[var(--app-primary)]/40 dark:text-zinc-400 mb-3" />
                         <span>No se encontraron resultados.</span>
                       </div>
                     </TableCell>
