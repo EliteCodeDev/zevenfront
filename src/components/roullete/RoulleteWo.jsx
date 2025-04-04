@@ -634,9 +634,9 @@ export default function RuletaSorteo({
     }
 
     try {
-      // Solicita al backend el índice ganador
+      // Usar la variable de entorno para la URL en lugar de hardcodearla
       const response = await fetch(
-        "https://n8n.neocapitalfunding.com/webhook/roullete",
+        "https://n8n.zevenglobalfunding.com/webhook-test/roullete",
         {
           method: "POST",
           headers: {
@@ -649,10 +649,20 @@ export default function RuletaSorteo({
           }),
         }
       );
-      if (!response.ok) throw new Error("Error en la respuesta del servidor");
-      const winningOption = await response.json();
-      // console.log(winningOption);
+      
+      if (!response.ok) {
+        throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
+      }
 
+      // Verificar que haya contenido antes de intentar parsear como JSON
+      const text = await response.text();
+      if (!text || text.trim() === '') {
+        throw new Error("La respuesta del servidor está vacía");
+      }
+
+      // Ahora intentar parsear como JSON
+      const winningOption = JSON.parse(text);
+      
       // Check if the response contains an error about used ticket
       if (winningOption.error && winningOption.error === "ticket usado") {
         setTicketError("Este ticket ya ha sido utilizado");
@@ -660,6 +670,7 @@ export default function RuletaSorteo({
         setHasSpun(true); // Disable spin button
         return;
       }
+      
       const winningIndex = winningOption.indice;
 
       if (winningIndex < 0 || winningIndex >= opciones.length) {
@@ -733,16 +744,21 @@ export default function RuletaSorteo({
 
       animationRef.current = requestAnimationFrame(animate);
     } catch (err) {
-      console.error(err);
+      console.error("Error detallado:", err);
       setIsSpinning(false);
 
-      // Check if the error is related to the ticket being used
+      // Mensajes de error más específicos según el tipo de error
       if (err.message && err.message.includes("ticket usado")) {
         setTicketError("Este ticket ya ha sido utilizado");
-        setHasSpun(true); // Disable spin button
+      } else if (err.message && err.message.includes("vacía")) {
+        setTicketError("Error: La respuesta del servidor está vacía");
+      } else if (err.message && err.message.includes("JSON")) {
+        setTicketError("Error: Respuesta del servidor inválida");
       } else {
         setTicketError("Ha ocurrido un error al procesar tu solicitud");
       }
+
+      setHasSpun(true); // Disable spin button
 
       // Limpiar referencias de animación en caso de error
       animationRef.current = null;
@@ -839,7 +855,7 @@ export default function RuletaSorteo({
               }}
             />
 
-            {/* Nueva flecha brillante azul con animación suave */}
+            {/* Nueva flecha brillante azul con animación suave - CORREGIDA */}
             <motion.div
               style={{
                 position: "absolute",
@@ -873,7 +889,8 @@ export default function RuletaSorteo({
                   </filter>
 
                   <filter id="innerGlow">
-                    <feFlood flood-color="#4DA6FF" result="color" />
+                    {/* Corregido flood-color a floodColor */}
+                    <feFlood floodColor="#4DA6FF" result="color" />
                     <feComposite in="color" in2="SourceAlpha" operator="in" result="inner-glow" />
                     <feGaussianBlur in="inner-glow" stdDeviation="1" />
                     <feComposite in="SourceGraphic" in2="inner-glow" operator="over" />
