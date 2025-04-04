@@ -219,14 +219,14 @@ export function UpdateStepFormC({ step, onStepChange }) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-yellow-500 text-lg">
+                <FormLabel className="text-blue-500 text-lg">
                   Nombre
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="Nombre del Step"
-                    className="border-gray-700 bg-transparent text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                    className="border-gray-700 bg-transparent text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </FormControl>
                 <FormMessage />
@@ -242,7 +242,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                 name="subcategories"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-yellow-500 text-lg">
+                    <FormLabel className="text-blue-500 text-lg">
                       Categorías
                     </FormLabel>
                     <Card className="p-4 border border-gray-700 bg-black/50">
@@ -260,7 +260,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                               <FormControl>
                                 <Button
                                   variant="outline"
-                                  className="w-full border-gray-700 bg-transparent text-white hover:bg-yellow-500/10"
+                                  className="w-full border-gray-700 bg-transparent text-white hover:bg-blue-500/10"
                                 >
                                   {field.value.length > 0
                                     ? `${field.value.length} seleccionadas`
@@ -268,11 +268,11 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="p-0 bg-black border-yellow-500 w-full">
+                            <PopoverContent className="p-0 bg-black border-blue-500 w-full">
                               <Command className="bg-black">
                                 <CommandInput
                                   placeholder="Buscar Categorías..."
-                                  className="text-yellow-500"
+                                  className="text-blue-500"
                                 />
                                 <CommandList>
                                   <CommandEmpty>
@@ -280,7 +280,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                   </CommandEmpty>
                                   <CommandGroup>
                                     <CommandItem
-                                      className="text-yellow-500 hover:bg-yellow-500/10"
+                                      className="text-blue-500 hover:bg-blue-500/10"
                                       onSelect={() => {
                                         if (
                                           field.value.length ===
@@ -293,9 +293,9 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                       }}
                                     >
                                       <div
-                                        className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-yellow-500 ${field.value.length ===
+                                        className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${field.value.length ===
                                           allSubcategories.length
-                                          ? "bg-yellow-500 text-black"
+                                          ? "bg-blue-500 text-black"
                                           : "opacity-50"
                                           }`}
                                       >
@@ -334,11 +334,11 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                             }
                                             field.onChange(newValues);
                                           }}
-                                          className="text-yellow-500 hover:bg-yellow-500/10"
+                                          className="text-blue-500 hover:bg-blue-500/10"
                                         >
                                           <div
-                                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-yellow-500 ${isSelected
-                                              ? "bg-yellow-500 text-black"
+                                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${isSelected
+                                              ? "bg-blue-500 text-black"
                                               : "opacity-50"
                                               }`}
                                           >
@@ -368,7 +368,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                               variant="outline"
                               size="icon"
                               onClick={() => handleAddCustomSubcat(field)}
-                              className="hover:bg-yellow-500/10"
+                              className="hover:bg-blue-500/10"
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -383,7 +383,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                     subcat.id ||
                                     `custom-${index}`
                                   }
-                                  className="p-2 bg-yellow-500/10 border-yellow-500/20 flex justify-between items-center"
+                                  className="p-2 bg-blue-500/10 border-blue-500/20 flex justify-between items-center"
                                 >
                                   <span className="text-white">
                                     {subcat.name}
@@ -400,7 +400,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                         )
                                       );
                                     }}
-                                    className="h-8 w-8 hover:bg-yellow-500/20"
+                                    className="h-8 w-8 hover:bg-blue-500/20"
                                   >
                                     <X className="h-4 w-4" />
                                   </Button>
@@ -424,7 +424,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                 name="stages"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-yellow-500 text-lg">
+                    <FormLabel className="text-blue-500 text-lg">
                       Fases
                     </FormLabel>
                     <Card className="p-4 border border-gray-700 bg-black/50">
@@ -442,7 +442,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                               <FormControl>
                                 <Button
                                   variant="outline"
-                                  className="w-full border-gray-700 bg-transparent text-white hover:bg-yellow-500/10"
+                                  className="w-full border-gray-700 bg-transparent text-white hover:bg-blue-500/10"
                                 >
                                   {field.value.length > 0
                                     ? `${field.value.length} seleccionados`
@@ -450,11 +450,11 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="p-0 bg-black border-yellow-500 w-full">
+                            <PopoverContent className="p-0 bg-black border-blue-500 w-full">
                               <Command className="bg-black">
                                 <CommandInput
                                   placeholder="Buscar Fases..."
-                                  className="text-yellow-500"
+                                  className="text-blue-500"
                                 />
                                 <CommandList>
                                   <CommandEmpty>
@@ -462,7 +462,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                   </CommandEmpty>
                                   <CommandGroup>
                                     <CommandItem
-                                      className="text-yellow-500 hover:bg-yellow-500/10"
+                                      className="text-blue-500 hover:bg-blue-500/10"
                                       onSelect={() => {
                                         if (
                                           field.value.length === allStages.length
@@ -474,8 +474,8 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                       }}
                                     >
                                       <div
-                                        className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-yellow-500 ${field.value.length === allStages.length
-                                          ? "bg-yellow-500 text-black"
+                                        className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${field.value.length === allStages.length
+                                          ? "bg-blue-500 text-black"
                                           : "opacity-50"
                                           }`}
                                       >
@@ -517,10 +517,10 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                             }
                                             field.onChange(newValues);
                                           }}
-                                          className="text-yellow-500 hover:bg-yellow-500/10"
+                                          className="text-blue-500 hover:bg-blue-500/10"
                                         >
                                           <div
-                                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-yellow-500 ${isSelected ? "bg-yellow-500 text-black" : "opacity-50"
+                                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${isSelected ? "bg-blue-500 text-black" : "opacity-50"
                                               }`}
                                           >
                                             {isSelected && "✓"}
@@ -551,7 +551,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                               variant="outline"
                               size="icon"
                               onClick={() => handleAddCustomStage(field)}
-                              className="hover:bg-yellow-500/10"
+                              className="hover:bg-blue-500/10"
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
@@ -566,7 +566,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                     stage.id ||
                                     `custom-${index}`
                                   }
-                                  className="p-2 bg-yellow-500/10 border-yellow-500/20 flex justify-between items-center"
+                                  className="p-2 bg-blue-500/10 border-blue-500/20 flex justify-between items-center"
                                 >
                                   <span className="text-white">
                                     {stage.name}
@@ -583,7 +583,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
                                         )
                                       );
                                     }}
-                                    className="h-8 w-8 hover:bg-yellow-500/20"
+                                    className="h-8 w-8 hover:bg-blue-500/20"
                                   >
                                     <X className="h-4 w-4" />
                                   </Button>
@@ -604,7 +604,7 @@ export function UpdateStepFormC({ step, onStepChange }) {
           {/* Submit Button */}
           <Button
             onClick={handleUpdateSubmit}
-            className="w-full bg-yellow-500 text-black hover:bg-yellow-400"
+            className="w-full bg-blue-500 text-black hover:bg-blue-400"
           >
             Actualizar
           </Button>
