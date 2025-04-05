@@ -1,3 +1,4 @@
+// src/components/forms/parameters/PropDetails.tsx
 "use client";
 
 import React, { useState } from "react";
