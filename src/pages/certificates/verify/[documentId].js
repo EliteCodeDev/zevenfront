@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 // Importamos el componente Certificates existente - ajusta la ruta según tu estructura de archivos
 import Certificates from "../../metrix2/certificates";
+import Loader from '../../../components/loaders/loader';
+import { Toaster, toast } from 'sonner';
 
 export default function CertificateVerify() {
   const router = useRouter();
@@ -38,8 +40,8 @@ export default function CertificateVerify() {
   // Mostrar estado de carga
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black-light flex items-center justify-center">
-        <p className="text-gray-600 dark:text-gray-300">Cargando...</p>
+      <div className="min-h-screen bg-zinc-900 dark:bg-black-light flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
@@ -54,7 +56,13 @@ export default function CertificateVerify() {
   }
 
   // URL actual para compartir
-  const shareUrl = `https://web.neocapitalfunding.com/certificates/verify/${documentId}`;
+  const shareUrl = `https://web.zevenglobalfunding.com/certificates/verify/${documentId}`;
+
+  // Función para copiar al portapapeles y mostrar la notificación
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Copiado al portapapeles');
+  };
 
   return (
     <div className="min-h-screen bg-zinc-900 flex flex-col items-center justify-center p-4 md:p-8">
@@ -63,7 +71,7 @@ export default function CertificateVerify() {
         <div className="flex justify-center p-6">
           <Link href="/">
             <Image
-              src="/images/logo-dark.png"
+              src="/images/logo-light.png"
               alt="ZevenGlobalLogo"
               width={236}
               height={60}
@@ -117,14 +125,14 @@ export default function CertificateVerify() {
                 Comparte esta página con otros
             </h2>
             </div>
-            <div className="mt-4 text-yellow-500 break-all">{shareUrl}</div>
+            <div className="mt-4 text-[var(--app-primary)] break-all">{shareUrl}</div>
             <div className="mt-2 flex justify-center">
             <button
-                onClick={() => navigator.clipboard.writeText(shareUrl)}
-                className="flex w-28 justify-center rounded-xl bg-yellow-100 p-2 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-200 dark:bg-yellow-500"
+                onClick={copyToClipboard}
+                className="flex w-28 justify-center rounded-xl bg-[var(--app-primary)] p-2 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
             >
                 <svg
-                className="h-6 w-6 text-black"
+                className="h-6 w-6 text-white"
                 viewBox="0 0 29 28"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +144,7 @@ export default function CertificateVerify() {
                     fill="currentColor"
                 />
                 </svg>
-                <span className="ml-2 text-black">Copiar</span>
+                <span className="ml-2 text-white">Copiar</span>
             </button>
             </div>
         </div>
@@ -208,7 +216,7 @@ export default function CertificateVerify() {
 
         {/* Llamada a la acción */}
         <div className="p-4">
-          <div className="m-4 mb-10 mt-10 flex flex-col rounded-xl border-2 border-transparent bg-yellow-100 px-6 py-10 text-yellow-600 hover:border-yellow-600 dark:bg-yellow-600 dark:text-slate-200">
+          <div className="m-4 mb-10 mt-10 flex flex-col rounded-xl border-2 border-transparent bg-[var(--app-primary)] px-6 py-10 text-white hover:border-blue-600 ">
             <div className="mt-6 text-center text-3xl font-bold">
               ¡Obtén el tuyo hoy!
             </div>
@@ -218,13 +226,13 @@ export default function CertificateVerify() {
               comenzar un challenge.
             </div>
             <div className="mt-10 flex flex-row justify-center gap-4">
-              <Link href="https://neocapitalfunding.com/faq"> 
-                <button className="rounded-lg bg-yellow-600 px-6 py-2 text-center text-black hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-slate-200 dark:text-black dark:hover:bg-yellow-900 dark:hover:text-slate-200">
+              <Link href="https://zevenglobalfunding.com/faq"> 
+                <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
                   FAQ
                 </button>
               </Link>
               <Link href="/register">
-                <button className="rounded-lg bg-yellow-600 px-6 py-2 text-center text-black hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-slate-200 dark:text-black dark:hover:bg-yellow-900 dark:hover:text-slate-200">
+                <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
                   Crear Cuenta
                 </button>
               </Link>
@@ -232,6 +240,7 @@ export default function CertificateVerify() {
           </div>
         </div>
       </div>
+      <Toaster position="top-right" richColors />
     </div>
   );
 }
