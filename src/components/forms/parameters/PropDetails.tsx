@@ -38,12 +38,12 @@ export interface StageParameter {
   id: string | number;
   challenge_stage: { id: string | number; documentId: string };
   challenge_relation: { id: string | number; documentId: string };
-  minimumTradingDays: number;
-  maximumDailyLoss: number;
-  maximumTotalLoss: number;
-  maximumLossPerTrade: number;
-  profitTarget: number;
-  leverage: string;
+  minimumTradingDays: number | null;
+  maximumDailyLoss: number | null;
+  maximumTotalLoss: number | null;
+  maximumLossPerTrade: number | null;
+  profitTarget: number | null;
+  leverage: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -53,6 +53,10 @@ export interface ProductConfig {
   challenge_product: { id: string | number; documentId: string };
   challenge_relation?: { id: string | number; documentId: string };
   precio: number | null;
+  // Compatibilidad con la antigua estructura
+  product_id?: string | number;
+  price?: number | null;
+  relation_id?: string | number;
 }
 
 export interface ChallengeRelationsStages {
@@ -77,14 +81,14 @@ export default function PropDetails({
   onClose,
   actualizarDatos,
 }: DetailsProps) {
-  const { data: productsData } = useStrapiData("challenge-products");
-  const { data: subcategoriesData } = useStrapiData("challenge-subcategories");
-  const { data: stagesdata } = useStrapiData("challenge-stages");
-  const { data: stepsdata } = useStrapiData("challenge-steps");
+  const { data: productsData = [] } = useStrapiData("challenge-products");
+  const { data: subcategoriesData = [] } = useStrapiData("challenge-subcategories");
+  const { data: stagesdata = [] } = useStrapiData("challenge-stages");
+  const { data: stepsdata = [] } = useStrapiData("challenge-steps");
   
   // Nuevas peticiones para obtener parámetros y configuraciones
-  const { data: stageParameters } = useStrapiData("stage-parameters?populate=*");
-  const { data: productConfigs } = useStrapiData("product-configs?populate=*");
+  const { data: stageParameters = [] } = useStrapiData("stage-parameters?populate=*");
+  const { data: productConfigs = [] } = useStrapiData("product-configs?populate=*");
   
   const [selectedStageId, setSelectedStageId] = useState<string | number | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string | number | null>(null);
@@ -138,7 +142,10 @@ export default function PropDetails({
       prop.product_configs ||
       prop.challenge_products.map((product) => ({
         product_id: product.id,
+        challenge_product: { id: product.id, documentId: "" },
         relation_id: prop.documentId,
+        challenge_relation: { id: 0, documentId: prop.documentId },
+        precio: null,
         price: null,
       })),
   });
@@ -159,10 +166,6 @@ export default function PropDetails({
   // Configuración del producto seleccionado
   const selectedProductConfigFromMap = selectedProductId && productConfigMap[selectedProductId.toString()];
   
-  const selectedProductConfig = selectedProductId ?
-    editableProp.product_configs?.find(config => config.product_id === selectedProductId) :
-    null;
-
   // Filtrado de ítems disponibles
   const productavailable = productsData?.filter(
     (product) =>
@@ -172,18 +175,21 @@ export default function PropDetails({
     (stage) => !editableProp.challenge_stages.some((p) => p.id === stage.id)
   );
   const stepavailable =
-    stepsdata?.filter((step) => step.id !== editableProp.challenge_step?.id) ||
+    stepsdata?.filter((step) => step.id !== (editableProp.challenge_step?.id || null)) ||
     [];
   const subcategoriesavailable =
     subcategoriesData?.filter(
-      (subcategory) => subcategory.id !== editableProp.challenge_subcategory?.id
+      (subcategory) => subcategory.id !== (editableProp.challenge_subcategory?.id || null)
     ) || [];
 
   // Handlers para agregar/quitar/actualizar
   const addProduct = (product: Challenge_products) => {
     const newProductConfig = {
       product_id: product.id,
+      challenge_product: { id: product.id, documentId: "" },
       relation_id: editableProp.documentId,
+      challenge_relation: { id: 0, documentId: editableProp.documentId },
+      precio: null,
       price: null,
     };
 
@@ -201,7 +207,7 @@ export default function PropDetails({
         (p) => p.id !== productId
       ),
       product_configs: (prev.product_configs || []).filter(
-        (config) => config.product_id !== productId
+        (config) => (config.product_id !== productId && config.challenge_product?.id !== productId)
       ),
     }));
 
@@ -244,22 +250,24 @@ export default function PropDetails({
 
   const handleStageMetricChange = (
     stageId: string | number,
-    field: string,
+    field: keyof StageParameter,
     value: string | null
   ) => {
     // Actualizamos los parámetros en stageParamsMap
     setStageParamsMap(prev => {
       const updatedMap = { ...prev };
-      if (updatedMap[stageId.toString()]) {
-        updatedMap[stageId.toString()] = {
-          ...updatedMap[stageId.toString()],
+      const stageIdStr = stageId.toString();
+      
+      if (updatedMap[stageIdStr]) {
+        updatedMap[stageIdStr] = {
+          ...updatedMap[stageIdStr],
           [field]: field === "leverage" 
             ? value 
-            : value === "" ? null : parseFloat(value as string),
+            : value === "" || value === null ? null : parseFloat(value as string),
         };
       } else {
         // Si no existe, creamos un nuevo objeto de parámetros
-        updatedMap[stageId.toString()] = {
+        updatedMap[stageIdStr] = {
           id: 0, // Temporal, se asignará en el backend
           challenge_stage: { id: stageId, documentId: "" },
           challenge_relation: { id: 0, documentId: prop.documentId },
@@ -273,8 +281,8 @@ export default function PropDetails({
           updatedAt: new Date().toISOString(),
           [field]: field === "leverage" 
             ? value 
-            : value === "" ? null : parseFloat(value as string),
-        } as unknown as StageParameter;
+            : value === "" || value === null ? null : parseFloat(value as string),
+        } as StageParameter;
       }
       return updatedMap;
     });
@@ -287,35 +295,47 @@ export default function PropDetails({
     // Actualizamos la configuración en productConfigMap
     setProductConfigMap(prev => {
       const updatedMap = { ...prev };
-      if (updatedMap[productId.toString()]) {
-        updatedMap[productId.toString()] = {
-          ...updatedMap[productId.toString()],
-          precio: value === "" ? null : parseFloat(value as string),
+      const productIdStr = productId.toString();
+      const numericValue = value === "" || value === null ? null : parseFloat(value as string);
+      
+      if (updatedMap[productIdStr]) {
+        updatedMap[productIdStr] = {
+          ...updatedMap[productIdStr],
+          precio: numericValue,
+          price: numericValue, // Actualizamos ambos campos para compatibilidad
         };
       } else {
         // Si no existe, creamos un nuevo objeto de configuración
-        updatedMap[productId.toString()] = {
+        updatedMap[productIdStr] = {
           id: 0, // Temporal, se asignará en el backend
           challenge_product: { id: productId, documentId: "" },
           challenge_relation: { id: 0, documentId: prop.documentId },
-          precio: value === "" ? null : parseFloat(value as string),
+          precio: numericValue,
+          price: numericValue,
+          product_id: productId,
+          relation_id: prop.documentId,
         };
       }
       return updatedMap;
     });
 
     // También actualizamos el estado editable para mantener la compatibilidad
-    setEditableProp((prev) => ({
-      ...prev,
-      product_configs: (prev.product_configs || []).map((config) =>
-        config.product_id === productId
-          ? {
+    setEditableProp((prev) => {
+      const numericValue = value === "" || value === null ? null : parseFloat(value as string);
+      return {
+        ...prev,
+        product_configs: (prev.product_configs || []).map((config) => {
+          if (config.product_id === productId || config.challenge_product?.id === productId) {
+            return {
               ...config,
-              price: value === "" ? null : parseFloat(value as string),
-            }
-          : config
-      ),
-    }));
+              price: numericValue,
+              precio: numericValue,
+            };
+          }
+          return config;
+        }),
+      };
+    });
   };
 
   // Preparar datos para guardar
@@ -336,6 +356,11 @@ export default function PropDetails({
 
   // Guardar cambios
   const handleSave = async () => {
+    if (!editableProp.documentId) {
+      toast.error("ID de documento no válido");
+      return;
+    }
+    
     const toastId = toast.loading("Guardando...");
     const sendData = prepareDataForSave();
     
@@ -365,7 +390,8 @@ export default function PropDetails({
       onClose?.();
       actualizarDatos?.();
     } catch (error) {
-      toast.error("Hubo un error al guardar.", { id: toastId });
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+      toast.error(`Hubo un error al guardar: ${errorMessage}`, { id: toastId });
       console.error("Error al guardar:", error);
     }
   };
