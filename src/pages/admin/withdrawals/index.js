@@ -129,7 +129,7 @@ export default function WithdrawsTable() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`https://n8n.zevenglobalfunding.com/webhook/withdraw-status1`, {
+      const response = await fetch(`https://n8n.zevenglobalfunding.com/webhook/withdraw-status`, {
         method: "POST",
         body: JSON.stringify({
           documentId: selectedWithdrawal.documentId,
