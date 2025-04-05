@@ -16,10 +16,10 @@ import { CheckCircle, XCircle, Eye } from "lucide-react";
 import DashboardLayout from "..";
 import { useRouter } from "next/router";
 import Flag from "react-world-flags";
-import { 
-  PencilSquareIcon, 
-  DocumentTextIcon, 
-  EyeIcon 
+import {
+  PencilSquareIcon,
+  DocumentTextIcon,
+  EyeIcon
 } from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -34,7 +34,7 @@ const STORAGE_KEY = "usersOriginalOrder";
 export default function UsersTable() {
   const { data: session } = useSession();
   const router = useRouter();
-  
+
   // Estado para almacenar el orden original de los usuarios
   const [originalUserOrder, setOriginalUserOrder] = useState([]);
 
@@ -48,7 +48,7 @@ export default function UsersTable() {
 
   // New state for edit modal
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
-  
+
   // State para rastrear operaciones en progreso
   const [updatingUsers, setUpdatingUsers] = useState({});
 
@@ -77,10 +77,10 @@ export default function UsersTable() {
       .then((res) => res.json())
       .then((data) => {
         if (!Array.isArray(data)) return data;
-        
+
         // Intentar obtener el orden desde localStorage o estado
         let orderToUse = [];
-        
+
         if (typeof window !== 'undefined') {
           try {
             const savedOrder = localStorage.getItem(STORAGE_KEY);
@@ -89,12 +89,12 @@ export default function UsersTable() {
             console.error("Error al leer del localStorage:", error);
           }
         }
-        
+
         // Si no hay orden en localStorage pero hay en el estado, usar el estado
         if (orderToUse.length === 0 && originalUserOrder.length > 0) {
           orderToUse = originalUserOrder;
         }
-        
+
         // Si tenemos un orden para usar, ordenar los datos
         if (orderToUse.length > 0) {
           const orderedData = [...data];
@@ -107,7 +107,7 @@ export default function UsersTable() {
           });
           return orderedData;
         }
-        
+
         return data;
       });
 
@@ -117,7 +117,7 @@ export default function UsersTable() {
       : null,
     ([url, token]) => fetcher(url, token)
   );
-  
+
   // Capturar el orden original cuando los datos se cargan inicialmente
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
@@ -125,7 +125,7 @@ export default function UsersTable() {
       if (originalUserOrder.length === 0) {
         const currentOrder = data.map(user => user.id);
         setOriginalUserOrder(currentOrder);
-        
+
         // Guardar en localStorage
         if (typeof window !== 'undefined') {
           try {
@@ -161,15 +161,15 @@ export default function UsersTable() {
   // Cuando se actualice el usuario, mantener el mismo array de datos pero con el valor actualizado
   const updateUserLocallyWithoutChangingOrder = (userId, updates) => {
     if (!Array.isArray(data)) return;
-    
+
     // Crear una copia exacta del array original
     const updatedData = [...data];
-    
+
     // Encontrar y actualizar el usuario específico sin alterar su posición
     const userIndex = updatedData.findIndex(item => item.id === userId);
     if (userIndex !== -1) {
       updatedData[userIndex] = { ...updatedData[userIndex], ...updates };
-      
+
       // Actualizar la caché de SWR sin revalidar para mantener posiciones
       mutate(updatedData, false);
     }
@@ -229,10 +229,10 @@ export default function UsersTable() {
       await sendWebhook(selectedUser, true);
 
       toast.success("Firma aprobada exitosamente.");
-      
+
       // Usar la función unificada para actualizar localmente sin cambiar orden
       updateUserLocallyWithoutChangingOrder(selectedUser.id, { statusSign: true });
-      
+
       closePdfModal();
     } catch (error) {
       console.error("Error al aprobar la firma:", error);
@@ -263,10 +263,10 @@ export default function UsersTable() {
       await sendWebhook(selectedUser, false);
 
       toast.success("Firma desaprobada exitosamente.");
-      
+
       // Usar la función unificada para actualizar localmente sin cambiar orden
       updateUserLocallyWithoutChangingOrder(selectedUser.id, { statusSign: false });
-      
+
       closePdfModal();
     } catch (error) {
       console.error("Error al desaprobar la firma:", error);
@@ -278,10 +278,10 @@ export default function UsersTable() {
     try {
       // Marcar operación en progreso para este usuario
       setUpdatingUsers(prev => ({ ...prev, [user.id]: true }));
-      
+
       console.log(`Actualizando usuario ID: ${user.id}, Nombre: ${user.firstName} ${user.lastName}`);
       console.log(`Cambio de verificación a: ${checked ? "Verificado" : "No Verificado"}`);
-      
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.id}`,
         {
@@ -303,7 +303,7 @@ export default function UsersTable() {
       console.log("Usuario actualizado:", updatedUser);
 
       toast.success(`Usuario ${user.firstName} ${user.lastName} ${checked ? "verificado" : "desverificado"} correctamente`);
-      
+
       // Usar la función unificada para actualizar localmente sin cambiar orden
       updateUserLocallyWithoutChangingOrder(user.id, { isVerified: checked });
     } catch (error) {
@@ -335,10 +335,10 @@ export default function UsersTable() {
         if (verificationFilter === "FirmaNoAprobada") return !user.statusSign;
         return true;
       });
-    
+
     // Intentar obtener el orden del localStorage si el estado está vacío
     let orderToUse = originalUserOrder;
-    
+
     if (orderToUse.length === 0 && typeof window !== 'undefined') {
       try {
         const savedOrder = localStorage.getItem(STORAGE_KEY);
@@ -349,7 +349,7 @@ export default function UsersTable() {
         console.error("Error al leer orden del localStorage:", error);
       }
     }
-    
+
     // Si tenemos un orden guardado, ordenamos según ese orden
     if (orderToUse.length > 0) {
       filtered.sort((a, b) => {
@@ -361,7 +361,7 @@ export default function UsersTable() {
         return indexA - indexB;
       });
     }
-    
+
     return filtered;
   }, [data, nameSearch, emailSearch, verificationFilter, originalUserOrder]);
 
@@ -476,8 +476,8 @@ export default function UsersTable() {
                         )}
                       </TableCell>
                       <TableCell className="py-3">
-                        <div className="flex items-center space-x-2 bg-white dark:bg-zinc-800 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700">
-                          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                        <div className="flex items-center justify-between bg-white dark:bg-zinc-800 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 w-36 max-w-full">
+                          <span className="text-sm text-zinc-600 dark:text-zinc-400 truncate">
                             {user.isVerified ? "Verificado" : "No verificado"}
                           </span>
                           <Switch
@@ -486,11 +486,12 @@ export default function UsersTable() {
                             disabled={updatingUsers[user.id]} // Deshabilitar durante la actualización
                             onCheckedChange={(checked) => handleVerfifiedChange(user, checked)}
                             className={`
-                              data-[state=checked]:bg-amber-500 
-                              data-[state=unchecked]:bg-zinc-300 
-                              dark:data-[state=unchecked]:bg-zinc-600
-                              ${updatingUsers[user.id] ? 'opacity-50 cursor-not-allowed' : ''}
-                            `}
+        data-[state=checked]:bg-blue-500 
+        data-[state=unchecked]:bg-zinc-300 
+        dark:data-[state=unchecked]:bg-zinc-600
+        ${updatingUsers[user.id] ? 'opacity-50 cursor-not-allowed' : ''}
+        flex-shrink-0
+      `}
                           />
                         </div>
                       </TableCell>
