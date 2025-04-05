@@ -46,8 +46,8 @@ export type ChallengeRelationsStages = {
     id: number;
     minimumTradingDays: number | null;
     maximumDailyLoss: number;
-    maximumTotalLoss: number; // Cambiado de maximumLoss a maximumTotalLoss
-    maximumLossPerTrade: number; // Nuevo campo añadido
+    maximumTotalLoss: number;
+    maximumLossPerTrade: number;
     profitTarget: number | null;
     leverage: number;
     documentId: string;
