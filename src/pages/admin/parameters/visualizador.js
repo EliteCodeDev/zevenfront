@@ -225,7 +225,7 @@ export default function StepsOrganizado() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-blue-100">
+        <div className="min-h-screen p-6 bg-gradient-to-btext-zinc-800 dark:text-blue-100">
           <div className="flex items-center justify-center h-32">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--app-secondary)] mb-3"></div>
@@ -240,7 +240,7 @@ export default function StepsOrganizado() {
   return (
     <DashboardLayout>
       {/* Fondo general con un degradado para modo claro y oscuro */}
-      <div className="min-h-screen p-6 bg-gradient-to-b from-white via-zinc-50 to-white dark:from-black dark:via-zinc-900 dark:to-black text-zinc-800 dark:text-blue-100">
+      <div className="min-h-screen p-6 bg-gradient-to-b  text-zinc-800 dark:text-blue-100">
         <div className="max-w-7xl mx-auto space-y-8">
           <h2 className="text-2xl font-bold text-center text-zinc-800 dark:text-blue-100 border-b-2 border-[var(--app-secondary)] pb-2 w-fit mx-auto">
             Step → Subcategory → Products & Stages & Parameters

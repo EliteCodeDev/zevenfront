@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import NeoChallengeCard from './neoCard';
 import BilleteraCripto from '../../components/wallet/crypto-wallet';
 import CredencialesModal from './credentials';
+import { principalButton } from '@/components/structure/links';
 
 const fetcher = async (url, token) => {
     const response = await fetch(url, {
@@ -152,6 +153,19 @@ export default function Index() {
         }
     };
 
+    // Renderiza el botón solo en móvil en la parte superior
+    const renderMobileButton = () => {
+        return (
+            <div className="block md:hidden mb-4 sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900 pt-2 pb-3 px-2 -mx-2 -mt-2 shadow-md">
+                <Link href={principalButton[0].href} passHref>
+                    <button className="bg-[var(--app-primary)] rounded-md text-white font-semibold px-4 py-3 w-full hover:bg-[var(--app-secondary)] transition duration-200">
+                        {principalButton[0].name}
+                    </button>
+                </Link>
+            </div>
+        );
+    };
+
     if (isLoading) return <Loader />;
     if (error) return <p className="text-center text-red-500">Error al cargar los datos: {error.message}</p>;
 
@@ -199,6 +213,9 @@ export default function Index() {
 
     return (
         <div>
+            {/* Botón móvil en la cabecera */}
+            {renderMobileButton()}
+
             {activeChallenges.length === 0 && <NeoChallengeCard />}
 
             {sortedStages.length > 0 ? (
