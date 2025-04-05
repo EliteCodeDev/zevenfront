@@ -16,8 +16,18 @@ import {
 import md5 from 'md5';
 
 // Componente personalizado para íconos con tamaño fijo
-const FixedSizeIcon = ({ Icon, size = 20 }) => {
-  return <Icon size={size} style={{ minWidth: size, minHeight: size }} />;
+const FixedSizeIcon = ({ Icon, size = 20, className = "", ...props }) => {
+  return (
+    <Icon 
+      size={size} 
+      className={`${className}`} 
+      style={{ 
+        minWidth: size, 
+        minHeight: size 
+      }} 
+      {...props} 
+    />
+  );
 };
 
 export function AppSidebar({ ...props }) {
@@ -60,7 +70,7 @@ export function AppSidebar({ ...props }) {
       const avatarUrl = `https://www.gravatar.com/avatar/${md5(session.user.email.trim().toLowerCase())}?s=40&d=retro`;
 
       setUserData({
-        email: session.user.email || "correo@ejemplo.com",
+        email: session.user.email ,
         avatar: avatarUrl, // Avatar de Gravatar
         name: session.user.email || session.firstName, // Si no hay nombre, usar parte del email
       });
@@ -103,8 +113,20 @@ export function AppSidebar({ ...props }) {
     {
       title: "Creador de challenges",
       url: "#",
-      // Usamos un tamaño ligeramente mayor para este ícono específico
-      icon: (props) => <FixedSizeIcon Icon={FileCode} size={22} {...props} />,
+      icon: (props) => (
+        <FixedSizeIcon 
+          Icon={FileCode} 
+          size={22} 
+          {...props} 
+          className={`
+            creator-challenges-icon 
+            ${isSidebarCollapsed 
+              ? 'sidebar-collapsed-icon  flex items-start justify-start' 
+              : ''
+            }
+          `} 
+        />
+      ),
       className: "creador-challenges-item",
       isActive: false,
       items: [
@@ -131,34 +153,24 @@ export function AppSidebar({ ...props }) {
   ];
 
   return (
-    <>
-      {/* Estilo para el ítem específico cuando el sidebar está colapsado */}
-      {isSidebarCollapsed && (
-        <style jsx global>{`
-          .creador-challenges-item svg {
-            min-width: 22px !important;
-            min-height: 22px !important;
-            width: 22px !important;
-            height: 22px !important;
-          }
-        `}</style>
-      )}
+    <Sidebar 
+      collapsible="icon" 
+      className="bg-black" 
+      {...props}
+    >
+      <SidebarContent>
+        <NavMain items={navMain} />
+      </SidebarContent>
 
-      <Sidebar collapsible="icon" className="bg-black" {...props}>
-        <SidebarContent>
-          <NavMain items={navMain} />
-        </SidebarContent>
+      <SidebarFooter>
+        {isLoading ? (
+          <p className="text-center text-gray-500">Cargando sesión...</p>
+        ) : (
+          <NavUser user={userData} />
+        )}
+      </SidebarFooter>
 
-        <SidebarFooter>
-          {isLoading ? (
-            <p className="text-center text-gray-500">Cargando sesión...</p>
-          ) : (
-            <NavUser user={userData} />
-          )}
-        </SidebarFooter>
-
-        <SidebarRail />
-      </Sidebar>
-    </>
+      <SidebarRail />
+    </Sidebar>
   );
 }
