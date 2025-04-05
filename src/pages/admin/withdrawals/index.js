@@ -53,7 +53,7 @@ export default function WithdrawsTable() {
   const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Estados para manejar actualizaciones locales
   const [localUpdates, setLocalUpdates] = useState({});
 
@@ -79,7 +79,7 @@ export default function WithdrawsTable() {
   const handleAccept = async (documentId) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch(`https://n8n.zevenglobalfunding.com/webhook/withdraw-status1`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_N8N_CHALLENGE_WITHDRAW_STATUS || ""}`, {
         method: "POST",
         body: JSON.stringify({
           documentId: documentId,
@@ -95,11 +95,11 @@ export default function WithdrawsTable() {
           ...prev,
           [documentId]: { estado: "pagado" }
         }));
-        
+
         toast.success("Retiro completado exitosamente", {
           duration: 1500
         });
-        
+
         // Programar recarga de página después de mostrar el toast
         setTimeout(() => {
           window.location.reload();
@@ -129,7 +129,7 @@ export default function WithdrawsTable() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`https://n8n.zevenglobalfunding.com/webhook/withdraw-status`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_N8N_CHALLENGE_WITHDRAW_STATUS || ""}`, {
         method: "POST",
         body: JSON.stringify({
           documentId: selectedWithdrawal.documentId,
@@ -147,13 +147,13 @@ export default function WithdrawsTable() {
           ...prev,
           [selectedWithdrawal.documentId]: { estado: "rechazado" }
         }));
-        
+
         toast.success("Retiro rechazado y notificado al usuario", {
           duration: 1500
         });
-        
+
         setIsRejectModalOpen(false);
-        
+
         // Refrescar datos automáticamente
         refreshData();
       } else {
@@ -177,8 +177,8 @@ export default function WithdrawsTable() {
       const user = challenge?.user?.data?.attributes || challenge?.user;
 
       // Se obtiene el nombre completo del usuario combinando firstName y lastName.
-      const nombre = user && user.firstName && user.lastName 
-        ? `${user.firstName} ${user.lastName}` 
+      const nombre = user && user.firstName && user.lastName
+        ? `${user.firstName} ${user.lastName}`
         : "N/A";
 
       const rowData = {
@@ -206,14 +206,14 @@ export default function WithdrawsTable() {
 
     return processedData.filter((item) => {
       const matchesEstado = estadoFilter ? item.estado === estadoFilter : true;
-      
+
       // Filtro de fechas
       let matchesDates = true;
       if (startDateFilter || endDateFilter) {
         const itemDate = new Date(item.createdAt);
         const startDate = startDateFilter ? new Date(startDateFilter) : null;
         const endDate = endDateFilter ? new Date(endDateFilter) : null;
-        
+
         if (startDate && endDate) {
           matchesDates = itemDate >= startDate && itemDate <= endDate;
         } else if (startDate) {
@@ -222,7 +222,7 @@ export default function WithdrawsTable() {
           matchesDates = itemDate <= endDate;
         }
       }
-      
+
       return matchesEstado && matchesDates;
     });
   }, [processedData, estadoFilter, startDateFilter, endDateFilter]);
@@ -241,8 +241,8 @@ export default function WithdrawsTable() {
           <h1 className="text-3xl font-bold text-[var(--app-secondary)]">
             Retiros
           </h1>
-          <Button 
-            onClick={refreshData} 
+          <Button
+            onClick={refreshData}
             disabled={isRefreshing}
             className="flex items-center gap-2 bg-[var(--app-primary)] hover:bg-[var(--app-primary)]/90 text-white"
           >
@@ -290,14 +290,14 @@ export default function WithdrawsTable() {
               </label>
             </div>
           </div>
-          
-          <Button 
+
+          <Button
             onClick={() => {
               setStartDateFilter("");
               setEndDateFilter("");
               setEstadoFilter("");
             }}
-            variant="outline" 
+            variant="outline"
             size="sm"
             className="text-xs"
           >
@@ -344,22 +344,20 @@ export default function WithdrawsTable() {
                   filteredData.map((item, index) => (
                     <TableRow
                       key={index}
-                      className={`border-b border-gray-200 dark:border-zinc-700 ${
-                        index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
-                      }`}
+                      className={`border-b border-gray-200 dark:border-zinc-700 ${index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
+                        }`}
                     >
                       <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{item.id}</TableCell>
                       <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{item.nombre}</TableCell>
                       <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{item.wallet}</TableCell>
                       <TableCell className="py-3 px-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">{item.amount}</TableCell>
                       <TableCell className="py-3 px-4">
-                        <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                          item.estado === "pagado"
-                            ? "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300"
-                            : item.estado === "rechazado"
-                              ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300"
-                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-300"
-                        }`}>
+                        <span className={`px-3 py-1 text-xs font-medium rounded-full ${item.estado === "pagado"
+                          ? "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300"
+                          : item.estado === "rechazado"
+                            ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300"
+                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-300"
+                          }`}>
                           {item.estado}
                         </span>
                       </TableCell>
@@ -371,17 +369,16 @@ export default function WithdrawsTable() {
                             variant="success"
                             disabled={item.estado !== "proceso" || isSubmitting}
                             onClick={() => handleAccept(item.documentId)}
-                            className={`px-3 py-1 text-xs font-medium rounded ${
-                              item.estado !== "proceso" || isSubmitting
-                                ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                                : "bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white"
-                            }`}
+                            className={`px-3 py-1 text-xs font-medium rounded ${item.estado !== "proceso" || isSubmitting
+                              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                              : "bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white"
+                              }`}
                           >
-                            {isSubmitting && selectedWithdrawal?.documentId === item.documentId ? 
+                            {isSubmitting && selectedWithdrawal?.documentId === item.documentId ?
                               <span className="flex items-center gap-1">
                                 <span className="animate-spin h-3 w-3 border-t-2 border-white rounded-full"></span>
                                 Procesando
-                              </span> : 
+                              </span> :
                               "Completar"
                             }
                           </Button>
@@ -390,11 +387,10 @@ export default function WithdrawsTable() {
                             variant="destructive"
                             disabled={item.estado !== "proceso" || isSubmitting}
                             onClick={() => openRejectModal(item)}
-                            className={`px-3 py-1 text-xs font-medium rounded ${
-                              item.estado !== "proceso" || isSubmitting
-                                ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                                : "bg-red-500 hover:bg-red-600 text-white"
-                            }`}
+                            className={`px-3 py-1 text-xs font-medium rounded ${item.estado !== "proceso" || isSubmitting
+                              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                              : "bg-red-500 hover:bg-red-600 text-white"
+                              }`}
                           >
                             Rechazar
                           </Button>
@@ -415,7 +411,7 @@ export default function WithdrawsTable() {
               </TableBody>
             </Table>
           </div>
-          
+
           {/* Paginación */}
           {filteredData.length > 0 && (
             <div className="flex items-center justify-between p-4 border-t border-gray-200 dark:border-zinc-700">
