@@ -1,7 +1,7 @@
 // src/components/forms/parameters/PropDetails.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Card,
@@ -33,19 +33,27 @@ export interface Challenge_step {
 export interface ChallengeStage {
   id: string | number;
   name: string;
+}
+
+export interface StageParameter {
+  id: string | number;
+  challenge_stage: { id: string | number; documentId: string };
+  challenge_relation: { id: string | number; documentId: string };
   minimumTradingDays: number;
   maximumDailyLoss: number;
   maximumTotalLoss: number;
   maximumLossPerTrade: number;
   profitTarget: number;
-  leverage: number;
+  leverage: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProductConfig {
   id?: string | number;
-  product_id: string | number;
-  relation_id?: string | number;
-  price: number | null;
+  challenge_product: { id: string | number; documentId: string };
+  challenge_relation?: { id: string | number; documentId: string };
+  precio: number | null;
 }
 
 export interface ChallengeRelationsStages {
@@ -74,6 +82,56 @@ export default function PropDetails({
   const { data: subcategoriesData } = useStrapiData("challenge-subcategories");
   const { data: stagesdata } = useStrapiData("challenge-stages");
   const { data: stepsdata } = useStrapiData("challenge-steps");
+  
+  // Nuevas peticiones para obtener parámetros y configuraciones
+  const { data: stageParameters } = useStrapiData("stage-parameters?populate=*");
+  const { data: productConfigs } = useStrapiData("product-configs?populate=*");
+  
+  const [selectedStageId, setSelectedStageId] = useState<string | number | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | number | null>(null);
+  
+  // Estado para almacenar los parámetros de los stages y las configuraciones de productos
+  const [stageParamsMap, setStageParamsMap] = useState<Record<string, StageParameter>>({});
+  const [productConfigMap, setProductConfigMap] = useState<Record<string, ProductConfig>>({});
+  
+  // Procesar parámetros de stages y configuraciones de productos cuando se carguen
+  useEffect(() => {
+    if (stageParameters && stageParameters.length > 0 && prop.documentId) {
+      const paramsMap: Record<string, StageParameter> = {};
+      
+      stageParameters.forEach((param: StageParameter) => {
+        if (
+          param.challenge_relation && 
+          param.challenge_relation.documentId === prop.documentId &&
+          param.challenge_stage
+        ) {
+          // Usamos el stage ID como clave
+          paramsMap[param.challenge_stage.id.toString()] = param;
+        }
+      });
+      
+      setStageParamsMap(paramsMap);
+    }
+  }, [stageParameters, prop.documentId]);
+  
+  useEffect(() => {
+    if (productConfigs && productConfigs.length > 0 && prop.documentId) {
+      const configMap: Record<string, ProductConfig> = {};
+      
+      productConfigs.forEach((config: ProductConfig) => {
+        if (
+          config.challenge_relation && 
+          config.challenge_relation.documentId === prop.documentId &&
+          config.challenge_product
+        ) {
+          // Usamos el product ID como clave
+          configMap[config.challenge_product.id.toString()] = config;
+        }
+      });
+      
+      setProductConfigMap(configMap);
+    }
+  }, [productConfigs, prop.documentId]);
 
   const [editableProp, setEditableProp] = useState({
     ...prop,
@@ -86,31 +144,25 @@ export default function PropDetails({
       })),
   });
 
-  const [selectedStageId, setSelectedStageId] = useState<
-    string | number | null
-  >(null);
-
-  const [selectedProductId, setSelectedProductId] = useState<
-    string | number | null
-  >(null);
-
   // Stage seleccionado para visualización o edición
-  const selectedStage =
-    editableProp.challenge_stages.find(
-      (stage) => stage.id === selectedStageId
-    ) || null;
+  const selectedStage = selectedStageId ? 
+    editableProp.challenge_stages.find(stage => stage.id === selectedStageId) : 
+    null;
+  
+  // Parámetros del stage seleccionado
+  const selectedStageParams = selectedStageId && stageParamsMap[selectedStageId.toString()];
 
   // Product seleccionado para configuración
-  const selectedProduct =
-    editableProp.challenge_products.find(
-      (product) => product.id === selectedProductId
-    ) || null;
+  const selectedProduct = selectedProductId ? 
+    editableProp.challenge_products.find(product => product.id === selectedProductId) : 
+    null;
 
-  const selectedProductConfig = selectedProductId
-    ? editableProp.product_configs?.find(
-        (config) => config.product_id === selectedProductId
-      )
-    : null;
+  // Configuración del producto seleccionado
+  const selectedProductConfigFromMap = selectedProductId && productConfigMap[selectedProductId.toString()];
+  
+  const selectedProductConfig = selectedProductId ?
+    editableProp.product_configs?.find(config => config.product_id === selectedProductId) :
+    null;
 
   // Filtrado de ítems disponibles
   const productavailable = productsData?.filter(
@@ -196,28 +248,64 @@ export default function PropDetails({
     field: string,
     value: string | null
   ) => {
-    setEditableProp((prev) => ({
-      ...prev,
-      challenge_stages: prev.challenge_stages.map((stage) =>
-        stage.id === stageId
-          ? {
-              ...stage,
-              [field]:
-                field === "leverage"
-                  ? value
-                  : value === ""
-                  ? null
-                  : parseFloat(value as string),
-            }
-          : stage
-      ),
-    }));
+    // Actualizamos los parámetros en stageParamsMap
+    setStageParamsMap(prev => {
+      const updatedMap = { ...prev };
+      if (updatedMap[stageId.toString()]) {
+        updatedMap[stageId.toString()] = {
+          ...updatedMap[stageId.toString()],
+          [field]: field === "leverage" 
+            ? value 
+            : value === "" ? null : parseFloat(value as string),
+        };
+      } else {
+        // Si no existe, creamos un nuevo objeto de parámetros
+        updatedMap[stageId.toString()] = {
+          id: 0, // Temporal, se asignará en el backend
+          challenge_stage: { id: stageId, documentId: "" },
+          challenge_relation: { id: 0, documentId: prop.documentId },
+          minimumTradingDays: null,
+          maximumDailyLoss: null,
+          maximumTotalLoss: null,
+          maximumLossPerTrade: null,
+          profitTarget: null,
+          leverage: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          [field]: field === "leverage" 
+            ? value 
+            : value === "" ? null : parseFloat(value as string),
+        } as unknown as StageParameter;
+      }
+      return updatedMap;
+    });
   };
 
   const handleProductPriceChange = (
     productId: string | number,
     value: string | null
   ) => {
+    // Actualizamos la configuración en productConfigMap
+    setProductConfigMap(prev => {
+      const updatedMap = { ...prev };
+      if (updatedMap[productId.toString()]) {
+        updatedMap[productId.toString()] = {
+          ...updatedMap[productId.toString()],
+          precio: value === "" ? null : parseFloat(value as string),
+        };
+      } else {
+        // Si no existe, creamos un nuevo objeto de configuración
+        updatedMap[productId.toString()] = {
+          id: 0, // Temporal, se asignará en el backend
+          challenge_product: { id: productId, documentId: "" },
+          challenge_relation: { id: 0, documentId: prop.documentId },
+          precio: value === "" ? null : parseFloat(value as string),
+        };
+      }
+      return updatedMap;
+    });
+
+    // También actualizamos el estado editable para mantener la compatibilidad
     setEditableProp((prev) => ({
       ...prev,
       product_configs: (prev.product_configs || []).map((config) =>
@@ -231,28 +319,29 @@ export default function PropDetails({
     }));
   };
 
+  // Preparar datos para guardar
+  const prepareDataForSave = () => {
+    // Convertimos los mapas a arrays para enviar al backend
+    const stageParamsArray = Object.values(stageParamsMap);
+    const productConfigsArray = Object.values(productConfigMap);
+    
+    return {
+      challenge_subcategory: editableProp.challenge_subcategory,
+      challenge_step: editableProp.challenge_step,
+      challenge_stages: editableProp.challenge_stages,
+      challenge_products: editableProp.challenge_products,
+      stage_parameters: stageParamsArray,
+      product_configs: productConfigsArray,
+    };
+  };
+
   // Guardar cambios
   const handleSave = async () => {
     const toastId = toast.loading("Guardando...");
-    const sendData = {
-      challenge_subcategory: editableProp.challenge_subcategory,
-      challenge_step: editableProp.challenge_step,
-      challenge_stages: editableProp.challenge_stages.map((stage) => ({
-        id: stage.id,
-        name: stage.name,
-        minimumTradingDays: stage.minimumTradingDays,
-        maximumDailyLoss: stage.maximumDailyLoss,
-        maximumTotalLoss: stage.maximumTotalLoss,
-        maximumLossPerTrade: stage.maximumLossPerTrade,
-        profitTarget: stage.profitTarget,
-        leverage: stage.leverage,
-      })),
-      challenge_products: editableProp.challenge_products,
-      product_configs: editableProp.product_configs,
-    };
-    // console.log("editableProp:", editableProp);
-    console.log("sendData:", sendData);
-    console.log("objeto a enviar:");
+    const sendData = prepareDataForSave();
+    
+    console.log("Datos a enviar:", sendData);
+    
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/challenge-relations/${editableProp.documentId}/update-with-relations`,
@@ -263,22 +352,7 @@ export default function PropDetails({
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
           },
           body: JSON.stringify({
-            data: {
-              challenge_subcategory: editableProp.challenge_subcategory,
-              challenge_step: editableProp.challenge_step,
-              challenge_stages: editableProp.challenge_stages.map((stage) => ({
-                id: stage.id,
-                name: stage.name,
-                minimumTradingDays: stage.minimumTradingDays,
-                maximumDailyLoss: stage.maximumDailyLoss,
-                maximumTotalLoss: stage.maximumTotalLoss,
-                maximumLossPerTrade: stage.maximumLossPerTrade,
-                profitTarget: stage.profitTarget,
-                leverage: stage.leverage,
-              })),
-              challenge_products: editableProp.challenge_products,
-              product_configs: editableProp.product_configs,
-            },
+            data: sendData,
           }),
         }
       );
@@ -293,7 +367,17 @@ export default function PropDetails({
       actualizarDatos?.();
     } catch (error) {
       toast.error("Hubo un error al guardar.", { id: toastId });
+      console.error("Error al guardar:", error);
     }
+  };
+
+  // Formatear porcentajes
+  const formatPercentage = (value: number | null | undefined) => {
+    //if (value === null || value === undefined || value === "") {
+    if (value === null || value === undefined) {
+      return "—";
+    }
+    return `${value}%`;
   };
 
   // Clases para inputs
@@ -343,7 +427,7 @@ export default function PropDetails({
                     )}
                   </div>
 
-                  {selectedStage && (
+                  {selectedStage && selectedStageId && stageParamsMap[selectedStageId.toString()] && (
                     <CardHeader className="px-0">
                       <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
                         Parámetros para {selectedStage.name}
@@ -351,32 +435,32 @@ export default function PropDetails({
                       <div className="space-y-1 mt-2 text-sm">
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Días mínimos de trading:{" "}
-                          {selectedStage.minimumTradingDays ?? "N/A"}
+                          {stageParamsMap[selectedStageId.toString()].minimumTradingDays ?? "N/A"}
                         </CardDescription>
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Pérdida diaria máxima:{" "}
-                          {selectedStage.maximumDailyLoss ?? "N/A"}
+                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumDailyLoss)}
                         </CardDescription>
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Pérdida máxima total:{" "}
-                          {selectedStage.maximumTotalLoss ?? "N/A"}
+                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumTotalLoss)}
                         </CardDescription>
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Pérdida máxima por operación:{" "}
-                          {selectedStage.maximumLossPerTrade ?? "N/A"}
+                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumLossPerTrade)}
                         </CardDescription>
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Objetivo de ganancia:{" "}
-                          {selectedStage.profitTarget ?? "N/A"}
+                          {formatPercentage(stageParamsMap[selectedStageId.toString()].profitTarget)}
                         </CardDescription>
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Apalancamiento: {selectedStage.leverage ?? "N/A"}
+                          Apalancamiento: {stageParamsMap[selectedStageId.toString()].leverage ?? "N/A"}
                         </CardDescription>
                       </div>
                     </CardHeader>
                   )}
 
-                  {selectedProduct && selectedProductConfig && (
+                  {selectedProduct && selectedProductId && productConfigMap[selectedProductId.toString()] && (
                     <CardHeader className="px-0 mt-4">
                       <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
                         Configuración para {selectedProduct.name}
@@ -384,7 +468,7 @@ export default function PropDetails({
                       <div className="space-y-1 mt-2 text-sm">
                         <CardDescription className="text-zinc-700 dark:text-zinc-300">
                           Precio:{" "}
-                          {selectedProductConfig.price ?? "No configurado"}
+                          {productConfigMap[selectedProductId.toString()].precio ?? "No configurado"}
                         </CardDescription>
                       </div>
                     </CardHeader>
@@ -576,7 +660,7 @@ export default function PropDetails({
                 </div>
               </div>
 
-              {selectedStage && (
+              {selectedStage && selectedStageId && (
                 <CardHeader className="px-0">
                   <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
                     Editar Parámetros para {selectedStage.name}
@@ -587,10 +671,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="minimumTradingDays"
-                        value={selectedStage.minimumTradingDays ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.minimumTradingDays ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "minimumTradingDays",
                             e.target.value
                           )
@@ -603,10 +687,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumDailyLoss"
-                        value={selectedStage.maximumDailyLoss ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.maximumDailyLoss ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "maximumDailyLoss",
                             e.target.value
                           )
@@ -619,10 +703,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumTotalLoss"
-                        value={selectedStage.maximumTotalLoss ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.maximumTotalLoss ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "maximumTotalLoss",
                             e.target.value
                           )
@@ -635,10 +719,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumLossPerTrade"
-                        value={selectedStage.maximumLossPerTrade ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.maximumLossPerTrade ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "maximumLossPerTrade",
                             e.target.value
                           )
@@ -651,10 +735,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="profitTarget"
-                        value={selectedStage.profitTarget ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.profitTarget ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "profitTarget",
                             e.target.value
                           )
@@ -667,15 +751,16 @@ export default function PropDetails({
                       <input
                         type="text"
                         name="leverage"
-                        value={selectedStage.leverage ?? ""}
+                        value={stageParamsMap[selectedStageId.toString()]?.leverage ?? ""}
                         onChange={(e) =>
                           handleStageMetricChange(
-                            selectedStage.id,
+                            selectedStageId,
                             "leverage",
                             e.target.value
                           )
                         }
                         className={inputClasses + " mt-1"}
+                        placeholder="Ej: 1:100"
                       />
                     </CardDescription>
                   </div>
@@ -693,11 +778,7 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="price"
-                        value={
-                          editableProp.product_configs?.find(
-                            (config) => config.product_id === selectedProductId
-                          )?.price ?? ""
-                        }
+                        value={productConfigMap[selectedProductId.toString()]?.precio ?? ""}
                         onChange={(e) =>
                           handleProductPriceChange(
                             selectedProductId,
