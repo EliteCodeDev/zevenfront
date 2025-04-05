@@ -172,9 +172,9 @@ export default function WithdrawsTable() {
     if (!data) return [];
 
     return data.map((item, index) => {
-      const withdraw = item.attributes || item;
+      const withdraw = item || item;
       const challenge = withdraw.challenge?.data?.attributes || withdraw.challenge;
-      const user = challenge?.user?.data?.attributes || challenge?.user;
+      const user = challenge?.user?.data || challenge?.user;
 
       // Se obtiene el nombre completo del usuario combinando firstName y lastName.
       const nombre = user && user.firstName && user.lastName

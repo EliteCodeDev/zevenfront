@@ -16,7 +16,11 @@ import { CheckCircle, XCircle, Eye } from "lucide-react";
 import DashboardLayout from "..";
 import { useRouter } from "next/router";
 import Flag from "react-world-flags";
-import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import { 
+  PencilSquareIcon, 
+  DocumentTextIcon, 
+  EyeIcon 
+} from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -199,9 +203,9 @@ export default function UsersTable() {
       .filter((user) => user.email.toLowerCase().includes(emailSearch.toLowerCase()))
       .filter((user) => {
         if (verificationFilter === "Todos") return true;
-        return verificationFilter === "Verificado"
-          ? user.isVerified
-          : !user.isVerified;
+        if (verificationFilter === "FirmaAprobada") return user.statusSign;
+        if (verificationFilter === "FirmaNoAprobada") return !user.statusSign;
+        return true;
       });
   }, [data, nameSearch, emailSearch, verificationFilter]);
 
@@ -279,9 +283,9 @@ export default function UsersTable() {
                 onChange={(e) => setVerificationFilter(e.target.value)}
                 className="w-full py-2 px-3 rounded-md bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 shadow-sm focus:border-[var(--app-secondary)] focus:ring-1 focus:ring-[var(--app-secondary)]"
               >
-                <option value="Todos">Estado de cuenta</option>
-                <option value="Verificado">Verificado</option>
-                <option value="No Verificado">No Verificado</option>
+                <option value="Todos">Todos</option>
+                <option value="FirmaAprobada">Firma Aprobada</option>
+                <option value="FirmaNoAprobada">Firma No Aprobada</option>
               </select>
             </div>
           </div>
@@ -293,9 +297,6 @@ export default function UsersTable() {
                 <TableRow>
                   <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Nombre Completo</TableHead>
                   <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Email</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Teléfono</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">País</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Verificado</TableHead>
                   <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Firma Aprobada</TableHead>
                   <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Acciones</TableHead>
                 </TableRow>
@@ -309,36 +310,16 @@ export default function UsersTable() {
                     >
                       <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">{user.firstName + " " + user.lastName}</TableCell>
                       <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">{user.email}</TableCell>
-                      <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">{user.phone}</TableCell>
-                      <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">
-                        <div className="flex items-center space-x-2">
-                          {user.countryCode && <Flag country={user.countryCode.toLowerCase()} className="w-6 h-4 shadow-sm" />}
-                          <span>{user.country}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        {user.isVerified ? (
-                          <div className="flex items-center space-x-2">
-                            <CheckCircle className="text-green-600 w-5 h-5" />
-                            <span className="text-green-600 font-medium">Verificado</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center space-x-2">
-                            <XCircle className="text-red-500 w-5 h-5" />
-                            <span className="text-red-500 font-medium">No Verificado</span>
-                          </div>
-                        )}
-                      </TableCell>
                       <TableCell className="py-3">
                         {user.statusSign ? (
                           <div className="flex items-center space-x-2">
                             <CheckCircle className="text-green-600 w-5 h-5" />
-                            <span className="text-green-600 font-medium">Aprobado</span>
+                            <span className="text-green-600 font-medium">Si</span>
                           </div>
                         ) : (
                           <div className="flex items-center space-x-2">
                             <XCircle className="text-red-500 w-5 h-5" />
-                            <span className="text-red-500 font-medium">No Aprobado</span>
+                            <span className="text-red-500 font-medium">No</span>
                           </div>
                         )}
                       </TableCell>
@@ -346,10 +327,12 @@ export default function UsersTable() {
                         <div className="flex flex-wrap gap-2">
                           <Button
                             onClick={() => router.push(`/admin/users/${user.documentId}`)}
-                            className="px-3 py-1 h-9 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm"
+                            className="px-3 py-1 h-9 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm flex items-center space-x-1"
                           >
-                            Detalles
+                            <DocumentTextIcon className="w-5 h-5" />
+                            <span>Detalles</span>
                           </Button>
+                          {/* Botón de Editar comentado temporalmente
                           <Button
                             onClick={() => setSelectedUserForEdit(user)}
                             className="px-3 py-1 h-9 bg-[var(--app-secondary)] text-black rounded-md hover:opacity-90 flex items-center space-x-1 shadow-sm"
@@ -357,11 +340,12 @@ export default function UsersTable() {
                             <PencilSquareIcon className="w-5 h-5" />
                             <span>Editar</span>
                           </Button>
+                          */}
                           <Button
                             onClick={() => openPdfModal(user)}
                             className="px-3 py-1 h-9 bg-zinc-200 dark:bg-zinc-600 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-500 flex items-center space-x-1 shadow-sm"
                           >
-                            <Eye className="w-5 h-5" />
+                            <EyeIcon className="w-5 h-5" />
                             <span>PDF</span>
                           </Button>
                           <div className="flex items-center space-x-2 bg-white dark:bg-zinc-800 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700">
@@ -381,7 +365,7 @@ export default function UsersTable() {
                   ))
                 ) : (
                   <TableRow className="hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    <TableCell colSpan={7} className="h-24 text-center text-zinc-500 dark:text-zinc-400">
+                    <TableCell colSpan={3} className="h-24 text-center text-zinc-500 dark:text-zinc-400">
                       No se encontraron resultados.
                     </TableCell>
                   </TableRow>
