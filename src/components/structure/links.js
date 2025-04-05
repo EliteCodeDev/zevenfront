@@ -9,7 +9,7 @@ export const navigation = [
     { icon: CreditCardIcon, name: 'Facturación', id: 'billing', href: '/billing' }, // Representa pagos y facturación.
     { icon: ChatBubbleLeftEllipsisIcon, name: 'Sociales', id: 'social', href: '/social' }, // Representa interacciones sociales.
     { icon: LifebuoyIcon, name: 'Soporte', id: 'support', href: '/support' }, // Icono clásico de soporte.
-    { icon: ArrowRightOnRectangleIcon, name: 'Volver a la web', id: 'website', href: 'https://neocapitalfunding.com/' }, // Icono clásico de salir.
+    { icon: ArrowRightOnRectangleIcon, name: 'Volver a la web', id: 'website', href: process.env.NEXT_PUBLIC_WOOCOMMERCE_URL || 'https://zevenglobalfunding.com/' }, // Icono clásico de salir.
 
 
 ];
@@ -27,6 +27,8 @@ export const principalButton = [
 ];
 
 export const FooterNav = [
-    { name: 'Política de Privacidad', href: 'https://neocapitalfunding.com/privacy-policy/' },
-    { name: 'Términos y Condiciones', href: 'https://neocapitalfunding.com/terms-of-service/' }
+    { name: 'Política de Privacidad', href: `${process.env.NEXT_PUBLIC_WOOCOMMERCE_URL || ""}/privacy-policy/` },
+    {
+        name: 'Términos y Condiciones', href: `${process.env.NEXT_PUBLIC_WOOCOMMERCE_URL || ""}/terms-of-service/`
+    }
 ];
