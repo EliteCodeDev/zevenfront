@@ -3,11 +3,10 @@
 
 import React, { useState, useMemo } from "react";
 import { useSession } from "next-auth/react";
-import useSWR from "swr";
 import {
-  useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -17,137 +16,157 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Filter } from "lucide-react";
 import DashboardLayout from "..";
 import { useRouter } from "next/router";
 import { useStrapiData } from "@/services/strapiService";
 
-// Columnas de la tabla en español
-const tableColumns = [
+// Configuración de estados
+const STATUS_CONFIG = {
+  init: { 
+    label: "Por Iniciar", 
+    textColor: "text-blue-500", 
+    dotColor: "bg-blue-500" 
+  },
+  approved: { 
+    label: "Aprobado", 
+    textColor: "text-green-500", 
+    dotColor: "bg-green-500" 
+  },
+  disapproved: { 
+    label: "Rechazado", 
+    textColor: "text-red-500", 
+    dotColor: "bg-red-500" 
+  },
+  progress: { 
+    label: "En Progreso", 
+    textColor: "text-yellow-500", 
+    dotColor: "bg-yellow-500" 
+  },
+  withdrawal: { 
+    label: "Retirado", 
+    textColor: "text-purple-500", 
+    dotColor: "bg-purple-500" 
+  },
+  retry: { 
+    label: "Reintento", 
+    textColor: "text-orange-500", 
+    dotColor: "bg-orange-500" 
+  }
+};
+
+// Columnas de la tabla
+const columns = [
   { accessorKey: "traderAccount", header: "Cuenta Trader" },
   { accessorKey: "traderEmail", header: "Email Trader" },
   { accessorKey: "state", header: "Estado" },
   { accessorKey: "step", header: "Fase" },
   { accessorKey: "equity", header: "Capital" },
   { accessorKey: "brokerGroup", header: "Server" },
-  { accessorKey: "actions", header: "Acciones" },
+  { accessorKey: "actions", header: "Acciones" }
 ];
-
-// Definir colores para los estados
-const statusColors = {
-  approved: 'text-green-600 dark:text-green-300',
-  disapproved: 'text-red-600 dark:text-red-300',
-  progress: 'text-yellow-600 dark:text-yellow-300',
-  init: 'text-blue-600 dark:text-blue-300',
-  withdrawal: 'text-purple-600 dark:text-purple-300',
-  retry: 'text-orange-600 dark:text-orange-300',
-};
-
-const statusBgColors = {
-  approved: 'bg-green-100 dark:bg-green-900/40',
-  disapproved: 'bg-red-100 dark:bg-red-900/40',
-  progress: 'bg-yellow-100 dark:bg-yellow-900/40',
-  init: 'bg-blue-100 dark:bg-blue-900/40',
-  withdrawal: 'bg-purple-100 dark:bg-purple-900/40',
-  retry: 'bg-orange-100 dark:bg-orange-900/40',
-};
 
 export default function ChallengesTable() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const [globalFilter, setGlobalFilter] = useState("");
 
-  // const route = session?.jwt ? "challenges?populate=*" : null;
+  // Obtener datos
   const { data, error, isLoading } = useStrapiData("challenges?populate=*");
-  // console.log("data", data);
 
+  // Formatear moneda
   const formatCurrency = (amount) =>
     amount ? `$${parseFloat(amount).toLocaleString("es-ES", { minimumFractionDigits: 2 })}` : "N/A";
 
-  const translateResult = (result) => {
-    switch (result) {
-      case "init":
-        return "Por Iniciar";
-      case "approved":
-        return "Aprobado";
-      case "disapproved":
-        return "Rechazado";
-      case "progress":
-        return "En Progreso";
-      case "withdrawal":
-        return "Retirado";
-      case "retry":
-        return "Reintento";
-      default:
-        return "Desconocido";
-    }
-  };
-
+  // Obtener elemento de estado
   const getStatusElement = (result) => {
-    const text = translateResult(result);
+    const config = STATUS_CONFIG[result] || { 
+      label: "Desconocido", 
+      textColor: "text-gray-500", 
+      dotColor: "bg-gray-500" 
+    };
+    
     return (
-      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium ${statusColors[result] || 'text-gray-600 dark:text-gray-300'} ${statusBgColors[result] || 'bg-gray-100 dark:bg-gray-800'}`}>
-        <span className={`w-2 h-2 mr-2 rounded-full ${result === 'approved' ? 'bg-green-600' :
-          result === 'progress' ? 'bg-yellow-500' :
-            result === 'disapproved' ? 'bg-red-600' :
-              result === 'init' ? 'bg-blue-500' :
-                result === 'withdrawal' ? 'bg-purple-500' :
-                  'bg-orange-500'
-          }`}></span>
-        {text}
+      <span className={`inline-flex items-center text-sm font-medium ${config.textColor}`}>
+        <span className={`w-2 h-2 mr-2 rounded-full ${config.dotColor}`}></span>
+        {config.label}
       </span>
     );
   };
 
-  const router = useRouter();
-
-  const handleButtonClick = (documentId) => {
-    router.push(`/admin/challenges/${documentId}`);
-  };
-
+  // Transformar datos
   const filteredData = useMemo(() => {
-    // console.log(data);
     if (!data) return [];
 
-    return data.map((challenge) => ({
-      traderAccount: challenge.broker_account?.login ?? "N/A",
-      traderEmail: challenge.user?.email ?? "N/A",
-      state: getStatusElement(challenge.result),
-      step: `Fase ${challenge.phase ?? "N/A"}`,
-      equity: formatCurrency(challenge.broker_account?.balance),
-      brokerGroup: challenge.broker_account?.server ?? "N/A",
-      actions: (
-        <Button
-          // variant="outline"
-          size="sm"
-          className="bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white shadow-sm"
-          onClick={() => handleButtonClick(challenge.documentId)}
-        >
-          Ver Detalles
-        </Button>
-      ),
-    }));
-  }, [data]);
+    return data
+      .filter((challenge) => 
+        globalFilter === "" || 
+        challenge.broker_account?.login?.toLowerCase().includes(globalFilter.toLowerCase()) ||
+        challenge.user?.email?.toLowerCase().includes(globalFilter.toLowerCase())
+      )
+      .map((challenge) => ({
+        traderAccount: challenge.broker_account?.login ?? "N/A",
+        traderEmail: challenge.user?.email ?? "N/A",
+        state: getStatusElement(challenge.result),
+        step: `Fase ${challenge.phase ?? "N/A"}`,
+        equity: formatCurrency(challenge.broker_account?.balance),
+        brokerGroup: challenge.broker_account?.server ?? "N/A",
+        actions: (
+          <Button
+            size="sm"
+            className="bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white shadow-sm"
+            onClick={() => router.push(`/admin/challenges/${challenge.documentId}`)}
+          >
+            Ver Detalles
+          </Button>
+        ),
+      }));
+  }, [data, globalFilter]);
 
+  // Instancia de tabla
   const table = useReactTable({
     data: filteredData,
-    columns: tableColumns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
     <DashboardLayout>
-      <div className="p-6 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-white rounded-lg shadow-lg border-t-4 border-[var(--app-secondary)]">
-        <h1 className="text-4xl font-bold mb-6 text-zinc-800 dark:text-white">Challenges</h1>
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-4 rounded-lg mt-4 shadow-sm">
-          <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+      <div className="p-6 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-white rounded-lg shadow-md">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-semibold text-zinc-800 dark:text-white">Challenges</h1>
+          <div className="relative flex items-center space-x-2">
+            <div className="relative">
+              <Input
+                placeholder="Buscar trader"
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="pl-10 w-64 dark:bg-zinc-800 dark:text-white"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
+            </div>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="dark:bg-zinc-800 dark:text-white border-zinc-300 dark:border-zinc-700"
+            >
+              <Filter className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
+          <div className="overflow-x-auto rounded-lg">
             <Table>
-              <TableHeader className="bg-zinc-100 dark:bg-zinc-800">
-                <TableRow>
-                  {tableColumns.map((column) => (
+              <TableHeader className="bg-zinc-50 dark:bg-zinc-800/50">
+                <TableRow className="hover:bg-transparent">
+                  {columns.map((column) => (
                     <TableHead
                       key={column.accessorKey}
-                      className="border-b border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-medium py-3 px-4"
+                      className="text-zinc-600 dark:text-zinc-300 font-medium py-3 px-4 border-b border-zinc-200 dark:border-zinc-700"
                     >
                       {column.header}
                     </TableHead>
@@ -159,34 +178,32 @@ export default function ChallengesTable() {
                   filteredData.map((challenge, index) => (
                     <TableRow
                       key={index}
-                      className={`border-b border-zinc-200 dark:border-zinc-700 ${index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-800/50'
-                        } hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors`}
+                      className={`
+                        ${index % 2 === 0 
+                          ? 'bg-white dark:bg-zinc-900' 
+                          : 'bg-zinc-50 dark:bg-zinc-800/30'
+                        } 
+                        hover:bg-zinc-100 dark:hover:bg-zinc-800/50 
+                        transition-colors
+                        border-b border-zinc-100 dark:border-zinc-800
+                      `}
                     >
-                      <TableCell className="py-3 px-4 text-zinc-700 dark:text-zinc-300">{challenge.traderAccount}</TableCell>
-                      <TableCell className="py-3 px-4 text-zinc-700 dark:text-zinc-300">{challenge.traderEmail}</TableCell>
-                      <TableCell className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${challenge.state === 'Active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                          challenge.state === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                            challenge.state === 'Failed' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                          }`}>
-                          {challenge.state}
-                        </span>
-                      </TableCell>
-                      <TableCell className="py-3 px-4 text-zinc-700 dark:text-zinc-300">{challenge.step}</TableCell>
-                      <TableCell className="py-3 px-4 text-zinc-700 dark:text-zinc-300">{challenge.equity}</TableCell>
-                      <TableCell className="py-3 px-4 text-zinc-700 dark:text-zinc-300">{challenge.brokerGroup}</TableCell>
-                      <TableCell className="py-3 px-4">
-                        <div className="flex space-x-2">
-
-                          {challenge.actions}
-                        </div>
-                      </TableCell>
+                      {columns.map((column) => (
+                        <TableCell 
+                          key={column.accessorKey} 
+                          className="py-3 px-4 text-zinc-700 dark:text-zinc-300"
+                        >
+                          {challenge[column.accessorKey]}
+                        </TableCell>
+                      ))}
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    <TableCell colSpan={tableColumns.length} className="text-center text-zinc-500 dark:text-zinc-400 py-8">
+                  <TableRow>
+                    <TableCell 
+                      colSpan={columns.length} 
+                      className="text-center text-zinc-500 dark:text-zinc-400 py-8"
+                    >
                       No se encontraron datos.
                     </TableCell>
                   </TableRow>
@@ -194,7 +211,9 @@ export default function ChallengesTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="flex justify-between items-center mt-6 px-2">
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center p-4">
             <div className="text-sm text-zinc-600 dark:text-zinc-400">
               Mostrando {filteredData.length} resultados
             </div>
