@@ -1,4 +1,3 @@
-// src/components/forms/parameters/PropDetails.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -373,7 +372,6 @@ export default function PropDetails({
 
   // Formatear porcentajes
   const formatPercentage = (value: number | null | undefined) => {
-    //if (value === null || value === undefined || value === "") {
     if (value === null || value === undefined) {
       return "—";
     }
@@ -394,7 +392,7 @@ export default function PropDetails({
               <div className="flex gap-4 flex-wrap">
                 <div className="flex-[2] min-w-[280px]">
                   <h3 className="text-sm text-zinc-600 dark:text-muted-foreground mb-3">
-                    <Badge className="bg-[var(--app-secondary)]/90 text-black">
+                    <Badge className="bg-[var(--app-secondary)] text-black">
                       Categoría
                     </Badge>
                   </h3>
