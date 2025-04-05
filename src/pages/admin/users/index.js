@@ -30,7 +30,7 @@ const fetcher = (url, token) =>
     },
   }).then((res) => res.json());
 
-const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_PDF_MANAGE || "https://n8n.neocapitalfunding.com/webhook-test/7072a687-cb6f-48e4-aed3-dca35255a1a9";
+const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_PDF_MANAGE || "https://n8n.zevenglobalfunding.com/webhook-test/7072a687-cb6f-48e4-aed3-dca35255a1a9";
 
 export default function UsersTable() {
   const { data: session } = useSession();

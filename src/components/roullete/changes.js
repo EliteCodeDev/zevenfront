@@ -502,7 +502,7 @@ export default function RuletaSorteo({
     try {
       // Call backend to get winning index
       const response = await fetch(
-        "https://n8n.neocapitalfunding.com/webhook/webhook/ruleta",
+        "https://n8n.zevenglobalfunding.com/webhook/webhook/ruleta",
         {
           method: "POST",
           headers: {
@@ -614,7 +614,7 @@ export default function RuletaSorteo({
   const handlePerder = async () => {
     try {
       const ticket = await fetch(
-        "https://n8n.neocapitalfunding.com/webhook/user/lose",
+        "https://n8n.zevenglobalfunding.com/webhook/user/lose",
         {
           method: "POST",
           headers: {
