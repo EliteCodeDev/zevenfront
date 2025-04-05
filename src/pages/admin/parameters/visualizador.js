@@ -1,4 +1,3 @@
-// src/pages/admin/parameters/visualizador.js
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -60,7 +59,7 @@ export default function StepsOrganizado() {
         const relJson = await relRes.json();
         const relItems = relJson.data || [];
 
-        // Fetch 3: ChallengeStage (para los parámetros de stages)
+        // Fetch 3: ChallengeStage (para los stages)
         const stageRes = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/challenge-stages?populate=*`,
           { headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}` } }
@@ -69,12 +68,22 @@ export default function StepsOrganizado() {
         const stageJson = await stageRes.json();
         const stageItems = stageJson.data || [];
 
+        // Fetch 4: StageParameters (para los parámetros) - NUEVO
+        const paramsRes = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stage-parameters?populate=*`,
+          { headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}` } }
+        );
+        if (!paramsRes.ok) throw new Error("Error al cargar StageParameters");
+        const paramsJson = await paramsRes.json();
+        const paramsItems = paramsJson.data || [];
+
         // console.log("Steps =>", stepsItems);
         // console.log("ChallengeRelations =>", relItems);
         // console.log("ChallengeStages =>", stageItems);
+        // console.log("StageParameters =>", paramsItems);
 
         // Estructura reorganizada
-        const organizedData = organizarDatos(stepsItems, relItems, stageItems);
+        const organizedData = organizarDatos(stepsItems, relItems, stageItems, paramsItems);
         setStepsData(organizedData);
 
         // Seleccionar el primer step por defecto
@@ -93,7 +102,7 @@ export default function StepsOrganizado() {
   }, []);
 
   // Función para organizar datos en la estructura solicitada
-  function organizarDatos(steps, relations, stages) {
+  function organizarDatos(steps, relations, stages, parameters) {
     // Primero, agrupamos steps por nombre para combinar los que son iguales
     const stepsByName = {};
 
@@ -147,28 +156,36 @@ export default function StepsOrganizado() {
             // Procesamos los stages asociados a esta relación
             if (rel.challenge_stages && rel.challenge_stages.length > 0) {
               rel.challenge_stages.forEach(stageRef => {
-                // Buscamos los parámetros del stage en la tabla ChallengeStage
-                const stageParams = stages.find(s => s.documentId === stageRef.documentId);
+                // Buscamos el stage en la lista de stages
+                const stageData = stages.find(s => s.documentId === stageRef.documentId);
+                
+                // NUEVO: Buscamos el parámetro que corresponde a esta relación y este stage
+                const stageParam = parameters.find(p => 
+                  p.challenge_relation && 
+                  p.challenge_relation.documentId === rel.documentId && 
+                  p.challenge_stage && 
+                  p.challenge_stage.documentId === stageRef.documentId
+                );
 
                 // Verificamos si este stage ya existe en esta subcategoría
-                if (!existingSubcat.stages.some(s => s.id === stageRef.id)) {
+                if (!existingSubcat.stages.some(s => s.documentId === stageRef.documentId)) {
                   existingSubcat.stages.push({
                     id: stageRef.id,
                     documentId: stageRef.documentId,
                     name: stageRef.name || "Stage sin nombre",
-                    parametros: stageParams ? {
-                      id: stageParams.id,
-                      documentId: stageParams.documentId,
-                      minimumTradingDays: stageParams.minimumTradingDays,
-                      maximumDailyLoss: stageParams.maximumDailyLoss,
-                      profitTarget: stageParams.profitTarget,
-                      leverage: stageParams.leverage,
-                      maximumTotalLoss: stageParams.maximumTotalLoss,
-                      maximumLossPerTrade: stageParams.maximumLossPerTrade,
-                      createdAt: stageParams.createdAt,
-                      updatedAt: stageParams.updatedAt
+                    parametros: stageParam ? {
+                      id: stageParam.id,
+                      documentId: stageParam.documentId,
+                      minimumTradingDays: stageParam.minimumTradingDays,
+                      maximumDailyLoss: stageParam.maximumDailyLoss,
+                      profitTarget: stageParam.profitTarget,
+                      leverage: stageParam.leverage,
+                      maximumTotalLoss: stageParam.maximumTotalLoss,
+                      maximumLossPerTrade: stageParam.maximumLossPerTrade,
+                      createdAt: stageParam.createdAt,
+                      updatedAt: stageParam.updatedAt
                     } : {
-                      // Valores por defecto si no se encuentra el stage
+                      // Valores por defecto si no se encuentra el parámetro
                       minimumTradingDays: null,
                       maximumDailyLoss: null,
                       profitTarget: null,

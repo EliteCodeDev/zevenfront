@@ -1,4 +1,3 @@
-// src/components/forms/parameters/PropDetails.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -41,11 +40,19 @@ export interface ChallengeStage {
   leverage: number;
 }
 
+export interface ProductConfig {
+  id?: string | number;
+  product_id: string | number;
+  relation_id?: string | number;
+  price: number | null;
+}
+
 export interface ChallengeRelationsStages {
   challenge_subcategory: Challenge_subcategory;
   challenge_products: Challenge_products[];
   challenge_step: Challenge_step;
   challenge_stages: ChallengeStage[];
+  product_configs?: ProductConfig[];
   documentId: string;
 }
 
@@ -67,8 +74,22 @@ export default function PropDetails({
   const { data: stagesdata } = useStrapiData("challenge-stages");
   const { data: stepsdata } = useStrapiData("challenge-steps");
 
-  const [editableProp, setEditableProp] = useState(prop);
+  const [editableProp, setEditableProp] = useState({
+    ...prop,
+    product_configs:
+      prop.product_configs ||
+      prop.challenge_products.map((product) => ({
+        product_id: product.id,
+        relation_id: prop.documentId,
+        price: null,
+      })),
+  });
+
   const [selectedStageId, setSelectedStageId] = useState<
+    string | number | null
+  >(null);
+
+  const [selectedProductId, setSelectedProductId] = useState<
     string | number | null
   >(null);
 
@@ -77,6 +98,18 @@ export default function PropDetails({
     editableProp.challenge_stages.find(
       (stage) => stage.id === selectedStageId
     ) || null;
+
+  // Product seleccionado para configuración
+  const selectedProduct =
+    editableProp.challenge_products.find(
+      (product) => product.id === selectedProductId
+    ) || null;
+
+  const selectedProductConfig = selectedProductId
+    ? editableProp.product_configs?.find(
+        (config) => config.product_id === selectedProductId
+      )
+    : null;
 
   // Filtrado de ítems disponibles
   const productavailable = productsData?.filter(
@@ -96,9 +129,16 @@ export default function PropDetails({
 
   // Handlers para agregar/quitar/actualizar
   const addProduct = (product: Challenge_products) => {
+    const newProductConfig = {
+      product_id: product.id,
+      relation_id: editableProp.documentId,
+      price: null,
+    };
+
     setEditableProp((prev) => ({
       ...prev,
       challenge_products: [...prev.challenge_products, product],
+      product_configs: [...(prev.product_configs || []), newProductConfig],
     }));
   };
 
@@ -108,7 +148,14 @@ export default function PropDetails({
       challenge_products: prev.challenge_products.filter(
         (p) => p.id !== productId
       ),
+      product_configs: (prev.product_configs || []).filter(
+        (config) => config.product_id !== productId
+      ),
     }));
+
+    if (selectedProductId === productId) {
+      setSelectedProductId(null);
+    }
   };
 
   const changeSubcategory = (subcategory: Challenge_subcategory | null) => {
@@ -130,6 +177,10 @@ export default function PropDetails({
       ...prev,
       challenge_stages: prev.challenge_stages.filter((p) => p.id !== stageId),
     }));
+
+    if (selectedStageId === stageId) {
+      setSelectedStageId(null);
+    }
   };
 
   const changeCategory = (category: Challenge_step | null) => {
@@ -162,9 +213,45 @@ export default function PropDetails({
     }));
   };
 
+  const handleProductPriceChange = (
+    productId: string | number,
+    value: string | null
+  ) => {
+    setEditableProp((prev) => ({
+      ...prev,
+      product_configs: (prev.product_configs || []).map((config) =>
+        config.product_id === productId
+          ? {
+              ...config,
+              price: value === "" ? null : parseFloat(value as string),
+            }
+          : config
+      ),
+    }));
+  };
+
   // Guardar cambios
   const handleSave = async () => {
     const toastId = toast.loading("Guardando...");
+    const sendData = {
+      challenge_subcategory: editableProp.challenge_subcategory,
+      challenge_step: editableProp.challenge_step,
+      challenge_stages: editableProp.challenge_stages.map((stage) => ({
+        id: stage.id,
+        name: stage.name,
+        minimumTradingDays: stage.minimumTradingDays,
+        maximumDailyLoss: stage.maximumDailyLoss,
+        maximumTotalLoss: stage.maximumTotalLoss,
+        maximumLossPerTrade: stage.maximumLossPerTrade,
+        profitTarget: stage.profitTarget,
+        leverage: stage.leverage,
+      })),
+      challenge_products: editableProp.challenge_products,
+      product_configs: editableProp.product_configs,
+    };
+    // console.log("editableProp:", editableProp);
+    console.log("sendData:", sendData);
+    console.log("objeto a enviar:");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/challenge-relations/${editableProp.documentId}/update-with-relations`,
@@ -189,6 +276,7 @@ export default function PropDetails({
                 leverage: stage.leverage,
               })),
               challenge_products: editableProp.challenge_products,
+              product_configs: editableProp.product_configs,
             },
           }),
         }
@@ -286,6 +374,20 @@ export default function PropDetails({
                       </div>
                     </CardHeader>
                   )}
+
+                  {selectedProduct && selectedProductConfig && (
+                    <CardHeader className="px-0 mt-4">
+                      <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                        Configuración para {selectedProduct.name}
+                      </CardTitle>
+                      <div className="space-y-1 mt-2 text-sm">
+                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                          Precio:{" "}
+                          {selectedProductConfig.price ?? "No configurado"}
+                        </CardDescription>
+                      </div>
+                    </CardHeader>
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-[200px]">
@@ -327,7 +429,13 @@ export default function PropDetails({
                         className="border border-zinc-200 dark:border-transparent"
                       >
                         <CardContent className="p-2 flex items-center justify-between bg-zinc-50 dark:bg-zinc-800">
-                          <span className="text-xs">{product.name}</span>
+                          <Button
+                            variant="link"
+                            className="text-xs text-zinc-800 dark:text-yellow-100 p-0"
+                            onClick={() => setSelectedProductId(product.id)}
+                          >
+                            {product.name}
+                          </Button>
                         </CardContent>
                       </Card>
                     ))}
@@ -443,14 +551,24 @@ export default function PropDetails({
                     >
                       <CardContent className="p-2 flex items-center justify-between">
                         <span className="text-xs">{product.name}</span>
-                        <Button
-                          variant="destructive"
-                          size="xs"
-                          onClick={() => removeProduct(product.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white"
-                        >
-                          -
-                        </Button>
+                        <div>
+                          <Button
+                            variant="default"
+                            size="xs"
+                            onClick={() => setSelectedProductId(product.id)}
+                            className="bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black mr-2"
+                          >
+                            Configurar Precio
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="xs"
+                            onClick={() => removeProduct(product.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                          >
+                            -
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -553,6 +671,35 @@ export default function PropDetails({
                           handleStageMetricChange(
                             selectedStage.id,
                             "leverage",
+                            e.target.value
+                          )
+                        }
+                        className={inputClasses + " mt-1"}
+                      />
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+              )}
+
+              {selectedProduct && selectedProductId && (
+                <CardHeader className="px-0">
+                  <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                    Configurar Precio para {selectedProduct.name}
+                  </CardTitle>
+                  <div className="space-y-2 mt-2 text-sm">
+                    <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                      Precio:
+                      <input
+                        type="number"
+                        name="price"
+                        value={
+                          editableProp.product_configs?.find(
+                            (config) => config.product_id === selectedProductId
+                          )?.price ?? ""
+                        }
+                        onChange={(e) =>
+                          handleProductPriceChange(
+                            selectedProductId,
                             e.target.value
                           )
                         }
