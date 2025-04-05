@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 // Importamos el componente Certificates existente - ajusta la ruta según tu estructura de archivos
 import Certificates from "../../metrix2/certificates";
+import Loader from '../../../components/loaders/loader';
 
 export default function CertificateVerify() {
   const router = useRouter();
@@ -38,8 +39,8 @@ export default function CertificateVerify() {
   // Mostrar estado de carga
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black-light flex items-center justify-center">
-        <p className="text-gray-600 dark:text-gray-300">Cargando...</p>
+      <div className="min-h-screen bg-zinc-900 dark:bg-black-light flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
@@ -121,7 +122,7 @@ export default function CertificateVerify() {
             <div className="mt-2 flex justify-center">
             <button
                 onClick={() => navigator.clipboard.writeText(shareUrl)}
-                className="flex w-28 justify-center rounded-xl bg-[var(--app-primary)] p-2 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-yellow-200"
+                className="flex w-28 justify-center rounded-xl bg-[var(--app-primary)] p-2 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
             >
                 <svg
                 className="h-6 w-6 text-white"
