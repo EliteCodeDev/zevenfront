@@ -13,8 +13,21 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import DashboardLayout from "../..";
-import { AlertCircle, AlertOctagon, UserCircle, MapPin, Mail, Phone } from "lucide-react";
+import { 
+    AlertCircle, 
+    AlertOctagon, 
+    UserCircle, 
+    MapPin, 
+    Mail, 
+    Phone, 
+    Save, 
+    X, 
+    PencilIcon 
+} from "lucide-react";
 
 const fetcher = async (url, token) => {
     const res = await fetch(url, {
@@ -37,13 +50,94 @@ export default function UserProfile() {
     const router = useRouter();
     const { id } = router.query;
 
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({});
+    const [isSaving, setIsSaving] = useState(false);
+
     // Se mantiene la ruta original
-    const { data, error, isLoading } = useSWR(
+    const { data, error, isLoading, mutate } = useSWR(
         session?.jwt && id
             ? [`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users?filters[documentId][$eq]=${id}&populate[challenges][populate]=broker_account`, session.jwt]
             : null,
         ([url, token]) => fetcher(url, token)
     );
+
+    // Inicializar datos del formulario cuando se cargan los datos
+    React.useEffect(() => {
+        if (data && data.length > 0) {
+            const user = data[0];
+            setFormData({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                country: user.country || '',
+                city: user.city || '',
+                street: user.street || '',
+                zipCode: user.zipCode || ''
+            });
+        }
+    }, [data]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSave = async () => {
+        if (!data || data.length === 0) return;
+
+        setIsSaving(true);
+        try {
+            const user = data[0];
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.jwt}`,
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData?.error?.message || "Error al actualizar usuario");
+            }
+
+            toast.success("Datos actualizados correctamente");
+            mutate(); // Recargar datos
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Error al actualizar usuario:", error);
+            toast.error(`Error: ${error.message}`);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleCancel = () => {
+        // Resetear form data a los valores originales
+        if (data && data.length > 0) {
+            const user = data[0];
+            setFormData({
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                country: user.country || '',
+                city: user.city || '',
+                street: user.street || '',
+                zipCode: user.zipCode || ''
+            });
+        }
+        setIsEditing(false);
+    };
 
     const [resultFilter, setResultFilter] = useState("");
     const [phaseFilter, setPhaseFilter] = useState("");
@@ -132,49 +226,167 @@ export default function UserProfile() {
 
                 {/* Información del usuario */}
                 <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800/50 p-6 rounded-lg mb-8 border border-[var(--app-primary)]/10 dark:border-zinc-700">
-                    <h2 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Información Personal</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Nombre Completo</p>
-                            <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.firstName} {user.lastName}</p>
-                        </div>
-                        <div>
-                            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Email</p>
-                            <div className="flex items-center space-x-2">
-                                <Mail className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</p>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">Información Personal</h2>
+                        {!isEditing ? (
+                            <Button 
+                                onClick={() => setIsEditing(true)} 
+                                className="bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black rounded-md flex items-center gap-1"
+                            >
+                                <PencilIcon className="h-4 w-4" />
+                                <span>Editar</span>
+                            </Button>
+                        ) : (
+                            <div className="flex gap-2">
+                                <Button 
+                                    onClick={handleSave} 
+                                    className="bg-green-600 hover:bg-green-700 text-white rounded-md flex items-center gap-1"
+                                    disabled={isSaving}
+                                >
+                                    <Save className="h-4 w-4" />
+                                    <span>{isSaving ? "Guardando..." : "Guardar"}</span>
+                                </Button>
+                                <Button 
+                                    onClick={handleCancel} 
+                                    className="bg-zinc-200 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-600 rounded-md flex items-center gap-1"
+                                >
+                                    <X className="h-4 w-4" />
+                                    <span>Cancelar</span>
+                                </Button>
                             </div>
-                        </div>
-                        <div>
-                            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Teléfono</p>
-                            <div className="flex items-center space-x-2">
-                                <Phone className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.phone || 'No disponible'}</p>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
-                    <div className="mt-6 border-t border-[var(--app-primary)]/10 dark:border-zinc-700 pt-4">
-                        <h3 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Dirección</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div>
-                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">País</p>
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.country || 'No disponible'}</p>
+                    {!isEditing ? (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div>
+                                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Nombre Completo</p>
+                                    <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.firstName} {user.lastName}</p>
+                                </div>
+                                <div>
+                                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Email</p>
+                                    <div className="flex items-center space-x-2">
+                                        <Mail className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Teléfono</p>
+                                    <div className="flex items-center space-x-2">
+                                        <Phone className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.phone || 'No disponible'}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Ciudad</p>
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.city || 'No disponible'}</p>
+
+                            <div className="mt-6 border-t border-[var(--app-primary)]/10 dark:border-zinc-700 pt-4">
+                                <h3 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Dirección</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div>
+                                        <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">País</p>
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.country || 'No disponible'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Ciudad</p>
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.city || 'No disponible'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Calle</p>
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.street || 'No disponible'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Código Postal</p>
+                                        <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.zipCode || 'No disponible'}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Calle</p>
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.street || 'No disponible'}</p>
+                        </>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                <div>
+                                    <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Nombre</label>
+                                    <Input
+                                        name="firstName"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                        className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Apellido</label>
+                                    <Input
+                                        name="lastName"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                        className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Email</label>
+                                    <Input
+                                        name="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Teléfono</label>
+                                    <Input
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Código Postal</p>
-                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.zipCode || 'No disponible'}</p>
+
+                            <div className="border-t border-[var(--app-primary)]/10 dark:border-zinc-700 pt-4">
+                                <h3 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Dirección</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">País</label>
+                                        <Input
+                                            name="country"
+                                            value={formData.country}
+                                            onChange={handleChange}
+                                            className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Ciudad</label>
+                                        <Input
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleChange}
+                                            className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Calle</label>
+                                        <Input
+                                            name="street"
+                                            value={formData.street}
+                                            onChange={handleChange}
+                                            className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-zinc-500 dark:text-zinc-400 text-sm mb-1">Código Postal</label>
+                                        <Input
+                                            name="zipCode"
+                                            value={formData.zipCode}
+                                            onChange={handleChange}
+                                            className="w-full bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Challenges */}
