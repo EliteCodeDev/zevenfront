@@ -126,7 +126,7 @@ export function ProductsManager({ pageSize }) {
     const loadProducts = async () => {
       try {
         const data = await fetchStrapiData(
-          "challenge-products?populate=product_config"
+          "challenge-products?populate=product_configs"
         );
         setProducts(
           data.map((item) => ({

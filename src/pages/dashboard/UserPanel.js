@@ -138,19 +138,41 @@ export default function Index() {
             localStorage.setItem("visibility", JSON.stringify(visibility));
         }
     }, [visibility]);
-
     // Función para obtener el nombre del stage según la fase del challenge
     const getStageName = (challenge) => {
-        switch (challenge.phase) {
-            case 1:
-                return "Fase 1";
-            case 2:
-                return "Fase 2";
-            case 3:
-                return "Fase Real";
-            default:
-                return `Fase ${challenge.phase}`;
+        let stageIndex = 0;
+        const stages = challenge?.challenge_relation?.challenge_stages || [];
+        const currentPhase = challenge.phase;
+        const totalStages = challenge?.challenge_relation?.challenge_stages?.length || 0;
+        if (totalStages === 1) {
+            // Si solo hay una fase, siempre es la primera (índice 0)
+            stageIndex = 0;
+        } else if (totalStages === 2) {
+            // Si hay dos fases:
+            // - Si la fase actual es 1 o 2, usamos el índice 0
+            // - Si la fase actual es 3, usamos el índice 1
+            stageIndex = (currentPhase === 3 ? 1 : 0);
+        } else if (totalStages === 3) {
+            // Si hay tres fases, el índice es la fase actual - 1
+            stageIndex = currentPhase - 1;
+        } else {
+            // Para cualquier otro caso, aseguramos que no excedamos el total de fases disponibles
+            stageIndex = Math.min(currentPhase - 1, totalStages - 1);
         }
+
+        // Devolvemos el stage correspondiente
+        console.log("ga" + challenge?.challenge_relation?.challenge_stages[stageIndex]);
+        return stages[stageIndex].name;
+        // switch (challenge.phase) {
+        //     case 1:
+        //         return "Fase 1";
+        //     case 2:
+        //         return "Fase 2";
+        //     case 3:
+        //         return "Fase Real";
+        //     default:
+        //         return `Fase ${challenge.phase}`;
+        // }
     };
 
     // Renderiza el botón solo en móvil en la parte superior
@@ -171,7 +193,7 @@ export default function Index() {
 
     const isVerified = data?.isVerified;
     const toggleVisibility = (id) => setVisibility((prev) => ({ ...prev, [id]: !prev[id] }));
-
+    console.log(data?.challenges);
     // Filtrar challenges que están "en curso" o "por iniciar"
     const activeChallenges = data?.challenges
         ?.map((challenge) => {
@@ -194,7 +216,7 @@ export default function Index() {
 
             return false;
         }) || [];
-
+    console.log("activeChallenges", activeChallenges);
     // Agrupar los challenges por stage (fase)
     const groupedChallengesByStage = activeChallenges.reduce((acc, challenge) => {
         const stageName = getStageName(challenge);
