@@ -9,7 +9,7 @@ export const navigation = [
     { icon: CreditCardIcon, name: 'Facturación', id: 'billing', href: '/billing' }, // Representa pagos y facturación.
     { icon: ChatBubbleLeftEllipsisIcon, name: 'Sociales', id: 'social', href: '/social' }, // Representa interacciones sociales.
     { icon: LifebuoyIcon, name: 'Soporte', id: 'support', href: '/support' }, // Icono clásico de soporte.
-    { icon: ArrowRightOnRectangleIcon, name: 'Volver a la web', id: 'website', href: 'https://neocapitalfunding.com/' }, // Icono clásico de salir.
+    { icon: ArrowRightOnRectangleIcon, name: 'Volver a la web', id: 'website', href: 'https://zevenglobalfunding.com/' }, // Icono clásico de salir.
 
 
 ];
