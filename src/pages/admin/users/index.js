@@ -486,7 +486,7 @@ export default function UsersTable() {
                             disabled={updatingUsers[user.id]} // Deshabilitar durante la actualización
                             onCheckedChange={(checked) => handleVerfifiedChange(user, checked)}
                             className={`
-        data-[state=checked]:bg-amber-500 
+        data-[state=checked]:bg-blue-500 
         data-[state=unchecked]:bg-zinc-300 
         dark:data-[state=unchecked]:bg-zinc-600
         ${updatingUsers[user.id] ? 'opacity-50 cursor-not-allowed' : ''}
