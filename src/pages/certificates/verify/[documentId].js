@@ -6,6 +6,7 @@ import Link from 'next/link';
 // Importamos el componente Certificates existente - ajusta la ruta según tu estructura de archivos
 import Certificates from "../../metrix2/certificates";
 import Loader from '../../../components/loaders/loader';
+import { Toaster, toast } from 'sonner';
 
 export default function CertificateVerify() {
   const router = useRouter();
@@ -56,6 +57,12 @@ export default function CertificateVerify() {
 
   // URL actual para compartir
   const shareUrl = `https://web.zevenglobalfunding.com/certificates/verify/${documentId}`;
+
+  // Función para copiar al portapapeles y mostrar la notificación
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Copiado al portapapeles');
+  };
 
   return (
     <div className="min-h-screen bg-zinc-900 flex flex-col items-center justify-center p-4 md:p-8">
@@ -121,7 +128,7 @@ export default function CertificateVerify() {
             <div className="mt-4 text-[var(--app-primary)] break-all">{shareUrl}</div>
             <div className="mt-2 flex justify-center">
             <button
-                onClick={() => navigator.clipboard.writeText(shareUrl)}
+                onClick={copyToClipboard}
                 className="flex w-28 justify-center rounded-xl bg-[var(--app-primary)] p-2 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
             >
                 <svg
@@ -233,6 +240,7 @@ export default function CertificateVerify() {
           </div>
         </div>
       </div>
+      <Toaster position="top-right" richColors />
     </div>
   );
 }
