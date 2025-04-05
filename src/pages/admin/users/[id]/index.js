@@ -14,11 +14,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import DashboardLayout from "../..";
-import { AlertCircle, AlertOctagon, UserCircle } from "lucide-react";
+import { AlertCircle, AlertOctagon, UserCircle, MapPin, Mail, Phone } from "lucide-react";
 
 const fetcher = async (url, token) => {
-    // console.log("Fetching data from:", url); // Depuración
-
     const res = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -31,7 +29,6 @@ const fetcher = async (url, token) => {
     }
 
     const json = await res.json();
-    // console.log("Datos recibidos de la API:", json); // Ver datos en consola
     return json;
 };
 
@@ -47,9 +44,6 @@ export default function UserProfile() {
             : null,
         ([url, token]) => fetcher(url, token)
     );
-    // console.log("ID de Usuario:", id); // Depuración
-
-    // console.log("Datos en UserProfile:", data); // Depuración
 
     const [resultFilter, setResultFilter] = useState("");
     const [phaseFilter, setPhaseFilter] = useState("");
@@ -126,9 +120,12 @@ export default function UserProfile() {
                             <p className="text-zinc-600 dark:text-zinc-400">{user.firstName} {user.lastName}</p>
                         </div>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap gap-2">
                         <div className={`px-3 py-1 rounded-full text-sm font-medium ${user.isVerified ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
                             {user.isVerified ? 'Verificado' : 'No Verificado'}
+                        </div>
+                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${user.statusSign ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
+                            {user.statusSign ? 'Firma Aprobada' : 'Firma No Aprobada'}
                         </div>
                     </div>
                 </div>
@@ -136,14 +133,46 @@ export default function UserProfile() {
                 {/* Información del usuario */}
                 <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800/50 p-6 rounded-lg mb-8 border border-[var(--app-primary)]/10 dark:border-zinc-700">
                     <h2 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Información Personal</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                             <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Nombre Completo</p>
                             <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.firstName} {user.lastName}</p>
                         </div>
                         <div>
                             <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Email</p>
-                            <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</p>
+                            <div className="flex items-center space-x-2">
+                                <Mail className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.email}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Teléfono</p>
+                            <div className="flex items-center space-x-2">
+                                <Phone className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.phone || 'No disponible'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 border-t border-[var(--app-primary)]/10 dark:border-zinc-700 pt-4">
+                        <h3 className="text-lg font-semibold mb-4 text-zinc-800 dark:text-zinc-200">Dirección</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">País</p>
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.country || 'No disponible'}</p>
+                            </div>
+                            <div>
+                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Ciudad</p>
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.city || 'No disponible'}</p>
+                            </div>
+                            <div>
+                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Calle</p>
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.street || 'No disponible'}</p>
+                            </div>
+                            <div>
+                                <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-1">Código Postal</p>
+                                <p className="font-medium text-zinc-800 dark:text-zinc-200">{user.zipCode || 'No disponible'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
