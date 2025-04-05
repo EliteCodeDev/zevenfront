@@ -409,7 +409,7 @@ export default function PropDetails({
                   </div>
 
                   <h3 className="text-sm text-zinc-600 dark:text-muted-foreground mb-3">
-                    <Badge className="bg-[var(--app-secondary)]/90 text-black">
+                    <Badge className="bg-[var(--app-secondary)] text-black">
                       Subcategoría
                     </Badge>
                   </h3>
