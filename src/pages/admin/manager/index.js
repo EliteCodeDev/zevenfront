@@ -1,3 +1,4 @@
+// src/pages/admin/manager/index.js
 "use client";
 
 import React, { useState } from "react";
