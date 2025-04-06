@@ -353,10 +353,10 @@ export default function WithdrawsTable() {
                       <TableCell className="py-3 px-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">{item.amount}</TableCell>
                       <TableCell className="py-3 px-4">
                         <span className={`px-3 py-1 text-xs font-medium rounded-full ${item.estado === "pagado"
-                          ? "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300"
-                          : item.estado === "rechazado"
-                            ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300"
-                            : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-300"
+                            ? "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300"  // Verde para pagado/aprobado
+                            : item.estado === "cancelado"
+                              ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300"  // Rojo para rechazado/cancelado
+                              : "bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-300"  // Ámbar para proceso
                           }`}>
                           {item.estado}
                         </span>

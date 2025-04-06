@@ -33,6 +33,7 @@ import { toast } from "sonner";
 
 // Importar useWooCommerce hook
 import { useWooCommerce } from "@/services/useWoo";
+import { type } from "os";
 
 // Validación
 const productSchema = z.object({
@@ -188,6 +189,7 @@ export function ProductsManager({ pageSize }) {
           const wooPayload = {
             name: formValues.name,
             regular_price: formValues.precio.toString(),
+            type: "variable",
           };
 
           await wooCommerce.put(
