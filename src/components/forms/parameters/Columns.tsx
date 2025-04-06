@@ -112,7 +112,7 @@ export default function Columns(
     {
       accessorKey: "challenge_subcategory",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Categoría" />
+        <DataTableColumnHeader column={column} title="Subcategoría" />
       ),
       cell: ({ row }) => {
         const subcategories = row.getValue(
