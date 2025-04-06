@@ -8,21 +8,21 @@ const Layout = ({ children }) => {
       {/* Imagen de fondo ocupando todo el ancho */}
       <Image
         className="absolute inset-0 w-full h-full object-cover z-[-1]"
-        src="/images/bg-auth.webp"
+        src="/images/bg-auth1.png"
         alt="Fondo de pantalla"
         layout="fill"
         objectFit="cover"
         priority={true} // Carga prioritaria para mejorar la experiencia
       />
       {/* Capa de opacidad con degradado */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/80 to-black z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-black z-0"></div>
       <div className="flex flex-1 min-h-full relative z-10">
         {/* Contenedor para la imagen de monedas */}
         <div className="relative hidden w-1/2 lg:block">
           {/* Imagen de monedas superpuesta */}
           <Image
             className="absolute inset-0 m-auto w-[70%] h-auto object-contain"
-            src="/images/moneda.webp"
+            src="/images/neovsseven2.png"
             alt="Moneda"
             width={960}
             height={1080}
