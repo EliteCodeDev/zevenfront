@@ -8,7 +8,8 @@ import { useWooCommerce } from "@/services/useWoo";
 import { useStrapiData } from "@/services/strapiService";
 import { useAllOrders } from "@/services/allOrders";
 
-const tabs = ["General", "Risk"];
+// Comentado por ahora
+// const tabs = ["General", "Risk"];
 const timeframes = [
   "This Week",
   "This Month",
@@ -31,7 +32,8 @@ const defaultCohortStats = [
 ];
 
 export default function Index() {
-  const [selectedTab, setSelectedTab] = useState("General");
+  // Comentado por ahora
+  // const [selectedTab, setSelectedTab] = useState("General");
   const [selectedTimeframe, setSelectedTimeframe] = useState("This Week");
   const [cohortStatsData, setCohortStatsData] = useState({});
   const [stats, setStats] = useState([
@@ -276,8 +278,9 @@ export default function Index() {
 
   return (
     <DashboardLayout>
-      <div className="p-8 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200 rounded-xl shadow-xl min-h-screen border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center justify-between mb-8">
+      <div className="p-8 bg-gradient-to-br from-white to-gray-50 dark:from-zinc-900 dark:to-zinc-800 text-zinc-800 dark:text-white rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-700">
+        {/* Sección de pestañas comentada por ahora */}
+        {/* <div className="flex items-center justify-between mb-8">
           <div className="flex flex-wrap gap-2">
             {tabs.map((tab) => (
               <Button
@@ -292,14 +295,14 @@ export default function Index() {
               </Button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <h1 className="text-3xl font-bold text-zinc-800 dark:text-zinc-100">Panel de Control</h1>
+          <h1 className="text-3xl font-bold text-[var(--app-secondary)]">Panel de Control</h1>
           <div className="flex items-center gap-3">
             <span className="text-zinc-600 dark:text-zinc-400 font-medium">Periodo:</span>
             <select
-              className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-600 px-4 py-2.5 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--app-secondary)] focus:border-transparent transition-all"
+              className="bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white border border-gray-300 dark:border-zinc-600 px-4 py-2.5 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--app-secondary)] transition-all"
               value={selectedTimeframe}
               onChange={(e) => setSelectedTimeframe(e.target.value)}
             >
@@ -329,7 +332,7 @@ export default function Index() {
         </div>
 
         {isLoading ? (
-          <div className="mt-6 p-8 bg-white dark:bg-zinc-800 rounded-xl text-center border border-zinc-200 dark:border-zinc-700 shadow-md">
+          <div className="mt-6 p-8 bg-white dark:bg-zinc-800 rounded-lg text-center border border-zinc-200 dark:border-zinc-700 shadow-md">
             <div className="flex flex-col items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--app-secondary)] mb-4"></div>
               <p className="text-zinc-800 dark:text-zinc-200 font-medium">Cargando datos...</p>
@@ -345,26 +348,24 @@ export default function Index() {
 
 export function CohortStatsTable({ cohortStats }) {
   return (
-    <div className="rounded-xl mt-4 border border-zinc-300 dark:border-zinc-800 overflow-hidden shadow-md bg-white dark:bg-zinc-800">
+    <div className="rounded-lg mt-4 border border-zinc-200 dark:border-zinc-700 overflow-hidden shadow-md bg-white dark:bg-zinc-800">
       <table className="w-full text-left text-zinc-900 dark:text-zinc-300">
         <thead>
-          <tr className="bg-zinc-100 dark:bg-zinc-700 border-b border-zinc-300 dark:border-zinc-700">
-            <th className="px-6 py-4 font-semibold text-zinc-700 dark:text-zinc-200">Métrica</th>
-            <th className="px-6 py-4 font-semibold text-zinc-700 dark:text-zinc-200">Valor</th>
+          <tr className="bg-[var(--app-primary)] dark:bg-zinc-800">
+            <th className="px-6 py-4 text-sm font-semibold text-zinc-100 dark:text-zinc-200">Métrica</th>
+            <th className="px-6 py-4 text-sm font-semibold text-zinc-100 dark:text-zinc-200">Valor</th>
           </tr>
         </thead>
         <tbody>
           {cohortStats.map((stat, index) => (
             <tr
               key={index}
-              className={`border-b border-zinc-200 dark:border-zinc-700 bg-[var(--app-primary)] hover:bg-[var(--app-primary)]/80 transition-colors duration-150`}
+              className={`border-b border-zinc-200 dark:border-zinc-700 ${
+                index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
+              }`}
             >
-              <td className="px-6 py-4 font-medium text-zinc-800 dark:text-zinc-200">
-                {stat.label}
-              </td>
-              <td className="px-6 py-4 font-bold text-zinc-900 dark:text-zinc-100">
-                {stat.value}
-              </td>
+              <td className="px-6 py-3 text-sm text-zinc-700 dark:text-zinc-300">{stat.label}</td>
+              <td className="px-6 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">{stat.value}</td>
             </tr>
           ))}
         </tbody>

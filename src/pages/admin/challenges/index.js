@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Eye } from "lucide-react";
 import DashboardLayout from "..";
 import { useRouter } from "next/router";
 import { useStrapiData } from "@/services/strapiService";
@@ -116,12 +116,12 @@ export default function ChallengesTable() {
         actions: (
           <Button
             size="sm"
-            className="bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white shadow-sm"
-            onClick={() => router.push(`/admin/challenges/${challenge.documentId}`)}
+            className="px-3 py-1 text-xs font-medium rounded bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white"
           >
             Ver Detalles
           </Button>
         ),
+        documentId: challenge.documentId,
       }));
   }, [data, globalFilter]);
 
@@ -135,38 +135,34 @@ export default function ChallengesTable() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-semibold text-zinc-800 dark:text-white">Challenges</h1>
+      <div className="p-8 bg-gradient-to-br from-white to-gray-50 dark:from-zinc-900 dark:to-zinc-800 text-zinc-800 dark:text-white rounded-xl shadow-lg">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-[var(--app-secondary)]">
+            Challenges
+          </h1>
           <div className="relative flex items-center space-x-2">
             <div className="relative">
               <Input
                 placeholder="Buscar trader"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="pl-10 w-64 dark:bg-zinc-800 dark:text-white"
+                className="pl-10 h-9 text-sm bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--app-secondary)] transition-all"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4" />
             </div>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="dark:bg-zinc-800 dark:text-white border-zinc-300 dark:border-zinc-700"
-            >
-              <Filter className="w-5 h-5" />
-            </Button>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
-          <div className="overflow-x-auto rounded-lg">
+        {/* Tabla */}
+        <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700 shadow-md">
+          <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-zinc-50 dark:bg-zinc-800/50">
-                <TableRow className="hover:bg-transparent">
+              <TableHeader className="bg-[var(--app-primary)] dark:bg-zinc-800">
+                <TableRow>
                   {columns.map((column) => (
                     <TableHead
                       key={column.accessorKey}
-                      className="text-zinc-600 dark:text-zinc-300 font-medium py-3 px-4 border-b border-zinc-200 dark:border-zinc-700"
+                      className="text-sm font-semibold text-zinc-100 py-3 px-4"
                     >
                       {column.header}
                     </TableHead>
@@ -174,24 +170,38 @@ export default function ChallengesTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredData.length > 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="text-center py-10">
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-[var(--app-secondary)] mb-4"></div>
+                        <span className="text-zinc-600 dark:text-zinc-400">Cargando datos...</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : error ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="text-center py-8 bg-red-50 dark:bg-red-900/10">
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="text-red-500 w-6 h-6" />
+                        <span className="text-red-600 dark:text-red-400">Error al cargar los datos</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredData.length > 0 ? (
                   filteredData.map((challenge, index) => (
                     <TableRow
                       key={index}
-                      className={`
-                        ${index % 2 === 0 
-                          ? 'bg-white dark:bg-zinc-900' 
-                          : 'bg-zinc-50 dark:bg-zinc-800/30'
-                        } 
-                        hover:bg-zinc-100 dark:hover:bg-zinc-800/50 
-                        transition-colors
-                        border-b border-zinc-100 dark:border-zinc-800
-                      `}
+                      className={`border-b border-gray-200 dark:border-zinc-700 ${
+                        index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
+                      }`}
+                      onClick={() => router.push(`/admin/challenges/${challenge.documentId}`)}
+                      style={{ cursor: 'pointer' }}
                     >
                       {columns.map((column) => (
                         <TableCell 
                           key={column.accessorKey} 
-                          className="py-3 px-4 text-zinc-700 dark:text-zinc-300"
+                          className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300"
                         >
                           {challenge[column.accessorKey]}
                         </TableCell>
@@ -200,11 +210,11 @@ export default function ChallengesTable() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell 
-                      colSpan={columns.length} 
-                      className="text-center text-zinc-500 dark:text-zinc-400 py-8"
-                    >
-                      No se encontraron datos.
+                    <TableCell colSpan={columns.length} className="text-center py-10">
+                      <div className="flex flex-col items-center justify-center bg-[var(--app-primary)]/5 dark:bg-zinc-800/30 p-6 rounded-lg">
+                        <Eye className="w-10 h-10 text-[var(--app-primary)]/40 dark:text-zinc-500 mb-3" />
+                        <span className="text-zinc-600 dark:text-zinc-400">No se encontraron resultados</span>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}
@@ -212,35 +222,34 @@ export default function ChallengesTable() {
             </Table>
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-between items-center p-4">
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              Mostrando {filteredData.length} resultados
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-              >
-                Anterior
-              </Button>
-              <div className="bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-md px-3 py-1 text-sm text-zinc-700 dark:text-zinc-300">
-                Página {table.getState().pagination.pageIndex + 1}
+          {/* Paginación */}
+          {filteredData.length > 0 && (
+            <div className="flex items-center justify-between p-4 border-t border-gray-200 dark:border-zinc-700">
+              <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                Mostrando {filteredData.length} resultados
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-              >
-                Siguiente
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                >
+                  Anterior
+                </Button>
+                <Button
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                >
+                  Siguiente
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

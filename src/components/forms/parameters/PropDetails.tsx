@@ -454,7 +454,7 @@ export default function PropDetails({
 
                   {selectedStage && selectedStageId && stageParamsMap[selectedStageId.toString()] && (
                     <CardHeader className="px-0">
-                      <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                      <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
                         Parámetros para {selectedStage.name}
                       </CardTitle>
                       <div className="space-y-1 mt-2 text-sm">
@@ -487,7 +487,7 @@ export default function PropDetails({
 
                   {selectedProduct && selectedProductId && productConfigMap[selectedProductId.toString()] && (
                     <CardHeader className="px-0 mt-4">
-                      <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                      <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
                         Configuración para {selectedProduct.name}
                       </CardTitle>
                       <div className="space-y-1 mt-2 text-sm">
@@ -687,7 +687,7 @@ export default function PropDetails({
 
               {selectedStage && selectedStageId && (
                 <CardHeader className="px-0">
-                  <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                  <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
                     Editar Parámetros para {selectedStage.name}
                   </CardTitle>
                   <div className="space-y-2 mt-2 text-sm">
@@ -794,7 +794,7 @@ export default function PropDetails({
 
               {selectedProduct && selectedProductId && (
                 <CardHeader className="px-0">
-                  <CardTitle className="text-[var(--app-secondary)] dark:text-amber-400">
+                  <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
                     Configurar Precio para {selectedProduct.name}
                   </CardTitle>
                   <div className="space-y-2 mt-2 text-sm">
