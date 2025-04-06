@@ -14,64 +14,66 @@ export default function IndexPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-8 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-white rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-700 border-t-4 border-t-[var(--app-secondary)]">
+      <div className="p-8 bg-gradient-to-br from-white to-gray-50 dark:from-zinc-900 dark:to-zinc-800 text-zinc-800 dark:text-white rounded-xl shadow-lg">
         {/* Título principal */}
-        <h1 className="text-4xl font-extrabold mb-8 text-zinc-800 dark:text-white">
-          <span className="border-b-2 border-[var(--app-secondary)] pb-1">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-[var(--app-secondary)]">
             Gestión de Registros
-          </span>
-        </h1>
-
-        {/* Control de filas por página */}
-        <div className="mb-8 bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-4 sm:p-6 rounded-lg border border-[var(--app-primary)]/20 dark:border-zinc-700 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-          <div className="text-zinc-700 dark:text-zinc-300 font-medium">
-            Filas por página:
+          </h1>
+          
+          {/* Control de filas por página */}
+          <div className="flex items-center gap-3 bg-white/60 dark:bg-zinc-800/60 px-4 py-2 rounded-lg shadow-sm backdrop-blur-sm">
+            <span className="text-zinc-700 dark:text-zinc-300 font-medium text-sm whitespace-nowrap">
+              Filas por página:
+            </span>
+            <RowsPerPage pageSize={pageSize} onPageSizeChange={setPageSize} />
           </div>
-          <RowsPerPage pageSize={pageSize} onPageSizeChange={setPageSize} />
         </div>
 
         {/* Grid con las 3 tarjetas (Subcategorías, Balances, Fases) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
           {/* Subcategorías */}
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-[var(--app-primary)]/20 dark:border-zinc-700 shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md">
-            <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-4 border-b border-[var(--app-primary)]/20 dark:border-zinc-700 flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[var(--app-secondary)]" />
-              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
-                Subcategorías
-              </h2>
-            </div>
-            <div className="p-4 sm:p-6 flex-grow bg-white dark:bg-zinc-900">
-              <SubcategoriesManager pageSize={pageSize} />
-            </div>
-          </div>
+          <Card 
+            icon={<Settings className="w-5 h-5 text-blue-400" />}
+            title="Subcategorías"
+          >
+            <SubcategoriesManager pageSize={pageSize} />
+          </Card>
 
           {/* Balances (Productos) */}
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-[var(--app-primary)]/20 dark:border-zinc-700 shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md">
-            <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-4 border-b border-[var(--app-primary)]/20 dark:border-zinc-700 flex items-center gap-2">
-              <PackageIcon className="w-5 h-5 text-[var(--app-secondary)]" />
-              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
-                Balances
-              </h2>
-            </div>
-            <div className="p-4 sm:p-6 flex-grow bg-white dark:bg-zinc-900">
-              <ProductsManager pageSize={pageSize} />
-            </div>
-          </div>
+          <Card 
+            icon={<PackageIcon className="w-5 h-5 text-blue-400" />}
+            title="Balances"
+          >
+            <ProductsManager pageSize={pageSize} />
+          </Card>
 
           {/* Fases */}
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-[var(--app-primary)]/20 dark:border-zinc-700 shadow-sm overflow-hidden flex flex-col transition-shadow hover:shadow-md">
-            <div className="bg-[var(--app-primary)]/5 dark:bg-zinc-800 p-4 border-b border-[var(--app-primary)]/20 dark:border-zinc-700 flex items-center gap-2">
-              <Layers className="w-5 h-5 text-[var(--app-secondary)]" />
-              <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
-                Fases
-              </h2>
-            </div>
-            <div className="p-4 sm:p-6 flex-grow bg-white dark:bg-zinc-900">
-              <StagesManager pageSize={pageSize} />
-            </div>
-          </div>
+          <Card 
+            icon={<Layers className="w-5 h-5 text-blue-400" />}
+            title="Fases"
+          >
+            <StagesManager pageSize={pageSize} />
+          </Card>
         </div>
       </div>
     </DashboardLayout>
+  );
+}
+
+// Componente Card reutilizable para las secciones
+function Card({ icon, title, children }) {
+  return (
+    <div className="bg-white/40 dark:bg-zinc-800/40 rounded-xl shadow-md backdrop-blur-sm overflow-hidden">
+      <div className="flex items-center bg-[var(--app-primary)]/80 dark:bg-zinc-700/80 px-5 py-3">
+        {icon}
+        <h2 className="text-lg font-semibold text-white ml-2">
+          {title}
+        </h2>
+      </div>
+      <div className="p-4">
+        {children}
+      </div>
+    </div>
   );
 }

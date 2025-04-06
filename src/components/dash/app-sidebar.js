@@ -68,11 +68,42 @@ export function AppSidebar({ ...props }) {
   React.useEffect(() => {
     if (session) {
       const avatarUrl = `https://www.gravatar.com/avatar/${md5(session.user.email.trim().toLowerCase())}?s=40&d=retro`;
+      
+      // Intentar obtener firstName y lastName de la sesión
+      let firstName = '';
+      let lastName = '';
+      
+      // Verificar si existe session.user.firstName y session.user.lastName
+      if (session.user.firstName && session.user.lastName) {
+        firstName = session.user.firstName;
+        lastName = session.user.lastName;
+      } 
+      // Verificar si existe session.firstName y session.lastName
+      else if (session.firstName && session.lastName) {
+        firstName = session.firstName;
+        lastName = session.lastName;
+      }
+      // Si no hay nombres, extraer del email
+      else {
+        const emailParts = session.user.email.split('@');
+        const nameParts = emailParts[0].split('.');
+        
+        if (nameParts.length > 1) {
+          firstName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+          lastName = nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1);
+        } else {
+          firstName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+          lastName = '';
+        }
+      }
 
       setUserData({
-        email: session.user.email ,
-        avatar: avatarUrl, // Avatar de Gravatar
-        name: session.user.email || session.firstName, // Si no hay nombre, usar parte del email
+        email: session.user.email,
+        avatar: avatarUrl,
+        firstName: firstName,
+        //lastName: lastName,
+        // Mantenemos name para compatibilidad con versiones anteriores
+        name: `${firstName} ${lastName}`.trim()
       });
     }
   }, [session]);

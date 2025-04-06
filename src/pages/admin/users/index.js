@@ -408,49 +408,75 @@ export default function UsersTable() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-white rounded-lg shadow-lg border-t-4 border-[var(--app-secondary)]">
-        <h1 className="text-4xl font-bold mb-6 text-zinc-800 dark:text-zinc-100">Usuarios</h1>
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-6 rounded-xl shadow-sm mt-4 space-y-6">
-          {/* Filtros */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4">
-            <div className="flex w-full md:w-auto gap-2 flex-col md:flex-row">
+      <div className="p-8 bg-gradient-to-br from-white to-gray-50 dark:from-zinc-900 dark:to-zinc-800 text-zinc-800 dark:text-white rounded-xl shadow-lg">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-[var(--app-secondary)]">
+            Usuarios
+          </h1>
+        </div>
+
+        {/* Filtros - Versión más compacta */}
+        <div className="mb-6 bg-[var(--app-primary)]/10 dark:bg-zinc-800/60 p-2 sm:p-4 rounded-lg border border-[var(--app-primary)]/30 dark:border-zinc-700">
+          <div className="flex items-center justify-between gap-1 -mx-0.5">
+            <div className="flex flex-1 items-center gap-1">
               <Input
-                placeholder="Buscar por nombre..."
+                placeholder="Nombre"
                 value={nameSearch}
                 onChange={(e) => setNameSearch(e.target.value)}
-                className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700 shadow-sm"
+                className="w-[30%] h-9 px-2 text-xs sm:text-sm bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--app-secondary)] transition-all truncate"
               />
               <Input
-                placeholder="Buscar por email..."
+                placeholder="Email"
                 value={emailSearch}
                 onChange={(e) => setEmailSearch(e.target.value)}
-                className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700 shadow-sm"
+                className="w-[35%] h-9 px-2 text-xs sm:text-sm bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--app-secondary)] transition-all truncate"
               />
-            </div>
-
-            <div className="relative w-full md:w-48">
               <select
                 value={verificationFilter}
                 onChange={(e) => setVerificationFilter(e.target.value)}
-                className="w-full py-2 px-3 rounded-md bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 shadow-sm focus:border-[var(--app-secondary)] focus:ring-1 focus:ring-[var(--app-secondary)]"
+                className="w-[24%] h-9 px-1 text-xs sm:text-sm bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border border-gray-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--app-secondary)] transition-all"
               >
                 <option value="Todos">Todos</option>
-                <option value="FirmaAprobada">Firma Aprobada</option>
-                <option value="FirmaNoAprobada">Firma No Aprobada</option>
+                <option value="FirmaAprobada">Aprobada</option>
+                <option value="FirmaNoAprobada">No</option>
               </select>
             </div>
+            <Button
+              onClick={() => {
+                setNameSearch("");
+                setEmailSearch("");
+                setVerificationFilter("Todos");
+              }}
+              variant="outline"
+              size="sm"
+              className="text-xs h-9 px-2 ml-1 whitespace-nowrap"
+            >
+              Limpiar Filtros
+            </Button>
           </div>
+        </div>
 
-          {/* Tabla */}
-          <div className="rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 shadow-sm">
+        {/* Tabla */}
+        <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700 shadow-md">
+          <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-zinc-100 dark:bg-zinc-800">
+              <TableHeader className="bg-[var(--app-primary)] dark:bg-zinc-800">
                 <TableRow>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Nombre Completo</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Email</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Firma Aprobada</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Verificación</TableHead>
-                  <TableHead className="text-zinc-800 dark:text-zinc-200 font-medium py-4">Acciones</TableHead>
+                  <TableHead className="text-sm font-semibold text-zinc-100 py-3 px-4">
+                    Nombre Completo
+                  </TableHead>
+                  <TableHead className="text-sm font-semibold text-zinc-100 py-3 px-4">
+                    Email
+                  </TableHead>
+                  <TableHead className="text-sm font-semibold text-zinc-100 py-3 px-4">
+                    Firma Aprobada
+                  </TableHead>
+                  <TableHead className="text-sm font-semibold text-zinc-100 py-3 px-4">
+                    Verificación
+                  </TableHead>
+                  <TableHead className="text-sm font-semibold text-zinc-100 py-3 px-4">
+                    Acciones
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -458,76 +484,69 @@ export default function UsersTable() {
                   paginatedData.map((user, index) => (
                     <TableRow
                       key={index}
-                      className={`border-b border-zinc-200 dark:border-zinc-700 ${index % 2 === 0 ? 'bg-white dark:bg-zinc-800' : 'bg-zinc-50 dark:bg-zinc-700/30'} hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors`}
+                      className={`border-b border-gray-200 dark:border-zinc-700 ${
+                        index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
+                      }`}
                     >
-                      <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">{user.firstName + " " + user.lastName}</TableCell>
-                      <TableCell className="py-3 text-zinc-700 dark:text-zinc-300">{user.email}</TableCell>
-                      <TableCell className="py-3">
+                      <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{user.firstName + " " + user.lastName}</TableCell>
+                      <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{user.email}</TableCell>
+                      <TableCell className="py-3 px-4">
                         {user.statusSign ? (
-                          <div className="flex items-center space-x-2">
-                            <CheckCircle className="text-green-600 w-5 h-5" />
-                            <span className="text-green-600 font-medium">Aprobado</span>
-                          </div>
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300">
+                            Aprobado
+                          </span>
                         ) : (
-                          <div className="flex items-center space-x-2">
-                            <XCircle className="text-red-500 w-5 h-5" />
-                            <span className="text-red-500 font-medium">Desaprobado</span>
-                          </div>
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300">
+                            Desaprobado
+                          </span>
                         )}
                       </TableCell>
-                      <TableCell className="py-3">
-                        <div className="flex items-center justify-between bg-white dark:bg-zinc-800 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 w-36 max-w-full">
-                          <span className="text-sm text-zinc-600 dark:text-zinc-400 truncate">
-                            {user.isVerified ? "Verificado" : "No verificado"}
-                          </span>
+                      <TableCell className="py-3 px-4">
+                        <div className="flex items-center gap-2">
                           <Switch
                             id={`user-verified-${user.id}`}
                             checked={user.isVerified || false}
-                            disabled={updatingUsers[user.id]} // Deshabilitar durante la actualización
+                            disabled={updatingUsers[user.id]}
                             onCheckedChange={(checked) => handleVerfifiedChange(user, checked)}
                             className={`
-        data-[state=checked]:bg-blue-500 
-        data-[state=unchecked]:bg-zinc-300 
-        dark:data-[state=unchecked]:bg-zinc-600
-        ${updatingUsers[user.id] ? 'opacity-50 cursor-not-allowed' : ''}
-        flex-shrink-0
-      `}
+                              data-[state=checked]:bg-[var(--app-secondary)] 
+                              data-[state=unchecked]:bg-zinc-300 
+                              dark:data-[state=unchecked]:bg-zinc-600
+                              ${updatingUsers[user.id] ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
                           />
+                          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                            {user.isVerified ? "Verificado" : "No verificado"}
+                          </span>
                         </div>
                       </TableCell>
-                      <TableCell className="py-3">
-                        <div className="flex flex-wrap gap-2">
+                      <TableCell className="py-3 px-4">
+                        <div className="flex gap-2">
                           <Button
                             onClick={() => router.push(`/admin/users/${user.documentId}`)}
-                            className="px-3 py-1 h-9 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm flex items-center space-x-1"
+                            className="px-3 py-1 text-xs font-medium rounded bg-[var(--app-secondary)] hover:bg-[var(--app-secondary)]/90 text-black dark:text-white"
                           >
-                            <DocumentTextIcon className="w-5 h-5" />
-                            <span>Detalles</span>
+                            <DocumentTextIcon className="w-4 h-4 mr-1" />
+                            Detalles
                           </Button>
-                          {/* Botón de Editar comentado temporalmente
-                          <Button
-                            onClick={() => setSelectedUserForEdit(user)}
-                            className="px-3 py-1 h-9 bg-[var(--app-secondary)] text-black rounded-md hover:opacity-90 flex items-center space-x-1 shadow-sm"
-                          >
-                            <PencilSquareIcon className="w-5 h-5" />
-                            <span>Editar</span>
-                          </Button>
-                          */}
                           <Button
                             onClick={() => openPdfModal(user)}
-                            className="px-3 py-1 h-9 bg-zinc-200 dark:bg-zinc-600 text-zinc-800 dark:text-white rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-500 flex items-center space-x-1 shadow-sm"
+                            className="px-3 py-1 text-xs font-medium rounded bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200"
                           >
-                            <EyeIcon className="w-5 h-5" />
-                            <span>PDF</span>
+                            <EyeIcon className="w-4 h-4 mr-1" />
+                            PDF
                           </Button>
                         </div>
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow className="hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    <TableCell colSpan={5} className="h-24 text-center text-zinc-500 dark:text-zinc-400">
-                      No se encontraron resultados.
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-10">
+                      <div className="flex flex-col items-center justify-center bg-[var(--app-primary)]/5 dark:bg-zinc-800/30 p-6 rounded-lg">
+                        <Eye className="w-10 h-10 text-[var(--app-primary)]/40 dark:text-zinc-500 mb-3" />
+                        <span className="text-zinc-600 dark:text-zinc-400">No se encontraron resultados</span>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}
@@ -537,124 +556,125 @@ export default function UsersTable() {
 
           {/* Paginación */}
           {filteredData.length > 0 && (
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between px-2 mt-6 gap-4">
-              <div className="text-sm text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800 py-2 px-4 rounded-md border border-zinc-200 dark:border-zinc-700">
-                Mostrando {paginatedData.length} de {filteredData.length} registros
+            <div className="flex items-center justify-between p-4 border-t border-gray-200 dark:border-zinc-700">
+              <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                Mostrando {paginatedData.length} de {filteredData.length} resultados
               </div>
-              <div className="flex items-center flex-wrap gap-4">
-                <div className="flex items-center space-x-2 bg-white dark:bg-zinc-800 py-2 px-4 rounded-md border border-zinc-200 dark:border-zinc-700">
-                  <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Filas por página</p>
-                  <select
-                    value={pageSize}
-                    onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="h-8 w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-1 text-zinc-800 dark:text-zinc-200 focus:border-[var(--app-secondary)] focus:ring-1 focus:ring-[var(--app-secondary)]"
-                  >
-                    {[10, 20, 30, 40, 50].map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  onClick={() => setCurrentPage(0)}
+                  disabled={currentPage === 0}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8 w-8 p-0"
+                >
+                  {"⟪"}
+                </Button>
+                <Button
+                  onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+                  disabled={currentPage === 0}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8 w-8 p-0"
+                >
+                  {"<"}
+                </Button>
+                <div className="flex items-center px-2 h-8 bg-white dark:bg-zinc-800 text-sm text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700 rounded-md">
+                  Página {currentPage + 1} de {totalPages || 1}
                 </div>
-                <div className="flex items-center bg-white dark:bg-zinc-800 py-2 px-4 rounded-md border border-zinc-200 dark:border-zinc-700">
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Página {currentPage + 1} de {totalPages || 1}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                    onClick={() => setCurrentPage(0)}
-                    disabled={currentPage === 0}
-                  >
-                    <span className="sr-only">Ir a la primera página</span>
-                    <span className="h-4 w-4">{"⟪"}</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                    onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-                    disabled={currentPage === 0}
-                  >
-                    <span className="sr-only">Ir a la página anterior</span>
-                    <span className="h-4 w-4">{"<"}</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                    onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
-                    disabled={currentPage >= totalPages - 1}
-                  >
-                    <span className="sr-only">Ir a la página siguiente</span>
-                    <span className="h-4 w-4">{">"}</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                    onClick={() => setCurrentPage(totalPages - 1)}
-                    disabled={currentPage >= totalPages - 1}
-                  >
-                    <span className="sr-only">Ir a la última página</span>
-                    <span className="h-4 w-4">{"⟫"}</span>
-                  </Button>
-                </div>
+                <select
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  className="h-8 px-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-sm"
+                >
+                  {[10, 20, 30, 40, 50].map((size) => (
+                    <option key={size} value={size}>
+                      {size} por página
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  onClick={() => setCurrentPage(Math.min(totalPages - 1, currentPage + 1))}
+                  disabled={currentPage >= totalPages - 1}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8 w-8 p-0"
+                >
+                  {">"}
+                </Button>
+                <Button
+                  onClick={() => setCurrentPage(totalPages - 1)}
+                  disabled={currentPage >= totalPages - 1}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-8 w-8 p-0"
+                >
+                  {"⟫"}
+                </Button>
               </div>
             </div>
           )}
-
-          {/* Modal para ver el PDF */}
-          {selectedUser && (
-            <Dialog open={isPdfModalOpen} onOpenChange={setIsPdfModalOpen}>
-              <DialogContent className="max-w-4xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700">
-                <DialogHeader>
-                  <DialogTitle className="text-zinc-800 dark:text-zinc-200">
-                    Ver PDF de {selectedUser.firstName} {selectedUser.lastName}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="mt-4">
-                  {selectedUser.pdf?.[0]?.url ? (
-                    <embed
-                      src={`${selectedUser.pdf[0].url}#toolbar=0`}
-                      type="application/pdf"
-                      className="w-full min-h-[calc(80vh)] border border-zinc-200 dark:border-zinc-700 rounded-lg"
-                    />
-                  ) : (
-                    <div className="text-center bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-900">
-                      <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                      <p className="text-red-500">No se ha subido un PDF para este usuario.</p>
-                    </div>
-                  )}
-                </div>
-                <DialogFooter className="gap-2 mt-4">
-                  <Button
-                    onClick={handleApprove}
-                    className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
-                    disabled={!selectedUser.pdf?.[0]?.url}
-                  >
-                    Aprobar
-                  </Button>
-                  <Button
-                    onClick={handleDisapprove}
-                    className="bg-red-500 hover:bg-red-600 text-white shadow-sm"
-                    disabled={!selectedUser.pdf?.[0]?.url}
-                  >
-                    Desaprobar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-
-          {/* Edit User Modal */}
-          {selectedUserForEdit && (
-            <EditUserModal
-              user={selectedUserForEdit}
-              isOpen={!!selectedUserForEdit}
-              onClose={closeEditModal}
-            />
-          )}
         </div>
+
+        {/* Modal para ver el PDF */}
+        {selectedUser && (
+          <Dialog open={isPdfModalOpen} onOpenChange={setIsPdfModalOpen}>
+            <DialogContent className="max-w-4xl bg-white dark:bg-zinc-900 border border-[var(--app-primary)]/40 dark:border-zinc-700 rounded-lg shadow-lg">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-zinc-800 dark:text-zinc-200">
+                  Ver PDF de {selectedUser.firstName} {selectedUser.lastName}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="mt-4">
+                {selectedUser.pdf?.[0]?.url ? (
+                  <embed
+                    src={`${selectedUser.pdf[0].url}#toolbar=0`}
+                    type="application/pdf"
+                    className="w-full min-h-[calc(80vh)] border border-zinc-200 dark:border-zinc-700 rounded-lg"
+                  />
+                ) : (
+                  <div className="text-center bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-900">
+                    <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                    <p className="text-red-500">No se ha subido un PDF para este usuario.</p>
+                  </div>
+                )}
+              </div>
+              <DialogFooter className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closePdfModal}
+                  className="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={handleApprove}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                  disabled={!selectedUser.pdf?.[0]?.url}
+                >
+                  Aprobar
+                </Button>
+                <Button
+                  onClick={handleDisapprove}
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                  disabled={!selectedUser.pdf?.[0]?.url}
+                >
+                  Desaprobar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Edit User Modal */}
+        {selectedUserForEdit && (
+          <EditUserModal
+            user={selectedUserForEdit}
+            isOpen={!!selectedUserForEdit}
+            onClose={closeEditModal}
+          />
+        )}
       </div>
     </DashboardLayout>
   );

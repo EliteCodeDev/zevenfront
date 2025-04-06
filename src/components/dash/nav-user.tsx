@@ -30,7 +30,8 @@ export function NavUser({
   user,
 }: {
   user: {
-    name: string
+    firstName: string  // Cambiado de name a firstName
+    lastName: string   // Añadido lastName
     email: string
     avatar: string
   }
@@ -45,6 +46,11 @@ export function NavUser({
     })
   }
 
+  // Obtener iniciales para el fallback del avatar
+  const getInitials = () => {
+    return user.firstName?.charAt(0) + (user.lastName ? user.lastName.charAt(0) : '');
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -54,20 +60,20 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-<Avatar className="h-8 w-8 rounded-full">
-  <AvatarImage src={user.avatar} alt={user.name} className="rounded-full" />
-  <AvatarFallback className="rounded-full">N</AvatarFallback>
-</Avatar>
+              <Avatar className="h-8 w-8 rounded-full">
+                <AvatarImage src={user.avatar} alt={`${user.firstName} ${user.lastName}`} className="rounded-full" />
+                <AvatarFallback className="rounded-full">{getInitials()}</AvatarFallback>
+              </Avatar>
 
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name} </span>
+                <span className="truncate font-semibold">{user.firstName} {user.lastName}</span>
               </div>
              </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-  side="top"
-  align="center"
+            side="top"
+            align="center"
             sideOffset={4}
           >
             <DropdownMenuItem 
