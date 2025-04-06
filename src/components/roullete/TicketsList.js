@@ -43,67 +43,41 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
   return (
     <div className="mb-3 transform transition-all duration-300 hover:scale-[1.01]">
       <div className="bg-zinc-800/90 border border-blue-700 rounded-lg p-3 hover:border-blue-500 transition-colors shadow-md hover:shadow-blue-900/30">
-        {/* Fila superior (icono, ID, estado y porcentaje) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          {/* Sección: icono, ID y estado */}
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-zinc-900 rounded-full flex items-center justify-center shadow-inner">
-              <TicketIcon className="h-5 w-5 text-blue-400" />
-            </div>
-
-            <span className="text-sm font-medium text-gray-300">#{ticket.id}</span>
-
-            <div className="flex items-center text-xs">
-              <div
-                className={`w-2.5 h-2.5 rounded-full mr-1 ${ticket.habilitado ? 'bg-emerald-500' : 'bg-rose-500'}`}
-              ></div>
-              <span
-                className={`font-medium ${ticket.habilitado ? 'text-emerald-400' : 'text-rose-400'}`}
-              >
-                {ticket.habilitado ? 'Disponible' : 'Utilizado'}
-              </span>
-            </div>
-          </div>
-
-          {/* Porcentaje de descuento o recompensa */}
-          <span className="text-xl font-bold text-blue-400 bg-blue-900/20 px-2 py-0.5 rounded-md">
-            {ticket.reward?.porcentaje}%
-          </span>
-        </div>
-
-        {/* Contenedor del código y la fecha */}
-        <div className="bg-zinc-900/80 rounded-lg shadow-md p-3 mt-3 border-l-2 border-blue-600">
-          {/* Código y botón de copiar */}
+        {/* Contenedor del nombre del reward y código */}
+        <div className="bg-zinc-900/80 rounded-lg shadow-md p-3 border-l-2 border-blue-600">
+          {/* Nombre del reward y botón de copiar código */}
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg text-gray-100 truncate">
-              {ticket.codigo || 'No definido'}
-            </h3>
+              {ticket?.reward ? ("Premio: " + ticket.reward?.nombre || 'No definido') : 'Sin Premio'}              </h3>
 
-            <div className="relative flex-shrink-0 flex items-center">
-              <button
-                onClick={copiarCodigo}
-                className="p-1.5 rounded-full hover:bg-blue-800/30 transition-all"
-                title="Copiar código"
-              >
-                <ClipboardDocumentIcon className="h-4 w-4 text-gray-300 hover:text-blue-300" />
-              </button>
-              {copiado && (
-                <div className="ml-1.5 text-xs text-emerald-400 bg-zinc-800/90 py-0.5 px-1.5 rounded-md whitespace-nowrap shadow-md">
-                  ¡Copiado!
+            {ticket?.codigo && (
+              <div className="flex items-center">
+                <span className="text-sm text-gray-400 mr-2">{ticket.codigo}</span>
+                <div className="relative flex-shrink-0">
+                  <button
+                    onClick={copiarCodigo}
+                    className="p-1.5 rounded-full hover:bg-blue-800/30 transition-all"
+                    title="Copiar código"
+                  >
+                    <ClipboardDocumentIcon className="h-4 w-4 text-gray-300 hover:text-blue-300" />
+                  </button>
+                  {copiado && (
+                    <div className="absolute right-0 mt-1 text-xs text-emerald-400 bg-zinc-800/90 py-0.5 px-1.5 rounded-md whitespace-nowrap shadow-md">
+                      ¡Copiado!
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>)}
           </div>
 
-          {/* Fecha de expiración o nombre de la recompensa */}
+          {/* Fecha de expiración */}
           <div className="flex items-center text-xs text-gray-400 mt-2 bg-zinc-800/50 p-1.5 rounded">
             <ClockIcon className="h-3.5 w-3.5 mr-1.5 text-blue-300" />
             {ticket.habilitado ? (
-              <span>Válido hasta: {formatDate(ticket.fechaExpiracionTicket)}</span>
+              <span>Disponible hasta: {formatDate(ticket.fechaExpiracionTicket)}</span>
             ) : (
               <div className="flex justify-between w-full">
                 <span>Válido hasta: {formatDate(ticket.fechaExpiracionPremio)}</span>
-                <span className="text-blue-300">Recompensa: {ticket.reward?.nombre || '-'}</span>
               </div>
             )}
           </div>
@@ -111,19 +85,10 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
 
         {/* Sección inferior: premio o botón para girar la ruleta */}
         <div className="mt-3 pt-2 border-t border-blue-800/50">
-          {ticket.premio ? (
-            <div className="flex items-center gap-2 bg-blue-900/20 px-3 py-2 rounded-lg border border-blue-700/40 shadow-md">
-              <div className="p-1.5 bg-blue-800/40 rounded-full">
-                <GiftIcon className="h-4 w-4 text-blue-300" />
-              </div>
-              <div className="flex-1 truncate">
-                <span className="text-xs text-gray-400 block">Premio:</span>
-                <p className="font-medium text-blue-300 truncate">
-                  {ticket.premio}
-                </p>
-              </div>
-            </div>
-          ) : ticket.habilitado ? (
+          {ticket?.reward ? (
+            <>
+            </>
+          ) : (
             <button
               onClick={() => onOpenRoulette(ticket)}
               className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-medium py-2 px-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-blue-900/50"
@@ -145,16 +110,13 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
               </svg>
               <span>Girar Ruleta</span>
             </button>
-          ) : (
-            <div className="w-full bg-rose-900/50 border border-rose-700/50 text-white text-sm font-medium py-2 px-3 rounded-lg flex items-center justify-center gap-2 shadow-md">
-              <XCircleIcon className="h-4 w-4" />
-              <span>Ticket Utilizado</span>
-            </div>
           )}
         </div>
       </div>
     </div>
   );
+
+
 };
 
 // Independent RouletteModal Component
@@ -211,7 +173,7 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-56 h-56 rounded-full bg-blue-500/10 blur-xl"></div>
           </div>
-          
+
           <RuletaSorteo
             documentId={ticket?.documentId}
             onClose={onClose}
