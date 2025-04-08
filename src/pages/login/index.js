@@ -7,6 +7,7 @@ import { getSession } from 'next-auth/react';
 import Layout from '../../components/layout/auth';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import Recaptcha from '@/components/Recaptcha';
+import SignSocial from '@/components/SignSocial';
 
 export default function SignIn() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,26 +73,12 @@ export default function SignIn() {
   return (
     <Layout className="min-h-screen bg-white dark:bg-black">
       <div className="max-w-md mx-auto px-4 sm:px-0">
-        
+
         {/* Título */}
         <h2 className="text-2xl font-semibold text-center text-white mb-6">Iniciar sesión</h2>
-
+        <SignSocial />
+        <div className='mt-6'></div>
         <form className="space-y-6" onSubmit={onSubmit}>
-          {/* Botón de Google */}
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => signIn('google', { callbackUrl: router.query.callbackUrl || '/' })}
-              className="flex items-center justify-center gap-2 w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white px-4 py-2.5 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
-                alt="Google"
-                className="h-5 w-5"
-              />
-              <span className="text-sm text-zinc-700 dark:text-zinc-300 font-medium">Google</span>
-            </button>
-          </div>
 
           {/* Separador */}
           <div className="relative">
@@ -169,11 +156,10 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full rounded-md p-3 text-sm font-semibold transition ${
-                isSubmitting
-                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
-              }`}
+              className={`w-full rounded-md p-3 text-sm font-semibold transition ${isSubmitting
+                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
+                }`}
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center space-x-2">
