@@ -8,14 +8,14 @@ const Layout = ({ children }) => {
       {/* Imagen de fondo ocupando todo el ancho */}
       <Image
         className="absolute inset-0 w-full h-full object-cover z-[-1]"
-        src="/images/bg-auth1.png"
+        src="/images/bg-auth.png"
         alt="Fondo de pantalla"
         layout="fill"
         objectFit="cover"
         priority={true} // Carga prioritaria para mejorar la experiencia
       />
       {/* Capa de opacidad con degradado */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-black z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/30 to-black z-0"></div>
       <div className="flex flex-1 min-h-full relative z-10">
         {/* Contenedor para la imagen de monedas */}
         <div className="relative hidden w-1/2 lg:block">
@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
           />
         </div>
         {/* Contenedor del formulario con altura dinámica y centrado */}
-        <div className="flex flex-1 w-full lg:w-1/2 flex-col items-center justify-center px-8 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 min-h-full bg-black lg:bg-transparent">
+        <div className="flex flex-1 w-full lg:w-1/2 flex-col items-center justify-center px-8 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 min-h-full  bg-black/30 lg:bg-transparent">
           <div className="mx-auto w-full max-w-sm lg:w-96 flex flex-col items-center">
             <Link href="/" className="flex justify-center">
               <Image
