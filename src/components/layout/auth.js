@@ -21,8 +21,8 @@ const Layout = ({ children }) => {
         <div className="relative hidden w-1/2 lg:block">
           {/* Imagen de monedas superpuesta */}
           <Image
-            className="absolute inset-0 m-auto w-[70%] h-auto object-contain"
-            src="/images/neovsseven2.png"
+            className="absolute inset-0 m-auto w-[90%] h-auto object-contain"
+            src="/images/neovsseven.png"
             alt="Moneda"
             width={960}
             height={1080}
