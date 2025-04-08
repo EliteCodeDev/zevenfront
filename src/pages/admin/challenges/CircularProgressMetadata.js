@@ -58,7 +58,7 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
   const [progressData, setProgressData] = useState({
     target: { value: 0, current: 0, percentage: 0, color: "green", label: "Objetivo de Profit" },
     drawdown: { value: 0, current: 0, percentage: 0, color: "yellow", label: "Drawdown Máximo" },
-    profitFactor: { value: 2, current: 0, percentage: 0, color: "amber", label: "Profit Factor" },
+    profitFactor: { value: 2, current: 0, percentage: 0, color: "blue", label: "Profit Factor" },
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,13 +74,13 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
     try {
       // Utilizar la estructura correcta de metadata
       const metrics = metadata.metrics || metadata;
-      
+
       // Verificar si hay datos válidos para mostrar
-      const hasValidData = metrics && 
-        (metrics.balance !== undefined || 
-         metrics.maxDrawdown !== undefined || 
-         metrics.profitFactor !== undefined);
-      
+      const hasValidData = metrics &&
+        (metrics.balance !== undefined ||
+          metrics.maxDrawdown !== undefined ||
+          metrics.profitFactor !== undefined);
+
       if (!hasValidData) {
         console.warn('No hay datos válidos para mostrar');
         setHasData(false);
@@ -90,11 +90,11 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
 
       // Obtener el balance inicial
       const deposit = initialBalance || metrics.deposits || 10000;
-      
+
       // Obtener valores de configuración desde stageConfig
       let profitTargetPercent = 10; // Valor por defecto
       let maxAllowedDrawdownPercent = 10; // Valor por defecto
-      
+
       if (stageConfig) {
         // Buscar propiedades en stageConfig (estructura correcta)
         if (typeof stageConfig.profitTarget === 'number') {
@@ -102,7 +102,7 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
         } else if (stageConfig.targets && typeof stageConfig.targets.profit_target === 'number') {
           profitTargetPercent = stageConfig.targets.profit_target;
         }
-        
+
         // Priorizar maximumTotalLoss sobre maximumDailyLoss
         if (typeof stageConfig.maximumTotalLoss === 'number') {
           maxAllowedDrawdownPercent = stageConfig.maximumTotalLoss;
@@ -152,8 +152,8 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
           percentage: cappedProfitPercentage,
           color:
             cappedProfitPercentage >= 80 ? "green" :
-            cappedProfitPercentage >= 40 ? "yellow" :
-            "red",
+              cappedProfitPercentage >= 40 ? "yellow" :
+                "red",
           label: "Objetivo de Profit"
         },
         // Drawdown Máximo - Esquema: verde < 40%, amarillo 40-80%, rojo > 80%
@@ -163,8 +163,8 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
           percentage: cappedDrawdownPercentage,
           color:
             cappedDrawdownPercentage >= 80 ? "red" :
-            cappedDrawdownPercentage >= 40 ? "yellow" :
-            "green",
+              cappedDrawdownPercentage >= 40 ? "yellow" :
+                "green",
           label: "Drawdown Máximo"
         },
         // Profit Factor - Esquema: rojo < 40%, amarillo 40-80%, verde > 80%
@@ -174,12 +174,12 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
           percentage: cappedProfitFactorPercentage,
           color:
             cappedProfitFactorPercentage >= 80 ? "green" :
-            cappedProfitFactorPercentage >= 40 ? "yellow" :
-            "red",
+              cappedProfitFactorPercentage >= 40 ? "yellow" :
+                "red",
           label: "Profit Factor"
         }
       });
-      
+
       setHasData(true);
       setLoading(false);
     } catch (err) {
@@ -199,10 +199,10 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
         return "#F59E0B"; // Amarillo ámbar
       case "red":
         return "#EF4444"; // Rojo más intenso
-      case "amber":
-        return "#FBBF24"; // Amber 400
+      case "blue":
+        return "#FBBF24"; // blue 400
       default:
-        return "#FBBF24"; // Amber 400 por defecto
+        return "#FBBF24"; // blue 400 por defecto
     }
   };
 
@@ -239,9 +239,9 @@ const CircularProgressMetadata = ({ metadata, stageConfig, initialBalance }) => 
           const item = progressData[key];
           const textColorClass =
             item.color === "green" ? "text-green-500" :
-            item.color === "yellow" ? "text-yellow-500" :
-            item.color === "red" ? "text-red-500" :
-            "text-amber-400"; // Amber 400 por defecto
+              item.color === "yellow" ? "text-yellow-500" :
+                item.color === "red" ? "text-red-500" :
+                  "text-blue-400"; // blue 400 por defecto
 
           // Formatear la visualización
           let currentDisplay, targetDisplay;

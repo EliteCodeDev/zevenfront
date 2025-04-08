@@ -131,7 +131,7 @@ export default function Objetivos({ challengeConfig, metricsData, initBalance })
                 <div key={idx} className=" bg-white dark:bg-zinc-900    text-white rounded text-xs overflow-hidden">
                     <div className="p-1.5">
                         <div className="flex justify-between items-center">
-                            <span className="dark:text-amber-400 text-amber-500  font-medium">{obj.nombre}</span>
+                            <span className="dark:text-blue-400 text-blue-500  font-medium">{obj.nombre}</span>
                             <button onClick={() => setExpanded(expanded === idx ? null : idx)} className="text-gray-400">
                                 <Icon.Info />
                             </button>

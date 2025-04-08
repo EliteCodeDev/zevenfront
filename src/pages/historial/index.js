@@ -156,7 +156,7 @@ export default function Historial() {
 
     // Determinar si debe mostrarse el botón de certificado
     const shouldShowCertificateButton = (challenge) => {
-        return challenge.result === 'approved' || challenge.result === 'withdrawal';
+        return challenge.result === 'approved' || challenge.result === 'withdrawal' || challenge.phase === 3;
     };
 
     // Renderizar botones de certificados
@@ -242,10 +242,10 @@ export default function Historial() {
 
                     <button
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="bg-[var(--app-primary)] hover:bg-[var(--app-secondary)] text-black px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2 transition-all"
+                        className="bg-[var(--app-primary)] hover:bg-[var(--app-secondary)] text-white px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2 transition-all"
                     >
                         <FunnelIcon className="h-5 w-5" />
-                        <span className="font-medium">Filtros</span>
+                        <span className="font-medium text-white">Filtros</span>
                     </button>
                 </div>
             </div>
@@ -323,7 +323,7 @@ export default function Historial() {
                                         {/* Identificador del challenge y botón de expansión en una fila */}
                                         <div className="flex justify-between items-center mb-3">
                                             <div className="bg-[var(--app-primary)] rounded-lg shadow-md text-black text-center text-base font-bold px-3 py-1.5 transition-all duration-200"                                            >
-                                                <span className="block" title={parentId}>CH-{challenges[0].id}</span>
+                                                <span className="block text-white" title={parentId}>CH-{challenges[0].id}</span>
                                             </div>
                                             <div className="flex items-center">
                                                 <button

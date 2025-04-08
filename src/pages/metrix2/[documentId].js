@@ -27,6 +27,7 @@ const fetcher = (url, token) =>
     return res.json();
   });
 
+
 // Función para determinar el stage correcto basado en la fase actual y los stages disponibles
 const determineCorrectStage = (currentPhase, stages) => {
   if (!stages || !Array.isArray(stages) || stages.length === 0) {
@@ -35,17 +36,21 @@ const determineCorrectStage = (currentPhase, stages) => {
   }
 
   const totalStages = stages.length;
-  let stageIndex;
+  let stageIndex = 0;
 
-  if (totalStages === 2 || totalStages === 3) {
-    if (currentPhase === 2) {
-      stageIndex = 0;
-    } else if (currentPhase === 3) {
-      stageIndex = 0;
-    } else {
-      stageIndex = Math.min(currentPhase - 1, totalStages - 1);
-    }
+  if (totalStages === 1) {
+    // Si solo hay una fase, siempre es la primera (índice 0)
+    stageIndex = 0;
+  } else if (totalStages === 2) {
+    // Si hay dos fases:
+    // - Si la fase actual es 1 o 2, usamos el índice 0
+    // - Si la fase actual es 3, usamos el índice 1
+    stageIndex = (currentPhase === 3 ? 1 : 0);
+  } else if (totalStages === 3) {
+    // Si hay tres fases, el índice es la fase actual - 1
+    stageIndex = currentPhase - 1;
   } else {
+    // Para cualquier otro caso, aseguramos que no excedamos el total de fases disponibles
     stageIndex = Math.min(currentPhase - 1, totalStages - 1);
   }
   return stages[stageIndex];
@@ -74,22 +79,22 @@ const Metrix = () => {
   let { data: userData, error, isLoading } = useSWR(
     session?.jwt && documentId
       ? [
-          session?.roleName === 'Webmaster'
-            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users?populate[challenges][populate]=*`
-            : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me?populate[challenges][populate]=*`,
-          session.jwt,
-        ]
+        session?.roleName === 'Webmaster'
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users?populate[challenges][populate]=*`
+          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me?populate[challenges][populate]=*`,
+        session.jwt,
+      ]
       : null,
     ([url, token]) => fetcher(url, token)
   );
-  
+
   // Modificar userData solo si el rol es 'Webmaster'
   if (session?.roleName === 'Webmaster') {
-    userData = userData?.filter(user => 
+    userData = userData?.filter(user =>
       user.challenges.some(challenge => challenge.documentId === documentId)
     );
 
-    userData= userData?.[0]; // Tomar el primer usuario que cumpla la condición
+    userData = userData?.[0]; // Tomar el primer usuario que cumpla la condición
   }
 
   // Encontrar el challenge específico y obtener sus detalles completos
@@ -120,6 +125,7 @@ const Metrix = () => {
           })
           .then((response) => {
             const detailedChallenge = response.data || response;
+            console.log("Challenge detallado:", detailedChallenge);
             // Se elimina el uso de "attributes"
             let brokerAccount = detailedChallenge.broker_account;
             setCurrentChallenge({
@@ -150,6 +156,7 @@ const Metrix = () => {
     setDynamicBalance(dynBalance);
 
     if (currentChallenge.metadata) {
+      console.log("Metadata:", currentChallenge.metadata);
       try {
         const metadata =
           typeof currentChallenge.metadata === "string"
@@ -207,9 +214,25 @@ const Metrix = () => {
               currentChallenge.challenge_relation.challenge_stages);
 
           const selectedStage = determineCorrectStage(challengePhase, stages);
-
+          console.log("Stage seleccionado1:", selectedStage);
+          console.log("Challenge Fase:", challengePhase);
+          console.log("Stages:", stages);
+          console.log("stage_parameters:", metadata.stage_parameters);
           if (selectedStage) {
-            setCurrentStage(selectedStage);
+            //buscar el stage_paremeter con el documentId del stage seleccionado
+            const stageParameter = metadata.stage_parameters.find(
+              (param) => param.challenge_stage.documentId === selectedStage.documentId
+            );
+            const newStage = {
+              ...selectedStage,
+              maximumTotalLoss: stageParameter?.maximumTotalLoss,
+              profitTarget: stageParameter?.profitTarget,
+              maximumDailyLoss: stageParameter?.maximumDailyLoss,
+              minimumTradingDays: stageParameter?.minimumTradingDays,
+            };
+            console.log("Stage seleccionado:", newStage);
+            // Actualizar el estado con el nuevo stage
+            setCurrentStage(newStage);
 
             const maxLoss = selectedStage.maximumTotalLoss || 10;
             const profitTarget = selectedStage.profitTarget || 10;
@@ -357,7 +380,7 @@ const Metrix = () => {
       <div>
         <div className="flex flex-col items-center justify-center py-20 text-center text-white">
           <div className="p-8 bg-white dark:bg-zinc-800 rounded-lg shadow-lg w-full">
-            <h1 className="text-2xl font-bold text-blue-600">⚠️ Challenge no encontrado ⚠️</h1>
+            <h1 className="text-2xl font-bold text-yellow-600">⚠️ Challenge no encontrado ⚠️</h1>
             <p className="mt-4 text-lg text-gray-700 dark:text-gray-300">
               No se encontró ningún challenge con el ID proporcionado en tu cuenta.
               Verifica que el ID sea correcto y que tengas acceso a este challenge.
@@ -367,8 +390,8 @@ const Metrix = () => {
       </div>
     );
   }
-  console.log(currentChallenge);
-  console.log(currentChallenge.certificates?.length);
+  // console.log(currentChallenge);
+  // console.log(currentChallenge.certificates?.length);
 
   return (
     <div>
@@ -390,8 +413,8 @@ const Metrix = () => {
                 {metadataStats?.equity != null
                   ? metadataStats.equity
                   : dynamicBalance != null
-                  ? dynamicBalance
-                  : "-"}
+                    ? dynamicBalance
+                    : "-"}
               </span>
               <span className="mr-2">
                 Balance Inicial: $
@@ -415,6 +438,20 @@ const Metrix = () => {
                 profitTargetAbsolute={profitTargetAbsolute}
               />
             </div>
+
+            {/* Objetivos para pantallas pequeñas - AÑADIDO AQUÍ */}
+            <div className="block lg:hidden mt-4 bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
+              <h2 className="text-lg font-semibold flex items-center mb-2">
+                <FileChartColumn className="w-5 h-5 mr-2 text-[var(--app-primary)]" />
+                Objetivos
+              </h2>
+              <Objetivos
+                challengeConfig={challengeConfig}
+                metricsData={metadataStats}
+                initBalance={initialBalance}
+              />
+            </div>
+
             {/* Otros componentes: Win/Loss, Estadísticas, Resumen por instrumentos */}
             <div className="grid grid-cols-1 gap-4 mt-4">
               <h2 className="text-lg font-semibold flex items-center">
@@ -502,7 +539,7 @@ const Metrix = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <h3 className="text-sm font-medium">Tipo de cuenta</h3>
-                  <span className="bg-blue-100 text-[var(--app-secondary)] text-xs px-2 py-1 rounded">
+                  <span className="bg-amber-100 text-[var(--app-secondary)] text-xs px-2 py-1 rounded">
                     {currentStage?.name || "-"}
                   </span>
                 </div>
@@ -542,6 +579,16 @@ const Metrix = () => {
                 </div>
               </div>
 
+              {/* Objetivos para pantallas grandes - AÑADIDO AQUÍ */}
+              <div className="hidden lg:block bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
+                <h2 className="text-base font-semibold mb-2">Objetivos</h2>
+                <Objetivos
+                  challengeConfig={challengeConfig}
+                  metricsData={metadataStats}
+                  initBalance={initialBalance}
+                />
+              </div>
+
               {/* Certificados para pantallas grandes - MODIFICADO para usar enlaces directos */}
               <div className="hidden lg:block">
                 <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
@@ -549,34 +596,31 @@ const Metrix = () => {
 
                   {currentChallenge?.certificates && currentChallenge?.certificates.length > 0 ? (
                     <>
-                      {/* Caso 1: Fase 1, 2, o 3 con resultado "approved" */}
-                      {currentChallenge.result === "approved" && currentChallenge.certificates[0] && (
+                      {/* Caso 1: Mostrar certificado si está en Fase 3 (sin importar resultado) */}
+                      {currentChallenge.phase === 3 && currentChallenge.certificates && currentChallenge.certificates[0] && (
                         <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
-                          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
+                          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
+                            <BadgeCheck size={20} /> Ver Certificado Fase 3
+                          </button>
+                        </Link>
+                      )}
+
+                      {/* Caso 2: Si está en otra fase con resultado "approved", mostrar certificado */}
+                      {currentChallenge.phase !== 3 && currentChallenge.result === "approved" && currentChallenge.certificates && currentChallenge.certificates[0] && (
+                        <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
+                          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
                             <BadgeCheck size={20} /> Ver Certificado
                           </button>
                         </Link>
                       )}
 
-                      {/* Caso 2: Fase 3 con resultado "withdrawal" */}
-                      {currentChallenge.result === "withdrawal" && currentChallenge.phase === 3 && (
-                        <div className="space-y-3">
-                          {currentChallenge.certificates[0] && (
-                            <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
-                              <button className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
-                                <BadgeCheck size={20} /> Ver Certificado Fase 3
-                              </button>
-                            </Link>
-                          )}
-                          
-                          {currentChallenge.certificates[1] && (
-                            <Link href={`/certificates/verify/${currentChallenge.certificates[1].documentId}`}>
-                              <button className="flex mt-3 items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
-                                <BadgeCheck size={20} /> Ver Certificado Retirado
-                              </button>
-                            </Link>
-                          )}
-                        </div>
+                      {/* Caso 3: Mostrar certificado adicional si tiene retiro en Fase 3 */}
+                      {currentChallenge.phase === 3 && currentChallenge.result === "withdrawal" && currentChallenge.certificates && currentChallenge.certificates.length > 1 && (
+                        <Link href={`/certificates/verify/${currentChallenge.certificates[1].documentId}`}>
+                          <button className="flex mt-3 items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
+                            <BadgeCheck size={20} /> Ver Certificado Retirado
+                          </button>
+                        </Link>
                       )}
                     </>
                   ) : (
@@ -598,34 +642,31 @@ const Metrix = () => {
 
           {currentChallenge?.certificates && currentChallenge?.certificates.length > 0 ? (
             <>
-              {/* Caso 1: Fase 1, 2, o 3 con resultado "approved" */}
-              {currentChallenge.result === "approved" && currentChallenge.certificates[0] && (
+              {/* Caso 1: Mostrar certificado si está en Fase 3 (sin importar resultado) */}
+              {currentChallenge.phase === 3 && currentChallenge.certificates && currentChallenge.certificates[0] && (
                 <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
-                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
+                    <BadgeCheck size={20} /> Ver Certificado Fase 3
+                  </button>
+                </Link>
+              )}
+
+              {/* Caso 2: Si está en otra fase con resultado "approved", mostrar certificado */}
+              {currentChallenge.phase !== 3 && currentChallenge.result === "approved" && currentChallenge.certificates && currentChallenge.certificates[0] && (
+                <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
+                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
                     <BadgeCheck size={20} /> Ver Certificado
                   </button>
                 </Link>
               )}
 
-              {/* Caso 2: Fase 3 con resultado "withdrawal" */}
-              {currentChallenge.result === "withdrawal" && currentChallenge.phase === 3 && (
-                <div className="space-y-3">
-                  {currentChallenge.certificates[0] && (
-                    <Link href={`/certificates/verify/${currentChallenge.certificates[0].documentId}`}>
-                      <button className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
-                        <BadgeCheck size={20} /> Ver Certificado Fase 3
-                      </button>
-                    </Link>
-                  )}
-                  
-                  {currentChallenge.certificates[1] && (
-                    <Link href={`/certificates/verify/${currentChallenge.certificates[1].documentId}`}>
-                      <button className="flex mt-3 items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 w-full">
-                        <BadgeCheck size={20} /> Ver Certificado Retirado
-                      </button>
-                    </Link>
-                  )}
-                </div>
+              {/* Caso 3: Mostrar certificado adicional si tiene retiro en Fase 3 */}
+              {currentChallenge.phase === 3 && currentChallenge.result === "withdrawal" && currentChallenge.certificates && currentChallenge.certificates.length > 1 && (
+                <Link href={`/certificates/verify/${currentChallenge.certificates[1].documentId}`}>
+                  <button className="flex mt-3 items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 w-full">
+                    <BadgeCheck size={20} /> Ver Certificado Retirado
+                  </button>
+                </Link>
               )}
             </>
           ) : (
@@ -635,7 +676,6 @@ const Metrix = () => {
           )}
         </div>
       </div>
-
       {/* Challenges relacionados */}
       {userData?.challenges && (
         <div className="mt-4">

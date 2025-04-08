@@ -125,10 +125,10 @@ export default function Navbar() {
                                   <Link
                                     href={item.href}
                                     className={`block p-2 rounded-sm text-sm ${item.signOut
-                                        ? 'text-red-600'
-                                        : item.adminOnly
-                                          ? 'text-amber-500'
-                                          : 'text-black dark:text-white'
+                                      ? 'text-red-600'
+                                      : item.adminOnly
+                                        ? 'text-blue-500'
+                                        : 'text-black dark:text-white'
                                       } ${active ? 'bg-zinc-100 dark:bg-zinc-800' : ''}`}
                                     onClick={item.signOut ? handleSignOut : undefined}
                                     target={item.external ? '_blank' : undefined}

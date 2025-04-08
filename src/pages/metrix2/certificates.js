@@ -34,17 +34,17 @@ const Certificados = ({ certificates }) => {
 
         // Determinar si estamos en un dispositivo móvil
         const isMobile = window.innerWidth < 768;
-        
+
         // Ajustar tamaños y posiciones según el dispositivo
         const nameFontSize = isMobile ? 60 : 90;
         const dateFontSize = isMobile ? 30 : 45;
         const qrSize = isMobile ? 150 : 220;
         const qrBackgroundSize = isMobile ? 180 : 250;
-        
+
         // Calcular posiciones ajustadas que mantengan las proporciones
         // independientemente del tamaño de pantalla
         let nameX, nameY, dateX, dateY, qrX, qrY, qrBgX, qrBgY, montoX, montoY, montoSize;
-        
+
         if (isRetiro) {
           // Posiciones para certificado de retiro
           nameX = width / 2 - (isMobile ? 300 : 420);
@@ -100,7 +100,7 @@ const Certificados = ({ certificates }) => {
             color: rgb(1, 0.8, 0),  // Color ámbar
             borderWidth: 0,
           });
-          
+
           firstPage.drawImage(qrImage, {
             x: qrX,
             y: qrY,
@@ -141,7 +141,7 @@ const Certificados = ({ certificates }) => {
             color: rgb(1, 0.8, 0),  // Color ámbar
             borderWidth: 0,
           });
-          
+
           firstPage.drawImage(qrImage, {
             x: qrX,
             y: qrY,
@@ -163,7 +163,7 @@ const Certificados = ({ certificates }) => {
     };
 
     loadPdf();
-    
+
     // Limpieza de URL al desmontar
     return () => {
       if (pdfUrl) {
@@ -175,7 +175,7 @@ const Certificados = ({ certificates }) => {
   // Función para descargar el PDF
   const handleDownload = () => {
     if (!pdfUrl) return;
-    
+
     const link = document.createElement('a');
     link.href = pdfUrl;
     link.download = `Certificado_${certificates?.firstName || ''}_${certificates?.lastName || ''}.pdf`;
@@ -197,7 +197,7 @@ const Certificados = ({ certificates }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center w-full h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -207,18 +207,18 @@ const Certificados = ({ certificates }) => {
       {pdfUrl ? (
         <div className="flex flex-col w-full">
           {/* Contenedor responsivo para el PDF */}
-          <div 
+          <div
             className="w-full overflow-auto bg-white dark:bg-zinc-900 rounded-lg shadow-lg"
-            style={{ 
+            style={{
               maxHeight: 'calc(100vh - 200px)',
               minHeight: '300px'
             }}
           >
-            <div 
-              style={{ 
-                transform: `scale(${zoom/100})`, 
+            <div
+              style={{
+                transform: `scale(${zoom / 100})`,
                 transformOrigin: 'top center',
-                width: `${100/(zoom/100)}%`,
+                width: `${100 / (zoom / 100)}%`,
                 margin: '0 auto'
               }}
             >
@@ -230,19 +230,19 @@ const Certificados = ({ certificates }) => {
               ></iframe>
             </div>
           </div>
-          
-          
+
+
         </div>
       ) : error ? (
         <div className="w-full p-6 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg">
           <p className="text-lg text-red-600 dark:text-red-400 flex items-center">
-            <span className="mr-2">⚠️</span> 
+            <span className="mr-2">⚠️</span>
             Error: {error}
           </p>
         </div>
       ) : (
-        <div className="w-full p-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-lg">
-          <p className="text-lg text-amber-600 dark:text-amber-400 flex items-center">
+        <div className="w-full p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 rounded-lg">
+          <p className="text-lg text-blue-600 dark:text-blue-400 flex items-center">
             <span className="mr-2">⚠️</span>
             No hay certificados disponibles
           </p>

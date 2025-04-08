@@ -329,13 +329,13 @@ const ProductSelector = ({
                                 return (
                                     <li key={productId} className="border-b border-gray-100 dark:border-zinc-700 last:border-b-0">
                                         <div
-                                            className={`px-3 py-3 bg-gray-100 dark:bg-zinc-800 flex items-center justify-between cursor-pointer ${selectedCount > 0 ? 'border-l-4 border-amber-500' : ''}`}
+                                            className={`px-3 py-3 bg-gray-100 dark:bg-zinc-800 flex items-center justify-between cursor-pointer ${selectedCount > 0 ? 'border-l-4 border-blue-500' : ''}`}
                                             onClick={() => toggleProductExpand(productId)}
                                         >
                                             <div className="flex items-center flex-grow">
                                                 <span className="font-medium">{product.name}</span>
                                                 {selectedCount > 0 && (
-                                                    <span className="ml-2 px-2 py-0.5 bg-amber-500 text-white text-xs rounded-full">
+                                                    <span className="ml-2 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">
                                                         {selectedCount}
                                                     </span>
                                                 )}
@@ -368,13 +368,13 @@ const ProductSelector = ({
                                                             return (
                                                                 <li
                                                                     key={variationId}
-                                                                    className={`px-3 py-2 pl-6 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer ${isVariationSelected ? 'bg-amber-100 dark:bg-amber-900/20 border-l-2 border-amber-500' : ''}`}
+                                                                    className={`px-3 py-2 pl-6 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer ${isVariationSelected ? 'bg-blue-100 dark:bg-blue-900/20 border-l-2 border-blue-500' : ''}`}
                                                                     onClick={() => toggleVariation(productId, variation)}
                                                                 >
                                                                     <div className="flex items-center justify-between">
                                                                         <span className="text-sm">{variationName}</span>
                                                                         {isVariationSelected && (
-                                                                            <Check className="w-4 h-4 text-amber-500" />
+                                                                            <Check className="w-4 h-4 text-blue-500" />
                                                                         )}
                                                                     </div>
                                                                 </li>

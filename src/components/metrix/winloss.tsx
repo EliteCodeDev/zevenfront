@@ -17,7 +17,7 @@ export default function WinLoss({ data }) {
     wonTrades: 0,
     lostTrades: 0,
     profitFactor: 0,
-    netProfit: 0
+    netProfit: 0,
   });
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function WinLoss({ data }) {
         wonTrades,
         lostTrades,
         profitFactor,
-        netProfit: totalProfit
+        netProfit: totalProfit,
       });
     }
   }, [data]);
@@ -58,7 +58,7 @@ export default function WinLoss({ data }) {
   const formatCurrency = (value) => {
     return value.toLocaleString(undefined, {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     });
   };
 
@@ -155,22 +155,22 @@ export default function WinLoss({ data }) {
               </div>
 
               {/* Factor de ganancias y beneficio neto */}
-              <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-900">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
                 <div className="flex justify-between">
                   <div>
-                    <div className="text-amber-700 dark:text-amber-400 font-semibold mb-1">
+                    <div className="text-blue-700 dark:text-blue-400 font-semibold mb-1">
                       Profit Factor
                     </div>
-                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-300">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-300">
                       {chartData.profitFactor.toFixed(2)}
                     </div>
-                    <div className="text-sm text-amber-600 dark:text-amber-400 mt-1">
+                    <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
                       (Ratio Ganancia/Pérdida)
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-amber-700 dark:text-amber-400 font-semibold mb-1">
+                    <div className="text-blue-700 dark:text-blue-400 font-semibold mb-1">
                       Beneficio Neto
                     </div>
                     <div
@@ -182,7 +182,7 @@ export default function WinLoss({ data }) {
                     >
                       ${formatCurrency(chartData.netProfit)}
                     </div>
-                    <div className="text-sm text-amber-600 dark:text-amber-400 mt-1">
+                    <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
                       (Total Ganancia - Total Pérdida)
                     </div>
                   </div>
