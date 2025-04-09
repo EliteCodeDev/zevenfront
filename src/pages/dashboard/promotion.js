@@ -58,7 +58,7 @@ export default function PromotionBanner() {
   const promotions = data?.data || [];
   console.log("Promociones recibidas:", promotions);
 
-  // Filtrar promociones activas (sin usar attributes)
+  // Filtrar promociones activas
   const activePromotions = promotions.filter(promo => {
     return promo.isActive !== false; // Si no está marcado como inactivo, lo consideramos activo
   });
@@ -80,7 +80,7 @@ export default function PromotionBanner() {
         <img
           src={imageUrl}
           alt={promotion.name || "Promoción"}
-          className="w-full h-64 object-cover rounded-md"
+          className="w-full h-40 object-cover rounded-md"
         />
       </div>
     );
