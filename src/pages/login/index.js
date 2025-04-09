@@ -19,6 +19,10 @@ export default function SignIn() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!captchaToken) {
+      toast.error("Por favor, completa el CAPTCHA.");
+      return; // Se detiene la ejecución si no se ha completado el CAPTCHA
+    }
     setIsSubmitting(true);
 
     const result = await signIn('credentials', {
