@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 
 import Layout from '../../components/layout/auth';
 import { PhoneInput } from '@/components/phone-input';
-
+import SignSocial from '@/components/SignSocial';
 const strapiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function SignUp() {
@@ -121,31 +121,9 @@ export default function SignUp() {
       <div className="max-w-md mx-auto">
         {/* Título */}
         <h2 className="text-2xl font-semibold text-center text-white mb-6">Crea una cuenta nueva</h2>
-
+        <SignSocial />
         <div className="mt-6">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Botón de Google */}
-            <div className="flex justify-center mt-2">
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={isGoogleSigningIn}
-                className="flex items-center justify-center gap-2 w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded-md shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                {isGoogleSigningIn ? (
-                  <div className="h-5 w-5 border-2 border-gray-600 dark:border-gray-300 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
-                    alt="Google"
-                    className="h-5 w-5"
-                  />
-                )}
-                <span className="text-sm text-zinc-700 dark:text-zinc-300 font-medium">
-                  {isGoogleSigningIn ? "Conectando..." : "Continuar con Google"}
-                </span>
-              </button>
-            </div>
 
             {/* Separador mejorado */}
             <div className="flex items-center justify-center">
@@ -271,11 +249,10 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={isSubmitting || !isPasswordValid()}
-                className={`w-full rounded-md p-3 text-sm font-semibold transition ${
-                  isSubmitting || !isPasswordValid()
-                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                    : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
-                }`}
+                className={`w-full rounded-md p-3 text-sm font-semibold transition ${isSubmitting || !isPasswordValid()
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
+                  }`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">

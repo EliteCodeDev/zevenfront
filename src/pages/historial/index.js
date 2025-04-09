@@ -250,7 +250,7 @@ export default function Historial() {
                 </div>
             </div>
 
-            {/* Sección de filtros - Mejorada */}
+            {/* Sección de filtros - Mejorada +*/}
             <div className="mt-4">
                 {isFilterOpen && (
                     <div className="bg-white p-5 rounded-lg shadow-md border border-gray-100 dark:border-zinc-700/50 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 dark:shadow-black dark:text-white transition-all duration-200">

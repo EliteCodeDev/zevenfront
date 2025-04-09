@@ -48,7 +48,7 @@ const ChallengeRelations = () => {
   const stepsData = useMemo(() => {
     if (!relations || relations.length === 0) return [];
 
-    return [...new Set(relations.map(relation => relation.challenge_step.name))]
+    return [...new Set(relations?.map(relation => relation.challenge_step.name))]
       .map(stepName => {
         const stepRelations = relations.filter(relation => relation.challenge_step.name === stepName);
         const allStages = stepRelations.flatMap(relation => relation.challenge_stages || []);

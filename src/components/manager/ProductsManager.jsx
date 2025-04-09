@@ -189,7 +189,8 @@ export function ProductsManager({ pageSize }) {
           const wooPayload = {
             name: formValues.name,
             regular_price: formValues.precio.toString(),
-            type: "variable",
+            sku: formValues.precio.toString() + "kproduct", //de acá saco el balance en el flujo
+            // type: "variable",
           };
 
           await wooCommerce.put(
@@ -201,7 +202,28 @@ export function ProductsManager({ pageSize }) {
           const wooPayload = {
             name: formValues.name,
             regular_price: formValues.precio.toString(),
-            type: "simple",
+            sku: formValues.precio.toString() + "kproduct", //de acá saco el balance en el flujo
+            type: "variable",
+            attributes: [
+              {
+                id: 0,
+                name: "step",
+                variation: "true",
+                slug: "step",
+                position: 0,
+                visible: true,
+                options: ["Direct Funding", "Two Step"],
+              },
+              {
+                id: 0,
+                name: "subcategory",
+                variation: "true",
+                slug: "subcategory",
+                position: 1,
+                visible: true,
+                options: ["Regular"],
+              },
+            ],
           };
 
           const wooResponse = await wooCommerce.post("products", wooPayload);
@@ -225,9 +247,30 @@ export function ProductsManager({ pageSize }) {
         const wooPayload = {
           name: formValues.name,
           regular_price: formValues.precio.toString(),
-          type: "simple",
+          sku: formValues.precio.toString() + "kproduct", //de acá saco el balance en el flujo
+          type: "variable",
+          attributes: [
+            {
+              id: 0,
+              name: "step",
+              variation: "true",
+              slug: "step",
+              position: 0,
+              visible: true,
+              options: ["Direct Funding", "Two Step"],
+            },
+            {
+              id: 0,
+              name: "subcategory",
+              variation: "true",
+              slug: "subcategory",
+              position: 1,
+              visible: true,
+              options: ["Regular"],
+            },
+          ],
         };
-
+        console.log("WooCommerce Payload:", wooPayload);
         const wooResponse = await wooCommerce.post("products", wooPayload);
         console.log("WooCommerce Response:", wooResponse);
         // 3. Actualizar el Strapi con el id de WooCommerce

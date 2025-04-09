@@ -83,29 +83,43 @@ export default function PropDetails({
   actualizarDatos,
 }: DetailsProps) {
   const { data: productsData = [] } = useStrapiData("challenge-products");
-  const { data: subcategoriesData = [] } = useStrapiData("challenge-subcategories");
+  const { data: subcategoriesData = [] } = useStrapiData(
+    "challenge-subcategories"
+  );
   const { data: stagesdata = [] } = useStrapiData("challenge-stages");
   const { data: stepsdata = [] } = useStrapiData("challenge-steps");
-  
+
   // Nuevas peticiones para obtener parámetros y configuraciones
-  const { data: stageParameters = [] } = useStrapiData("stage-parameters?populate=*");
-  const { data: productConfigs = [] } = useStrapiData("product-configs?populate=*");
-  
-  const [selectedStageId, setSelectedStageId] = useState<string | number | null>(null);
-  const [selectedProductId, setSelectedProductId] = useState<string | number | null>(null);
-  
+  const { data: stageParameters = [] } = useStrapiData(
+    "stage-parameters?populate=*"
+  );
+  const { data: productConfigs = [] } = useStrapiData(
+    "product-configs?populate=*"
+  );
+
+  const [selectedStageId, setSelectedStageId] = useState<
+    string | number | null
+  >(null);
+  const [selectedProductId, setSelectedProductId] = useState<
+    string | number | null
+  >(null);
+
   // Estado para almacenar los parámetros de los stages y las configuraciones de productos
-  const [stageParamsMap, setStageParamsMap] = useState<Record<string, StageParameter>>({});
-  const [productConfigMap, setProductConfigMap] = useState<Record<string, ProductConfig>>({});
-  
+  const [stageParamsMap, setStageParamsMap] = useState<
+    Record<string, StageParameter>
+  >({});
+  const [productConfigMap, setProductConfigMap] = useState<
+    Record<string, ProductConfig>
+  >({});
+
   // Procesar parámetros de stages y configuraciones de productos cuando se carguen
   useEffect(() => {
     if (stageParameters && stageParameters.length > 0 && prop.documentId) {
       const paramsMap: Record<string, StageParameter> = {};
-      
+
       stageParameters.forEach((param: StageParameter) => {
         if (
-          param.challenge_relation && 
+          param.challenge_relation &&
           param.challenge_relation.documentId === prop.documentId &&
           param.challenge_stage
         ) {
@@ -113,18 +127,18 @@ export default function PropDetails({
           paramsMap[param.challenge_stage.id.toString()] = param;
         }
       });
-      
+
       setStageParamsMap(paramsMap);
     }
   }, [stageParameters, prop.documentId]);
-  
+
   useEffect(() => {
     if (productConfigs && productConfigs.length > 0 && prop.documentId) {
       const configMap: Record<string, ProductConfig> = {};
-      
+
       productConfigs.forEach((config: ProductConfig) => {
         if (
-          config.challenge_relation && 
+          config.challenge_relation &&
           config.challenge_relation.documentId === prop.documentId &&
           config.challenge_product
         ) {
@@ -132,7 +146,7 @@ export default function PropDetails({
           configMap[config.challenge_product.id.toString()] = config;
         }
       });
-      
+
       setProductConfigMap(configMap);
     }
   }, [productConfigs, prop.documentId]);
@@ -152,21 +166,27 @@ export default function PropDetails({
   });
 
   // Stage seleccionado para visualización o edición
-  const selectedStage = selectedStageId ? 
-    editableProp.challenge_stages.find(stage => stage.id === selectedStageId) : 
-    null;
-  
+  const selectedStage = selectedStageId
+    ? editableProp.challenge_stages.find(
+        (stage) => stage.id === selectedStageId
+      )
+    : null;
+
   // Parámetros del stage seleccionado
-  const selectedStageParams = selectedStageId && stageParamsMap[selectedStageId.toString()];
+  const selectedStageParams =
+    selectedStageId && stageParamsMap[selectedStageId.toString()];
 
   // Product seleccionado para configuración
-  const selectedProduct = selectedProductId ? 
-    editableProp.challenge_products.find(product => product.id === selectedProductId) : 
-    null;
+  const selectedProduct = selectedProductId
+    ? editableProp.challenge_products.find(
+        (product) => product.id === selectedProductId
+      )
+    : null;
 
   // Configuración del producto seleccionado
-  const selectedProductConfigFromMap = selectedProductId && productConfigMap[selectedProductId.toString()];
-  
+  const selectedProductConfigFromMap =
+    selectedProductId && productConfigMap[selectedProductId.toString()];
+
   // Filtrado de ítems disponibles
   const productavailable = productsData?.filter(
     (product) =>
@@ -176,11 +196,13 @@ export default function PropDetails({
     (stage) => !editableProp.challenge_stages.some((p) => p.id === stage.id)
   );
   const stepavailable =
-    stepsdata?.filter((step) => step.id !== (editableProp.challenge_step?.id || null)) ||
-    [];
+    stepsdata?.filter(
+      (step) => step.id !== (editableProp.challenge_step?.id || null)
+    ) || [];
   const subcategoriesavailable =
     subcategoriesData?.filter(
-      (subcategory) => subcategory.id !== (editableProp.challenge_subcategory?.id || null)
+      (subcategory) =>
+        subcategory.id !== (editableProp.challenge_subcategory?.id || null)
     ) || [];
 
   // Handlers para agregar/quitar/actualizar
@@ -208,7 +230,9 @@ export default function PropDetails({
         (p) => p.id !== productId
       ),
       product_configs: (prev.product_configs || []).filter(
-        (config) => (config.product_id !== productId && config.challenge_product?.id !== productId)
+        (config) =>
+          config.product_id !== productId &&
+          config.challenge_product?.id !== productId
       ),
     }));
 
@@ -255,16 +279,19 @@ export default function PropDetails({
     value: string | null
   ) => {
     // Actualizamos los parámetros en stageParamsMap
-    setStageParamsMap(prev => {
+    setStageParamsMap((prev) => {
       const updatedMap = { ...prev };
       const stageIdStr = stageId.toString();
-      
+
       if (updatedMap[stageIdStr]) {
         updatedMap[stageIdStr] = {
           ...updatedMap[stageIdStr],
-          [field]: field === "leverage" 
-            ? value 
-            : value === "" || value === null ? null : parseFloat(value as string),
+          [field]:
+            field === "leverage"
+              ? value
+              : value === "" || value === null
+              ? null
+              : parseFloat(value as string),
         };
       } else {
         // Si no existe, creamos un nuevo objeto de parámetros
@@ -280,9 +307,12 @@ export default function PropDetails({
           leverage: null,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          [field]: field === "leverage" 
-            ? value 
-            : value === "" || value === null ? null : parseFloat(value as string),
+          [field]:
+            field === "leverage"
+              ? value
+              : value === "" || value === null
+              ? null
+              : parseFloat(value as string),
         } as StageParameter;
       }
       return updatedMap;
@@ -294,11 +324,12 @@ export default function PropDetails({
     value: string | null
   ) => {
     // Actualizamos la configuración en productConfigMap
-    setProductConfigMap(prev => {
+    setProductConfigMap((prev) => {
       const updatedMap = { ...prev };
       const productIdStr = productId.toString();
-      const numericValue = value === "" || value === null ? null : parseFloat(value as string);
-      
+      const numericValue =
+        value === "" || value === null ? null : parseFloat(value as string);
+
       if (updatedMap[productIdStr]) {
         updatedMap[productIdStr] = {
           ...updatedMap[productIdStr],
@@ -322,11 +353,15 @@ export default function PropDetails({
 
     // También actualizamos el estado editable para mantener la compatibilidad
     setEditableProp((prev) => {
-      const numericValue = value === "" || value === null ? null : parseFloat(value as string);
+      const numericValue =
+        value === "" || value === null ? null : parseFloat(value as string);
       return {
         ...prev,
         product_configs: (prev.product_configs || []).map((config) => {
-          if (config.product_id === productId || config.challenge_product?.id === productId) {
+          if (
+            config.product_id === productId ||
+            config.challenge_product?.id === productId
+          ) {
             return {
               ...config,
               price: numericValue,
@@ -344,7 +379,7 @@ export default function PropDetails({
     // Convertimos los mapas a arrays para enviar al backend
     const stageParamsArray = Object.values(stageParamsMap);
     const productConfigsArray = Object.values(productConfigMap);
-    
+
     return {
       challenge_subcategory: editableProp.challenge_subcategory,
       challenge_step: editableProp.challenge_step,
@@ -361,12 +396,12 @@ export default function PropDetails({
       toast.error("ID de documento no válido");
       return;
     }
-    
+
     const toastId = toast.loading("Guardando...");
     const sendData = prepareDataForSave();
-    
+
     console.log("Datos a enviar:", sendData);
-    
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/challenge-relations/${editableProp.documentId}/update-with-relations`,
@@ -388,15 +423,46 @@ export default function PropDetails({
 
       await response.json();
       toast.success("Se guardó correctamente.", { id: toastId });
+      await createWooVariations(sendData.product_configs); // Llamar a la función para crear variaciones de WooCommerce
       onClose?.();
       actualizarDatos?.();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+      const errorMessage =
+        error instanceof Error ? error.message : "Error desconocido";
       toast.error(`Hubo un error al guardar: ${errorMessage}`, { id: toastId });
       console.error("Error al guardar:", error);
     }
   };
 
+  const createWooVariations = async (product_configs) => {
+    console.log("Creando variaciones de WooCommerce...");
+    console.log("Configuraciones de productos:", product_configs);
+    //hacer fetch a n8n y enviar los product_configs
+    console.log("ruta:", process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+          },
+          body: JSON.stringify({
+            data: product_configs,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error al crear variaciones: ${response.statusText}`);
+      }
+
+      // const data = await response.json();
+      console.log("Variaciones creadas");
+    } catch (error) {
+      console.error("Error al crear variaciones:", error);
+    }
+  };
   // Formatear porcentajes
   const formatPercentage = (value: number | null | undefined) => {
     if (value === null || value === undefined) {
@@ -452,52 +518,72 @@ export default function PropDetails({
                     )}
                   </div>
 
-                  {selectedStage && selectedStageId && stageParamsMap[selectedStageId.toString()] && (
-                    <CardHeader className="px-0">
-                      <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
-                        Parámetros para {selectedStage.name}
-                      </CardTitle>
-                      <div className="space-y-1 mt-2 text-sm">
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Días mínimos de trading:{" "}
-                          {stageParamsMap[selectedStageId.toString()].minimumTradingDays ?? "N/A"}
-                        </CardDescription>
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Pérdida diaria máxima:{" "}
-                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumDailyLoss)}
-                        </CardDescription>
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Pérdida máxima total:{" "}
-                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumTotalLoss)}
-                        </CardDescription>
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Pérdida máxima por operación:{" "}
-                          {formatPercentage(stageParamsMap[selectedStageId.toString()].maximumLossPerTrade)}
-                        </CardDescription>
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Objetivo de ganancia:{" "}
-                          {formatPercentage(stageParamsMap[selectedStageId.toString()].profitTarget)}
-                        </CardDescription>
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Apalancamiento: {stageParamsMap[selectedStageId.toString()].leverage ?? "N/A"}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                  )}
+                  {selectedStage &&
+                    selectedStageId &&
+                    stageParamsMap[selectedStageId.toString()] && (
+                      <CardHeader className="px-0">
+                        <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
+                          Parámetros para {selectedStage.name}
+                        </CardTitle>
+                        <div className="space-y-1 mt-2 text-sm">
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Días mínimos de trading:{" "}
+                            {stageParamsMap[selectedStageId.toString()]
+                              .minimumTradingDays ?? "N/A"}
+                          </CardDescription>
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Pérdida diaria máxima:{" "}
+                            {formatPercentage(
+                              stageParamsMap[selectedStageId.toString()]
+                                .maximumDailyLoss
+                            )}
+                          </CardDescription>
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Pérdida máxima total:{" "}
+                            {formatPercentage(
+                              stageParamsMap[selectedStageId.toString()]
+                                .maximumTotalLoss
+                            )}
+                          </CardDescription>
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Pérdida máxima por operación:{" "}
+                            {formatPercentage(
+                              stageParamsMap[selectedStageId.toString()]
+                                .maximumLossPerTrade
+                            )}
+                          </CardDescription>
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Objetivo de ganancia:{" "}
+                            {formatPercentage(
+                              stageParamsMap[selectedStageId.toString()]
+                                .profitTarget
+                            )}
+                          </CardDescription>
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Apalancamiento:{" "}
+                            {stageParamsMap[selectedStageId.toString()]
+                              .leverage ?? "N/A"}
+                          </CardDescription>
+                        </div>
+                      </CardHeader>
+                    )}
 
-                  {selectedProduct && selectedProductId && productConfigMap[selectedProductId.toString()] && (
-                    <CardHeader className="px-0 mt-4">
-                      <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
-                        Configuración para {selectedProduct.name}
-                      </CardTitle>
-                      <div className="space-y-1 mt-2 text-sm">
-                        <CardDescription className="text-zinc-700 dark:text-zinc-300">
-                          Precio:{" "}
-                          {productConfigMap[selectedProductId.toString()].precio ?? "No configurado"}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                  )}
+                  {selectedProduct &&
+                    selectedProductId &&
+                    productConfigMap[selectedProductId.toString()] && (
+                      <CardHeader className="px-0 mt-4">
+                        <CardTitle className="text-[var(--app-secondary)] dark:text-blue-400">
+                          Configuración para {selectedProduct.name}
+                        </CardTitle>
+                        <div className="space-y-1 mt-2 text-sm">
+                          <CardDescription className="text-zinc-700 dark:text-zinc-300">
+                            Precio:{" "}
+                            {productConfigMap[selectedProductId.toString()]
+                              .precio ?? "No configurado"}
+                          </CardDescription>
+                        </div>
+                      </CardHeader>
+                    )}
                 </div>
 
                 <div className="flex-1 min-w-[200px]">
@@ -696,7 +782,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="minimumTradingDays"
-                        value={stageParamsMap[selectedStageId.toString()]?.minimumTradingDays ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.minimumTradingDays ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -712,7 +801,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumDailyLoss"
-                        value={stageParamsMap[selectedStageId.toString()]?.maximumDailyLoss ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.maximumDailyLoss ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -728,7 +820,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumTotalLoss"
-                        value={stageParamsMap[selectedStageId.toString()]?.maximumTotalLoss ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.maximumTotalLoss ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -744,7 +839,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="maximumLossPerTrade"
-                        value={stageParamsMap[selectedStageId.toString()]?.maximumLossPerTrade ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.maximumLossPerTrade ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -760,7 +858,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="profitTarget"
-                        value={stageParamsMap[selectedStageId.toString()]?.profitTarget ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.profitTarget ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -776,7 +877,10 @@ export default function PropDetails({
                       <input
                         type="text"
                         name="leverage"
-                        value={stageParamsMap[selectedStageId.toString()]?.leverage ?? ""}
+                        value={
+                          stageParamsMap[selectedStageId.toString()]
+                            ?.leverage ?? ""
+                        }
                         onChange={(e) =>
                           handleStageMetricChange(
                             selectedStageId,
@@ -803,7 +907,10 @@ export default function PropDetails({
                       <input
                         type="number"
                         name="price"
-                        value={productConfigMap[selectedProductId.toString()]?.precio ?? ""}
+                        value={
+                          productConfigMap[selectedProductId.toString()]
+                            ?.precio ?? ""
+                        }
                         onChange={(e) =>
                           handleProductPriceChange(
                             selectedProductId,
