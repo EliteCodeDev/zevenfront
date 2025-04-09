@@ -5,7 +5,7 @@ import useSWR from "swr";
 import DashboardLayout from "..";
 import { Settings, ChevronLeft, ChevronRight, Trash2, Plus, Clock, Percent, Tag, PieChart, ShoppingBag, RefreshCw } from "lucide-react";
 import { toast } from 'sonner';
-import ProductSelector from "./selectProduct";
+import ProductSelector from "@/components/structure/selectProduct";
 
 // Función para normalizar probabilidades
 function normalizarProbabilidades(productos) {
@@ -617,12 +617,12 @@ export default function IndexPage() {
 
         {/* Modal para Crear */}
         {isCreateModalOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             onClick={handleOutsideClickCreate}
           >
             {/* Se agrega max-h-[80vh] y overflow-y-auto para que el contenido sea scrollable */}
-            <div 
+            <div
               ref={createModalRef}
               className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto scrollbar-hide"
               onClick={(e) => e.stopPropagation()} // Esto evita que el clic en el contenido cierre el modal
@@ -860,11 +860,11 @@ export default function IndexPage() {
 
         {/* Modal para Editar */}
         {editingId && (
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             onClick={handleOutsideClickEdit}
           >
-            <div 
+            <div
               ref={editModalRef}
               className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg w-full max-w-md max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
@@ -1100,11 +1100,11 @@ export default function IndexPage() {
 
         {/* Modal para Eliminar */}
         {isDeleteModalOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             onClick={handleOutsideClickDelete}
           >
-            <div 
+            <div
               ref={deleteModalRef}
               className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
