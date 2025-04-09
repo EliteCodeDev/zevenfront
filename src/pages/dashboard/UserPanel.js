@@ -15,6 +15,7 @@ import NeoChallengeCard from './neoCard';
 import BilleteraCripto from '../../components/wallet/crypto-wallet';
 import CredencialesModal from './credentials';
 import { principalButton } from '@/components/structure/links';
+import PromotionBanner from './promotion';
 
 const fetcher = async (url, token) => {
     const response = await fetch(url, {
@@ -237,6 +238,8 @@ export default function Index() {
         <div>
             {/* Botón móvil en la cabecera */}
             {renderMobileButton()}
+            {/* Componente de promoción integrado debajo del breadcrumb */}
+            <PromotionBanner />
 
             {activeChallenges.length === 0 && <NeoChallengeCard />}
 
