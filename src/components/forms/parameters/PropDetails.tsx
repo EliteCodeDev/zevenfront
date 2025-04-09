@@ -438,6 +438,7 @@ export default function PropDetails({
     console.log("Creando variaciones de WooCommerce...");
     console.log("Configuraciones de productos:", product_configs);
     //hacer fetch a n8n y enviar los product_configs
+    console.log("ruta:", process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS}`,
