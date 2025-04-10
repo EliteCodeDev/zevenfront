@@ -125,7 +125,7 @@ const Metrix = () => {
           })
           .then((response) => {
             const detailedChallenge = response.data || response;
-            console.log("Challenge detallado:", detailedChallenge);
+            // console.log("Challenge detallado:", detailedChallenge);
             // Se elimina el uso de "attributes"
             let brokerAccount = detailedChallenge.broker_account;
             setCurrentChallenge({
@@ -156,7 +156,7 @@ const Metrix = () => {
     setDynamicBalance(dynBalance);
 
     if (currentChallenge.metadata) {
-      console.log("Metadata:", currentChallenge.metadata);
+      // console.log("Metadata:", currentChallenge.metadata);
       try {
         const metadata =
           typeof currentChallenge.metadata === "string"
@@ -214,10 +214,10 @@ const Metrix = () => {
               currentChallenge.challenge_relation.challenge_stages);
 
           const selectedStage = determineCorrectStage(challengePhase, stages);
-          console.log("Stage seleccionado1:", selectedStage);
-          console.log("Challenge Fase:", challengePhase);
-          console.log("Stages:", stages);
-          console.log("stage_parameters:", metadata.stage_parameters);
+          // console.log("Stage seleccionado1:", selectedStage);
+          // console.log("Challenge Fase:", challengePhase);
+          // console.log("Stages:", stages);
+          // console.log("stage_parameters:", metadata.stage_parameters);
           if (selectedStage) {
             //buscar el stage_paremeter con el documentId del stage seleccionado
             const stageParameter = metadata.stage_parameters.find(
@@ -230,7 +230,7 @@ const Metrix = () => {
               maximumDailyLoss: stageParameter?.maximumDailyLoss,
               minimumTradingDays: stageParameter?.minimumTradingDays,
             };
-            console.log("Stage seleccionado:", newStage);
+            // console.log("Stage seleccionado:", newStage);
             // Actualizar el estado con el nuevo stage
             setCurrentStage(newStage);
 
@@ -390,8 +390,8 @@ const Metrix = () => {
       </div>
     );
   }
-  // console.log(currentChallenge);
-  // console.log(currentChallenge.certificates?.length);
+  // // console.log(currentChallenge);
+  // // console.log(currentChallenge.certificates?.length);
 
   return (
     <div>

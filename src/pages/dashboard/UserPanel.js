@@ -162,7 +162,7 @@ export default function Index() {
         }
 
         // Devolvemos el stage correspondiente
-        console.log("ga" + challenge?.challenge_relation?.challenge_stages[stageIndex]);
+        // console.log("ga" + challenge?.challenge_relation?.challenge_stages[stageIndex]);
         return stages[stageIndex].name;
         // switch (challenge.phase) {
         //     case 1:
@@ -194,7 +194,7 @@ export default function Index() {
 
     const isVerified = data?.isVerified;
     const toggleVisibility = (id) => setVisibility((prev) => ({ ...prev, [id]: !prev[id] }));
-    console.log(data?.challenges);
+    // console.log(data?.challenges);
     // Filtrar challenges que están "en curso" o "por iniciar"
     const activeChallenges = data?.challenges
         ?.map((challenge) => {
@@ -217,7 +217,7 @@ export default function Index() {
 
             return false;
         }) || [];
-    console.log("activeChallenges", activeChallenges);
+    // console.log("activeChallenges", activeChallenges);
     // Agrupar los challenges por stage (fase)
     const groupedChallengesByStage = activeChallenges.reduce((acc, challenge) => {
         const stageName = getStageName(challenge);

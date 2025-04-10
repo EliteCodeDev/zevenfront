@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
-import { CheckCircleIcon } from "@heroicons/react/24/outline"; 
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useStrapiData } from "@/services/strapiServiceJWT";
 
 // Carga Veriff dinámicamente para evitar errores en SSR
@@ -17,7 +17,7 @@ const VeriffComponent = ({ isVerified }) => {
 
   // ✅ Solo ejecutar Veriff si la cuenta NO está verificada
   useEffect(() => {
-    if (isLoading || !data || typeof window === "undefined" || isVerified) return; 
+    if (isLoading || !data || typeof window === "undefined" || isVerified) return;
 
     import("@veriff/js-sdk").then(({ Veriff }) => {
       import("@veriff/incontext-sdk").then(({ createVeriffFrame }) => {
@@ -29,7 +29,7 @@ const VeriffComponent = ({ isVerified }) => {
             if (err) {
               console.error("Error en Veriff:", err);
             } else {
-              // console.log("Sesión iniciada:", response);
+              // // console.log("Sesión iniciada:", response);
               createVeriffFrame({ url: response.verification.url });
             }
           },

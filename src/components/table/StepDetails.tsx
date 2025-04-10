@@ -25,7 +25,7 @@ interface StepDetailsProps {
 }
 
 export function StepDetails({ step, data }: StepDetailsProps) {
-  // console.log(data);
+  // // console.log(data);
   const [newData, setnewData] = useState(null);
   const handleEditing = (data) => {
     setnewData(data);

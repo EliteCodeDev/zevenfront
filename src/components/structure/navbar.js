@@ -22,7 +22,7 @@ export default function Navbar() {
   const router = useRouter()
   const [currentPath, setCurrentPath] = useState(router.pathname)
   const { data: session } = useSession()
-  //console.log(session);
+  //// console.log(session);
   useEffect(() => {
     const handleRouteChange = (url) => {
       setCurrentPath(url)

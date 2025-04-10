@@ -18,7 +18,7 @@ export default function ForgotPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío del formulario
   const router = useRouter();
   const handleCaptcha = (token) => {
-    // console.log("Token del CAPTCHA:", token);  // Verificar el token
+    // // console.log("Token del CAPTCHA:", token);  // Verificar el token
     setCaptchaToken(token);  // Guardar el token del CAPTCHA
   };
   const handleSubmit = async (e) => {
@@ -62,64 +62,63 @@ export default function ForgotPassword() {
 
   return (
     <Layout className=" min-h-screen">
-    <div className="max-w-md mx-auto">
-      {/* Título */}
-      <h2 className="text-xl font-semibold text-left text-white">Recuperar contraseña</h2>
+      <div className="max-w-md mx-auto">
+        {/* Título */}
+        <h2 className="text-xl font-semibold text-left text-white">Recuperar contraseña</h2>
 
-      <p className="mt-2 text-sm leading-6 text-gray-400">
-        Escribe tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
-      </p>
-
-      <div className="mt-6">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Campo de Correo Electrónico */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Correo electrónico
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@ejemplo.com"
-                required
-                className="w-full rounded-md border border-gray-700 bg-transparent text-white placeholder-gray-500 p-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] transition"
-              />
-            </div>
-          </div>
-
-          {/* Captcha */}
-          <Recaptcha onVerify={handleCaptcha} />
-
-          {/* Botón de Enviar */}
-          <div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full rounded-md p-3 text-sm font-semibold transition ${
-                isSubmitting
-                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
-              }`}
-            >
-              {isSubmitting ? "Enviando..." : "Enviar correo de reinicio"}
-            </button>
-          </div>
-        </form>
-
-        {/* Enlace para volver al login */}
-        <p className="mt-6 text-sm text-center text-gray-400">
-          ¿Ya tienes una cuenta?{" "}
-          <Link href="/login" className="font-semibold text-[var(--app-primary)] hover:text-[var(--app-secondary)] transition">
-            Iniciar sesión
-          </Link>
+        <p className="mt-2 text-sm leading-6 text-gray-400">
+          Escribe tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
         </p>
+
+        <div className="mt-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Campo de Correo Electrónico */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                Correo electrónico
+              </label>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tu@ejemplo.com"
+                  required
+                  className="w-full rounded-md border border-gray-700 bg-transparent text-white placeholder-gray-500 p-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] transition"
+                />
+              </div>
+            </div>
+
+            {/* Captcha */}
+            <Recaptcha onVerify={handleCaptcha} />
+
+            {/* Botón de Enviar */}
+            <div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full rounded-md p-3 text-sm font-semibold transition ${isSubmitting
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                    : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
+                  }`}
+              >
+                {isSubmitting ? "Enviando..." : "Enviar correo de reinicio"}
+              </button>
+            </div>
+          </form>
+
+          {/* Enlace para volver al login */}
+          <p className="mt-6 text-sm text-center text-gray-400">
+            ¿Ya tienes una cuenta?{" "}
+            <Link href="/login" className="font-semibold text-[var(--app-primary)] hover:text-[var(--app-secondary)] transition">
+              Iniciar sesión
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
     </Layout>
 
   );

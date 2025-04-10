@@ -121,7 +121,7 @@ export function CreateStepFormC() {
     try {
       // Asegurar que no exista documentId (lo generará Strapi)
       data.documentId = "";
-      console.log("Data a enviar:", data);
+      // console.log("Data a enviar:", data);
 
       await createStepWithRelations(data);
       // Limpieza
@@ -259,12 +259,11 @@ export function CreateStepFormC() {
                                     }}
                                   >
                                     <div
-                                      className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${
-                                        field.value.length ===
-                                        allSubcategories.length
+                                      className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${field.value.length ===
+                                          allSubcategories.length
                                           ? "bg-blue-500 text-black"
                                           : "opacity-50"
-                                      }`}
+                                        }`}
                                     >
                                       {field.value.length ===
                                         allSubcategories.length && "✓"}
@@ -302,11 +301,10 @@ export function CreateStepFormC() {
                                         className="text-blue-500 hover:bg-blue-500/10"
                                       >
                                         <div
-                                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${
-                                            isSelected
+                                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${isSelected
                                               ? "bg-blue-500 text-black"
                                               : "opacity-50"
-                                          }`}
+                                            }`}
                                         >
                                           {isSelected && "✓"}
                                         </div>
@@ -425,11 +423,10 @@ export function CreateStepFormC() {
                                     }}
                                   >
                                     <div
-                                      className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${
-                                        field.value.length === allStages.length
+                                      className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${field.value.length === allStages.length
                                           ? "bg-blue-500 text-black"
                                           : "opacity-50"
-                                      }`}
+                                        }`}
                                     >
                                       {field.value.length === allStages.length &&
                                         "✓"}
@@ -471,11 +468,10 @@ export function CreateStepFormC() {
                                         className="text-blue-500 hover:bg-blue-500/10"
                                       >
                                         <div
-                                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${
-                                            isSelected
+                                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-blue-500 ${isSelected
                                               ? "bg-blue-500 text-black"
                                               : "opacity-50"
-                                          }`}
+                                            }`}
                                         >
                                           {isSelected && "✓"}
                                         </div>

@@ -24,7 +24,7 @@ function IndexPage() {
   // Función para actualizar los datos
   function actualizarDatos() {
     mutate();
-    console.log("Datos actualizados");
+    // console.log("Datos actualizados");
   }
 
   const processedData = data?.data || [];
