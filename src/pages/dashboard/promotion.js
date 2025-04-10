@@ -51,21 +51,25 @@ export default function PromotionBanner() {
     };
   }, [api]);
 
+  // Si está cargando, no hay sesión o hay error, no mostrar nada
+  if (isLoading || error || !session?.jwt) {
+    return null;
+  }
 
-  if (error) return <p className="text-red-500">Error al cargar promoción: {error.message}</p>;
+  // Si no hay datos, no mostrar nada
+  if (!data || !data.data || data.data.length === 0) {
+    return null;
+  }
 
-  // Extraer promociones y asegurar que usamos la estructura correcta
-  const promotions = data?.data || [];
-  console.log("Promociones recibidas:", promotions);
+  // Extraer promociones
+  const promotions = data.data || [];
 
   // Filtrar promociones activas
   const activePromotions = promotions.filter(promo => {
     return promo.isActive !== false; // Si no está marcado como inactivo, lo consideramos activo
   });
 
-  console.log("Promociones activas:", activePromotions);
-
-  // Si no hay promociones activas
+  // Si no hay promociones activas, no mostrar nada
   if (!activePromotions.length) {
     return null;
   }

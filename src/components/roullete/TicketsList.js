@@ -162,17 +162,13 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
         </div>
 
         {/* Header text - Mejorado */}
-        <div className="relative z-10 text-center py-4 w-full bg-gradient-to-r from-blue-900/50 via-blue-800/30 to-blue-900/50 border-b border-blue-700/50 mb-3 shadow-md">
+        <div className="relative z-10 text-center py-4 w-full bg-gradient-to-r from-blue-900/50 via-blue-800/30 to-blue-900/50 border-b border-blue-700/50  shadow-md">
           <h3 className="text-2xl font-bold text-blue-300">¡Gira la Ruleta!</h3>
           <p className="text-gray-300 text-sm mt-0.5">Consigue premios increíbles</p>
         </div>
 
         {/* Sección para la ruleta - Centrada verticalmente con efectos */}
         <div className="flex-grow flex flex-col justify-center items-center w-full relative">
-          {/* Efecto de resplandor detrás de la ruleta */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-56 h-56 rounded-full bg-blue-500/10 blur-xl"></div>
-          </div>
 
           <RuletaSorteo
             documentId={ticket?.documentId}
@@ -184,8 +180,8 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
                 onTicketUsed(ticket.id);
               }
             }}
-            width={280}
-            height={280}
+            width={250}
+            height={250}
             customStyle={{
               background: 'transparent',
               boxShadow: 'none',
@@ -196,7 +192,7 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
         </div>
 
         {/* Espacio para que el botón de "Girar" del componente RuletaSorteo tenga suficiente espacio */}
-        <div className="h-6 md:h-8 w-full bg-gradient-to-t from-zinc-900 to-transparent"></div>
+        <div className="h-6 md:h-8 w-full bg-gradient-to-t to-transparent"></div>
       </div>
     </div>,
     document.body // Mount the portal directly to the body element
