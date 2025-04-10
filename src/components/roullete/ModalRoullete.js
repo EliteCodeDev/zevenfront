@@ -68,7 +68,7 @@ export default function ModalRoulette() {
       <DialogContent
         className="
           z-[9999] 
-          bg-black 
+          bg-zinc-900 
           text-white 
           p-0 
           rounded-lg 
