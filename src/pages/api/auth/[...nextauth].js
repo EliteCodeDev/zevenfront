@@ -41,7 +41,7 @@ export default NextAuth({
     async signIn({ account, profile }) {
       if (account.provider === 'google' || account.provider === 'github') {
         try {
-          console.log(`🔍 Verificando usuario en Strapi con ${account.provider}:`, profile.email);
+          // console.log(`🔍 Verificando usuario en Strapi con ${account.provider}:`, profile.email);
 
           const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users?filters[email][$eq]=${profile.email}`, {
             method: 'GET',

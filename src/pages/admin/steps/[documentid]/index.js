@@ -25,7 +25,7 @@ export default function UpdateStep() {
 
   // Callback que se pasa al formulario para refrescar la data 
   const handleActive = () => {
-    // console.log("active");
+    // // console.log("active");
     refetch(); // Vuelve a ejecutar la consulta 
   };
 

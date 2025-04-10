@@ -20,7 +20,7 @@ export default function ModalRoulette() {
 
   const handleBuyTicket = () => {
     // Lógica para comprar ticket
-    console.log("Comprar ticket");
+    // console.log("Comprar ticket");
     window.location.href = `https://neocapitalfunding.com/checkout/?add-to-cart=${TICKET_ID}&quantity=1&user_id=${user.documentId}`;
   };
 

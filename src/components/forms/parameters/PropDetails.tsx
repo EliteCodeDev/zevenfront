@@ -400,7 +400,7 @@ export default function PropDetails({
     const toastId = toast.loading("Guardando...");
     const sendData = prepareDataForSave();
 
-    console.log("Datos a enviar:", sendData);
+    // console.log("Datos a enviar:", sendData);
 
     try {
       const response = await fetch(
@@ -435,10 +435,10 @@ export default function PropDetails({
   };
 
   const createWooVariations = async (product_configs) => {
-    console.log("Creando variaciones de WooCommerce...");
-    console.log("Configuraciones de productos:", product_configs);
+    // console.log("Creando variaciones de WooCommerce...");
+    // console.log("Configuraciones de productos:", product_configs);
     //hacer fetch a n8n y enviar los product_configs
-    console.log("ruta:", process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS);
+    // console.log("ruta:", process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_N8N_PRODUCT_VARIATIONS}`,
@@ -458,7 +458,7 @@ export default function PropDetails({
       }
 
       // const data = await response.json();
-      console.log("Variaciones creadas");
+      // console.log("Variaciones creadas");
     } catch (error) {
       console.error("Error al crear variaciones:", error);
     }

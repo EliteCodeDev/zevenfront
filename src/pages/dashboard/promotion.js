@@ -56,14 +56,14 @@ export default function PromotionBanner() {
 
   // Extraer promociones y asegurar que usamos la estructura correcta
   const promotions = data?.data || [];
-  console.log("Promociones recibidas:", promotions);
+  // console.log("Promociones recibidas:", promotions);
 
   // Filtrar promociones activas
   const activePromotions = promotions.filter(promo => {
     return promo.isActive !== false; // Si no está marcado como inactivo, lo consideramos activo
   });
 
-  console.log("Promociones activas:", activePromotions);
+  // console.log("Promociones activas:", activePromotions);
 
   // Si no hay promociones activas
   if (!activePromotions.length) {

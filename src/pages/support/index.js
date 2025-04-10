@@ -9,7 +9,7 @@ import { LifebuoyIcon } from '@heroicons/react/24/solid';
 const SupportPage = () => {
     // Usamos el hook que creamos para obtener los datos de 'socials'
     const { data: socials, error, isLoading } = useStrapiData('supports');
-    //console.log(socials);
+    //// console.log(socials);
     // Si está cargando, mostramos un mensaje de carga
     if (isLoading) {
         return <Layout><Loader /></Layout>;
@@ -51,7 +51,7 @@ const SupportPage = () => {
                         <div
                             key={index}
                             className="p-6 bg-white rounded-lg shadow-md dark:bg-zinc-800 dark:border-zinc-800 dark:text-white dark:shadow-black transition flex flex-col items-center"
->
+                        >
                             {/* Contenedor Horizontal para el Icono y el Texto */}
                             <div className="flex items-center mb-4 w-full">
                                 {/* Icono */}

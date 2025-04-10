@@ -11,7 +11,7 @@ const WITHDRAW_STATES = {
 };
 
 export default function BilleteraCripto({ balance = "1000000", userId, challengeId, brokerBalance = "0" }) {
-    // // console.log("BilleteraCripto -> balance", balance);
+    // // // console.log("BilleteraCripto -> balance", balance);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [withdrawAmount, setWithdrawAmount] = useState("");
     const [usdtWalletAddress, setUsdtWalletAddress] = useState("");
@@ -64,7 +64,7 @@ export default function BilleteraCripto({ balance = "1000000", userId, challenge
             // Si hay datos y tiene un estado, actualizar el estado local
             if (response.data && response.data.estado !== undefined) {
                 setWithdrawState(response.data);
-                // console.log("Estado actual de retiro:", response.data);
+                // // console.log("Estado actual de retiro:", response.data);
             } else {
                 setWithdrawState(null);
             }
@@ -170,13 +170,13 @@ export default function BilleteraCripto({ balance = "1000000", userId, challenge
                 challenge_id: challengeId,  // Enviamos el challengeId al webhook
                 timestamp: new Date().toISOString()
             };
-            // console.log("Enviando solicitud a n8n:", requestData);
+            // // console.log("Enviando solicitud a n8n:", requestData);
 
             // PASO CLAVE: Enviar la solicitud al webhook de n8n
             const response = await axios.post(process.env.NEXT_PUBLIC_N8N_CHALLENGE_WITHDRAW, requestData);
-            // console.log("Respuesta :", response);
+            // // console.log("Respuesta :", response);
 
-            // console.log("Respuesta del webhook:", response.data);
+            // // console.log("Respuesta del webhook:", response.data);
 
             if (response.status >= 200 && response.status < 300) {
                 // El webhook se activó correctamente

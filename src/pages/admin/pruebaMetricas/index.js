@@ -47,23 +47,23 @@ export default function Index() {
   } = useStrapiData(`challenges?filters[createdAt][$gte]=${startOfDay}&filters[createdAt][$lte]=${endOfDay}`);
 
 
-  
+
 
   // Actualizar el estado cuando los datos estén disponibles
   useEffect(() => {
     if (ordersData) {
       setTodayOrders(ordersData);
-      // console.log("Órdenes del día:", ordersData);
+      // // console.log("Órdenes del día:", ordersData);
     }
 
     if (productsData) {
       setAllProducts(productsData);
-      // console.log("Productos disponibles:", productsData);
+      // // console.log("Productos disponibles:", productsData);
     }
 
     if (challengesData) {
       setTodayChallenges(challengesData);
-      // console.log("Retos del día:", challengesData);
+      // // console.log("Retos del día:", challengesData);
     }
   }, [ordersData, productsData, challengesData]);
 
@@ -73,7 +73,7 @@ export default function Index() {
     // Esta implementación requeriría gestionar correctamente estados y efectos
     // Fuera del alcance de esta corrección pero sería algo como:
     // useEffect con un estado para la página actual y otro para todas las órdenes
-    // console.log("Esta función debe implementarse correctamente con paginación");
+    // // console.log("Esta función debe implementarse correctamente con paginación");
   };
 
   return (

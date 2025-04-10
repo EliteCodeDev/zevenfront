@@ -199,7 +199,7 @@ export default function UsersTable() {
         throw new Error("Error al enviar el webhook");
       }
 
-      console.log("Webhook enviado exitosamente:", payload);
+      // console.log("Webhook enviado exitosamente:", payload);
     } catch (error) {
       console.error("Error al enviar el webhook:", error);
       toast.error("Error al enviar la notificación al webhook: " + error.message);
@@ -279,8 +279,8 @@ export default function UsersTable() {
       // Marcar operación en progreso para este usuario
       setUpdatingUsers(prev => ({ ...prev, [user.id]: true }));
 
-      console.log(`Actualizando usuario ID: ${user.id}, Nombre: ${user.firstName} ${user.lastName}`);
-      console.log(`Cambio de verificación a: ${checked ? "Verificado" : "No Verificado"}`);
+      // console.log(`Actualizando usuario ID: ${user.id}, Nombre: ${user.firstName} ${user.lastName}`);
+      // console.log(`Cambio de verificación a: ${checked ? "Verificado" : "No Verificado"}`);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.id}`,
@@ -300,7 +300,7 @@ export default function UsersTable() {
 
       // Obtenemos la respuesta para confirmar que se actualizó correctamente
       const updatedUser = await response.json();
-      console.log("Usuario actualizado:", updatedUser);
+      // console.log("Usuario actualizado:", updatedUser);
 
       toast.success(`Usuario ${user.firstName} ${user.lastName} ${checked ? "verificado" : "desverificado"} correctamente`);
 
@@ -484,9 +484,8 @@ export default function UsersTable() {
                   paginatedData.map((user, index) => (
                     <TableRow
                       key={index}
-                      className={`border-b border-gray-200 dark:border-zinc-700 ${
-                        index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
-                      }`}
+                      className={`border-b border-gray-200 dark:border-zinc-700 ${index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-[var(--app-primary)]/5 dark:bg-zinc-800/30'
+                        }`}
                     >
                       <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{user.firstName + " " + user.lastName}</TableCell>
                       <TableCell className="py-3 px-4 text-sm text-zinc-700 dark:text-zinc-300">{user.email}</TableCell>

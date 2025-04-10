@@ -95,7 +95,7 @@ const ProfilePage = () => {
   // Manejo del cambio de país en el dropdown
   // Ajusta según lo que tu CountryDropdown retorne. En este ejemplo, guardamos alpha2.
   const handleCountryChange = (selectedCountry) => {
-    console.log("País seleccionado:", selectedCountry);
+    // console.log("País seleccionado:", selectedCountry);
     // Si el dropdown retorna un objeto { alpha2, alpha3, ... }, guardamos alpha2:
     setFormData((prev) => ({ ...prev, country: selectedCountry.alpha3 }));
     // Si tu dropdown usa alpha3 o el nombre del país para marcarlo, ajusta aquí:

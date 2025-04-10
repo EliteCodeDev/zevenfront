@@ -30,7 +30,7 @@ function normalizarProbabilidades(productos) {
 
 const fetcher = async (url, token) => {
   try {
-    console.log(`Fetching data from: ${url}`);
+    // console.log(`Fetching data from: ${url}`);
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -257,7 +257,7 @@ export default function IndexPage() {
     const toastId = toast.loading('Creando premio...');
 
     try {
-      console.log('Datos a enviar:', JSON.stringify({ data: formattedReward }, null, 2));
+      // console.log('Datos a enviar:', JSON.stringify({ data: formattedReward }, null, 2));
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/rewards`, {
         method: "POST",
@@ -275,7 +275,7 @@ export default function IndexPage() {
       }
 
       const result = await response.json();
-      console.log('Creación exitosa:', result);
+      // console.log('Creación exitosa:', result);
 
       setNewReward({
         nombre: "",
@@ -320,7 +320,7 @@ export default function IndexPage() {
     const toastId = toast.loading('Actualizando premio...');
 
     try {
-      console.log('Datos a enviar:', JSON.stringify({ data: formattedReward }, null, 2));
+      // console.log('Datos a enviar:', JSON.stringify({ data: formattedReward }, null, 2));
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/rewards/${documentId}`, {
         method: "PUT",
@@ -338,7 +338,7 @@ export default function IndexPage() {
       }
 
       const result = await response.json();
-      console.log('Actualización exitosa:', result);
+      // console.log('Actualización exitosa:', result);
 
       setEditingId(null);
       setEditingReward({});

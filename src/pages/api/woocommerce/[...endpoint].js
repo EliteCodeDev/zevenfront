@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   try {
     // Extract the endpoint from the URL
     const { endpoint } = req.query;
-    console.log('Endpoint:', endpoint);
+    // console.log('Endpoint:', endpoint);
     // Join parts of the path with '/'
     const apiEndpoint = Array.isArray(endpoint) ? endpoint.join('/') : endpoint;
 

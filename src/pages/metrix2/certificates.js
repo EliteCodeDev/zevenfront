@@ -11,7 +11,7 @@ const Certificados = ({ certificates }) => {
     const loadPdf = async () => {
       try {
         setLoading(true);
-        console.log("Certificates recibido:", certificates);
+        // console.log("Certificates recibido:", certificates);
 
         if (!certificates) {
           throw new Error("No se proporcionaron datos de certificados");
@@ -20,7 +20,7 @@ const Certificados = ({ certificates }) => {
         const isRetiro = certificates.tipoChallenge === "retirado";
         const pdfBasePath = isRetiro ? "/pdf/Retiro.pdf" : "/pdf/Certificado2.pdf";
 
-        console.log("Intentando cargar PDF desde:", pdfBasePath);
+        // console.log("Intentando cargar PDF desde:", pdfBasePath);
         const existingPdfBytes = await fetch(pdfBasePath).then(res => {
           if (!res.ok) throw new Error(`No se pudo cargar el PDF: ${res.status}`);
           return res.arrayBuffer();

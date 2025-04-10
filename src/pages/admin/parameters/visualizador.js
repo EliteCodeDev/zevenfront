@@ -78,10 +78,10 @@ export default function StepsOrganizado() {
         const paramsJson = await paramsRes.json();
         const paramsItems = paramsJson.data || [];
 
-        // console.log("Steps =>", stepsItems);
-        // console.log("ChallengeRelations =>", relItems);
-        // console.log("ChallengeStages =>", stageItems);
-        // console.log("StageParameters =>", paramsItems);
+        // // console.log("Steps =>", stepsItems);
+        // // console.log("ChallengeRelations =>", relItems);
+        // // console.log("ChallengeStages =>", stageItems);
+        // // console.log("StageParameters =>", paramsItems);
 
         // Estructura reorganizada
         const organizedData = organizarDatos(stepsItems, relItems, stageItems, paramsItems);
@@ -159,12 +159,12 @@ export default function StepsOrganizado() {
               rel.challenge_stages.forEach(stageRef => {
                 // Buscamos el stage en la lista de stages
                 const stageData = stages.find(s => s.documentId === stageRef.documentId);
-                
+
                 // NUEVO: Buscamos el parámetro que corresponde a esta relación y este stage
-                const stageParam = parameters.find(p => 
-                  p.challenge_relation && 
-                  p.challenge_relation.documentId === rel.documentId && 
-                  p.challenge_stage && 
+                const stageParam = parameters.find(p =>
+                  p.challenge_relation &&
+                  p.challenge_relation.documentId === rel.documentId &&
+                  p.challenge_stage &&
                   p.challenge_stage.documentId === stageRef.documentId
                 );
 

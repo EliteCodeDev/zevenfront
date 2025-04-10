@@ -81,7 +81,7 @@ export function ProductsManager({ pageSize }) {
       );
     }
     const json = await res.json();
-    console.log(json.data);
+    // console.log(json.data);
     return json.data;
   }
 
@@ -242,7 +242,7 @@ export function ProductsManager({ pageSize }) {
         // Crear
         // 1. Primero en Strapi
         const strapiResponse = await createStrapiItem(endpoint, payload);
-        console.log("Strapi Response:", strapiResponse);
+        // console.log("Strapi Response:", strapiResponse);
         // 2. Crear en WooCommerce
         const wooPayload = {
           name: formValues.name,
@@ -270,9 +270,9 @@ export function ProductsManager({ pageSize }) {
             },
           ],
         };
-        console.log("WooCommerce Payload:", wooPayload);
+        // console.log("WooCommerce Payload:", wooPayload);
         const wooResponse = await wooCommerce.post("products", wooPayload);
-        console.log("WooCommerce Response:", wooResponse);
+        // console.log("WooCommerce Response:", wooResponse);
         // 3. Actualizar el Strapi con el id de WooCommerce
         if (
           strapiResponse.data &&
