@@ -876,7 +876,7 @@ export default function RuletaSorteo({
                 whileHover={!isSpinning ? { scale: 1.05 } : {}}
                 whileTap={!isSpinning ? { scale: 0.95 } : {}}
                 style={{
-                  marginTop: "20px",
+                  marginTop: "0px",
                   padding: "14px 40px",
                   background: isSpinning
                     ? "linear-gradient(45deg, #334155 0%, #1e293b 100%)"

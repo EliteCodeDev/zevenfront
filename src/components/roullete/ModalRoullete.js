@@ -18,11 +18,18 @@ export default function ModalRoulette() {
 
   const scrollableRef = useRef(null);
 
+  // const handleBuyTicket = () => {
+  //   // Lógica para comprar ticket
+  //   console.log("Comprar ticket");
+  //   window.location.href = `https://neocapitalfunding.com/checkout/?add-to-cart=${TICKET_ID}&quantity=1&user_id=${user.documentId}`;
+  // };
+
   const handleBuyTicket = () => {
     // Lógica para comprar ticket
-    // console.log("Comprar ticket");
-    window.location.href = `https://neocapitalfunding.com/checkout/?add-to-cart=${TICKET_ID}&quantity=1&user_id=${user.documentId}`;
+    console.log("Comprar ticket");
+    window.location.href = `https://zevenglobalfunding.com/rewards`;
   };
+
 
   // Prevenir el scroll-chaining cuando se alcanza el tope o el final del contenedor scrollable
   useEffect(() => {
