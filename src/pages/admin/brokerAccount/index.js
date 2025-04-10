@@ -52,7 +52,8 @@ const BrokerAccountsRedesign = () => {
         { amount: "10000", label: "$10,000", color: "bg-green-500", hoverColor: "hover:bg-green-600" },
         { amount: "25000", label: "$25,000", color: "bg-yellow-500", hoverColor: "hover:bg-yellow-600" },
         { amount: "50000", label: "$50,000", color: "bg-red-500", hoverColor: "hover:bg-red-600" },
-        { amount: "100000", label: "$100,000", color: "bg-purple-500", hoverColor: "hover:bg-purple-600" }
+        { amount: "100000", label: "$100,000", color: "bg-purple-500", hoverColor: "hover:bg-purple-600" },
+        { amount: "200000", label: "$200,000", color: "bg-pink-500", hoverColor: "hover:bg-pink-600" },
     ];
 
     const balanceCounts = useMemo(() => {
