@@ -76,30 +76,36 @@ const ChallengeRelations = () => {
 
   // Initial data setup effect
   useEffect(() => {
-    // Only set initial data if we have steps and haven't already selected a step
+    // Solo configurar datos iniciales si tenemos steps y no hemos seleccionado ningún paso
     if (stepsData.length > 0 && selectedStep === null) {
-      const firstStep = stepsData[0].step;
-      setSelectedStep(firstStep);
+      try {
+        const firstStep = stepsData[0].step;
+        setSelectedStep(firstStep);
 
-      const firstStepRelations = stepsData[0].relations;
-      if (firstStepRelations.length > 0) {
-        const firstRelation = firstStepRelations[0];
-        setSelectedRelationId(firstRelation.id);
-        setSelectedRelation(firstRelation);
+        const firstStepRelations = stepsData[0].relations || [];
+        if (firstStepRelations.length > 0) {
+          const firstRelation = firstStepRelations[0];
+          if (firstRelation) {
+            setSelectedRelationId(firstRelation.id);
+            setSelectedRelation(firstRelation);
 
-        const firstRelationProducts = firstRelation.challenge_products;
-        if (firstRelationProducts.length > 0) {
-          setSelectedProduct(firstRelationProducts[0]);
+            const firstRelationProducts = firstRelation.challenge_products || [];
+            if (firstRelationProducts.length > 0) {
+              setSelectedProduct(firstRelationProducts[0]);
+            }
+
+            // Establecer la primera etapa por defecto
+            const stages = getRelationStages(firstRelation);
+            if (stages.length > 0) {
+              setSelectedStage(stages[0]);
+            }
+          }
         }
-
-        // Set first stage by default
-        const stages = getRelationStages(firstRelation);
-        if (stages.length > 0) {
-          setSelectedStage(stages[0]);
-        }
+      } catch (error) {
+        console.error("Error al configurar datos iniciales:", error);
       }
     }
-  }, [stepsData]);
+  }, [stepsData, relations]);  // Añadir relations como dependencia
 
   // Loading and error states
   if (isLoadingRelations || isLoadingProducts || isLoadingProductConfigs) {
@@ -148,20 +154,24 @@ const ChallengeRelations = () => {
 
   // Handle step click
   const handleStepClick = (step) => {
-    const stepRelations = stepsData.find(item => item.step === step).relations;
-    if (stepRelations.length === 0) return;
+    const stepData = stepsData.find(item => item.step === step);
+    if (!stepData || !stepData.relations || stepData.relations.length === 0) return;
+
+    const stepRelations = stepData.relations;
 
     setSelectedStep(step);
     const firstRelation = stepRelations[0];
+
+    if (!firstRelation) return;
+
     setSelectedRelationId(firstRelation.id);
     setSelectedRelation(firstRelation);
 
     // Find a suitable product
-    const firstRelationProducts = firstRelation.challenge_products;
+    const firstRelationProducts = firstRelation.challenge_products || [];
     if (firstRelationProducts.length > 0) {
       const productToSelect =
-        // Try to keep current product if it exists in this relation
-        (selectedProduct && firstRelationProducts.some(p => p.id === selectedProduct.id))
+        (selectedProduct && firstRelationProducts.some(p => p?.id === selectedProduct?.id))
           ? selectedProduct
           : firstRelationProducts[0];
 
@@ -170,7 +180,7 @@ const ChallengeRelations = () => {
       setSelectedProduct(null);
     }
 
-    // Reset stage
+    // Reset stage - Llamada segura a getRelationStages
     const stages = getRelationStages(firstRelation);
     setSelectedStage(stages.length > 0 ? stages[0] : null);
   };
@@ -181,7 +191,7 @@ const ChallengeRelations = () => {
   };
 
   // Get relation stages
-  const getRelationStages = (relation = selectedRelation) => {
+  const getRelationStages = (relation) => {
     if (!relation || !relations) return [];
 
     // Check for direct stages
@@ -189,14 +199,22 @@ const ChallengeRelations = () => {
       return relation.challenge_stages;
     }
 
-    // Find stages through other relations
+    // Verificación de seguridad antes de acceder a propiedades
+    if (!relation.challenge_subcategory || !relation.documentId) return [];
+
+    // Find stages through other relations con verificaciones de seguridad
     const stagesForThisRelation = relations.filter(r =>
+      r.challenge_subcategory &&
+      relation.challenge_subcategory &&
       r.challenge_subcategory.id === relation.challenge_subcategory.id &&
       r.documentId === relation.documentId
     );
 
-    return stagesForThisRelation.map(r => r.challenge_stage).filter(Boolean);
+    return stagesForThisRelation
+      .map(r => r.challenge_stage)
+      .filter(Boolean);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedProduct) {
@@ -329,7 +347,7 @@ const ChallengeRelations = () => {
                                   <span className="text-lg font-bold">%</span>
                                 </div>
                               )}
-                              
+
                               <span className="block font-medium">{product.name}</span>
                               {product.balance && (
                                 <span className={`block text-xs mt-1 ${selectedProduct && selectedProduct.name === product.name ? 'text-white/70' : 'text-zinc-500'}`}>
@@ -359,7 +377,7 @@ const ChallengeRelations = () => {
                 </div>
               </section>
             )}
-            
+
             {/* Sección de Oferta Especial */}
             {selectedProduct && selectedProduct.hasDiscount && selectedProduct.descuento && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
@@ -372,7 +390,7 @@ const ChallengeRelations = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/20 dark:border-blue-800/40">
                   <div className="flex items-start gap-2">
                     <div className="flex-shrink-0 mt-0.5">
