@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Database, PlusCircle, RefreshCw, CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
+import { Database, PlusCircle, RefreshCw, CheckCircle, XCircle, Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,8 @@ const BrokerAccountsRedesign = () => {
         used: false,
         inversorPass: ""
     });
+    const [pageSize, setPageSize] = useState(5);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const brokerAccountColumns = [
         { accessorKey: "login", header: "Login" },
@@ -67,6 +69,33 @@ const BrokerAccountsRedesign = () => {
 
     // Sample broker accounts data
     const brokerAccounts = data?.data || [];
+
+    // Pagination logic
+    const totalItems = brokerAccounts.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedAccounts = brokerAccounts.slice(startIndex, endIndex);
+
+    // Navigation functions
+    const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+    const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    const goToPage = (page) => setCurrentPage(page);
+
+    // Create array of page numbers to display
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+    const halfPagesToShow = Math.floor(maxPagesToShow / 2);
+    let startPage = Math.max(1, currentPage - halfPagesToShow);
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    if (endPage - startPage + 1 < maxPagesToShow) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -368,14 +397,14 @@ const BrokerAccountsRedesign = () => {
                                                         </td>
                                                     </tr>
                                                 ) : (
-                                                    data.data.map((account, index) => (
+                                                    paginatedAccounts.map((account, index) => (
                                                         <tr
                                                             key={index}
                                                             className={`
-                              border-b border-zinc-200 dark:border-zinc-700 
-                              ${index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-800/40'}
-                              hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors
-                            `}
+                                                                border-b border-zinc-200 dark:border-zinc-700 
+                                                                ${index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-zinc-50 dark:bg-zinc-800/40'}
+                                                                hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors
+                                                            `}
                                                         >
                                                             <td className="p-3 text-sm text-zinc-700 dark:text-zinc-300">{account.login}</td>
                                                             <td className="p-3 text-sm text-zinc-700 dark:text-zinc-300">{account.password}</td>
@@ -400,6 +429,85 @@ const BrokerAccountsRedesign = () => {
                                             </tbody>
                                         </table>
                                     </div>
+                                    
+                                    {/* Pagination Controls */}
+                                    {brokerAccounts.length > 0 && (
+                                        <div className="mt-6 flex flex-col items-center gap-4 p-4 border-t border-zinc-200 dark:border-zinc-700">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={goToPreviousPage}
+                                                    disabled={currentPage === 1}
+                                                    className="p-2 rounded-full bg-blue-100 text-blue-500 disabled:opacity-50 hover:bg-blue-200 transition-colors"
+                                                >
+                                                    <ChevronLeft className="w-5 h-5" />
+                                                </button>
+                                                
+                                                {startPage > 1 && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => goToPage(1)}
+                                                            className="px-3 py-1 rounded-md text-zinc-700 dark:text-zinc-300 hover:bg-blue-100 transition-colors"
+                                                        >
+                                                            1
+                                                        </button>
+                                                        {startPage > 2 && <span className="px-2">...</span>}
+                                                    </>
+                                                )}
+                                                
+                                                {pageNumbers.map((page) => (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => goToPage(page)}
+                                                        className={`px-3 py-1 rounded-md transition-colors ${
+                                                            currentPage === page 
+                                                                ? "bg-blue-500 text-white" 
+                                                                : "text-zinc-700 dark:text-zinc-300 hover:bg-blue-100"
+                                                        }`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                ))}
+                                                
+                                                {endPage < totalPages && (
+                                                    <>
+                                                        {endPage < totalPages - 1 && <span className="px-2">...</span>}
+                                                        <button
+                                                            onClick={() => goToPage(totalPages)}
+                                                            className="px-3 py-1 rounded-md text-zinc-700 dark:text-zinc-300 hover:bg-blue-100 transition-colors"
+                                                        >
+                                                            {totalPages}
+                                                        </button>
+                                                    </>
+                                                )}
+                                                
+                                                <button
+                                                    onClick={goToNextPage}
+                                                    disabled={currentPage === totalPages}
+                                                    className="p-2 rounded-full bg-blue-100 text-blue-500 disabled:opacity-50 hover:bg-blue-200 transition-colors"
+                                                >
+                                                    <ChevronRight className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+                                                <span>
+                                                    Mostrando {startIndex + 1} - {Math.min(endIndex, totalItems)} de {totalItems}
+                                                </span>
+                                                <select
+                                                    value={pageSize}
+                                                    onChange={(e) => {
+                                                        setPageSize(Number(e.target.value));
+                                                        setCurrentPage(1);
+                                                    }}
+                                                    className="p-1 border rounded bg-white dark:bg-zinc-800 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    <option value={5}>5 por página</option>
+                                                    <option value={10}>10 por página</option>
+                                                    <option value={25}>25 por página</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </div>
