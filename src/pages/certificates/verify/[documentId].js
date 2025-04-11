@@ -153,50 +153,6 @@ export default function CertificateVerify() {
 
         {/* Botones de descarga e imagen del certificado */}
         <div className="p-4">
-          {/* <div className="flex justify-center space-x-4">
-            {/* <a
-              href={certificate?.pngUrl || '#'} // Ajusta según tu API
-              download="certificate.png"
-              className="flex items-center rounded-xl bg-yellow-500 px-4 py-3 text-black hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-400"
-            >
-              <svg
-                className="mr-2 h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <h3 className="text-sm font-medium">Descargar PNG</h3>
-            </a>
-            <a
-              href={certificate?.pdfUrl || '#'} // Ajusta según tu API
-              download="certificate.pdf"
-              className="flex items-center rounded-xl bg-yellow-500 px-4 py-3 text-black hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-400"
-            >
-              <svg
-                className="mr-2 h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <h3 className="text-sm font-medium">Descargar PDF</h3>
-            </a> }
-          </div> */}
 
           {/* AQUÍ USAMOS EL COMPONENTE CERTIFICATES DIRECTAMENTE */}
           <div className=" w-full rounded-lg ">
@@ -226,7 +182,7 @@ export default function CertificateVerify() {
               comenzar un challenge.
             </div>
             <div className="mt-10 flex flex-row justify-center gap-4">
-              <Link href="https://zevenglobalfunding.com/faq"> 
+              <Link href="https://faq.zevenglobalfunding.com/"> 
                 <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
                   FAQ
                 </button>
