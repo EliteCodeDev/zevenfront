@@ -9,13 +9,18 @@ import {
 } from "@/components/ui/carousel";
 
 const fetcher = async (url, token) => {
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) {
-    throw new Error(`Error: ${res.statusText}`);
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      throw new Error(`Error: ${res.statusText}`);
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    return { data: [] }; // Retorna un objeto con estructura correcta pero vacío
   }
-  return res.json();
 };
 
 export default function PromotionBanner() {
@@ -25,8 +30,12 @@ export default function PromotionBanner() {
 
   // Se consulta la promoción solo si existe un token
   const { data, error, isLoading } = useSWR(
-    session?.jwt ? [`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/promotions?populate=*`, session.jwt] : null,
-    ([url, token]) => fetcher(url, token)
+    session?.jwt ? [`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/promotions`, session.jwt] : null,
+    ([url, token]) => fetcher(url, token),
+    { 
+      revalidateOnFocus: false, // Evita refetch al cambiar pestañas
+      errorRetryCount: 2 // Limita los reintentos en caso de error
+    }
   );
 
   // Configurar el autoplay para el carrusel
@@ -52,25 +61,18 @@ export default function PromotionBanner() {
   }, [api]);
 
   // Si está cargando, no hay sesión o hay error, no mostrar nada
-  if (isLoading || error || !session?.jwt) {
+  if (isLoading || !session?.jwt) {
     return null;
   }
 
-  // Si no hay datos, no mostrar nada
-  if (!data || !data.data || data.data.length === 0) {
-    return null;
-  }
+  // Asegurar que tenemos una estructura de datos válida
+  const promotionData = data || { data: [] };
+  const promotions = Array.isArray(promotionData.data) ? promotionData.data : [];
 
-  // Extraer promociones y asegurar que usamos la estructura correcta
-  const promotions = data?.data || [];
-  // console.log("Promociones recibidas:", promotions);
-
-  // Filtrar promociones activas
-  const activePromotions = promotions.filter(promo => {
-    return promo.isActive !== false; // Si no está marcado como inactivo, lo consideramos activo
-  });
-
-  console.log("Promociones activas:", activePromotions);
+  // Filtrar promociones activas y con URL válida
+  const activePromotions = promotions.filter(promo => 
+    promo && promo.isActive !== false && promo.url
+  );
 
   // Si no hay promociones activas
   if (!activePromotions.length) {
@@ -88,6 +90,9 @@ export default function PromotionBanner() {
           src={imageUrl}
           alt={promotion.name || "Promoción"}
           className="w-full h-40 object-cover rounded-md"
+          onError={(e) => {
+            e.target.style.display = 'none'; // Oculta imagen si hay error
+          }}
         />
       </div>
     );
@@ -113,22 +118,27 @@ export default function PromotionBanner() {
                 src={promotion.url}
                 alt={promotion.name || `Promoción ${index + 1}`}
                 className="w-full h-40 object-cover rounded-xl"
+                onError={(e) => {
+                  e.target.style.display = 'none'; // Oculta imagen si hay error
+                }}
               />
             </CarouselItem>
           ))}
         </CarouselContent>
 
         {/* Indicadores simplificados */}
-        <div className="absolute z-10 bottom-2 left-0 right-0 flex justify-center gap-1">
-          {activePromotions.map((_, index) => (
-            <button
-              key={`dot-${index}`}
-              className="w-2 h-2 rounded-full bg-white/60 hover:bg-white"
-              onClick={() => api?.scrollTo(index)}
-              aria-label={`Ir a promoción ${index + 1}`}
-            />
-          ))}
-        </div>
+        {activePromotions.length > 1 && (
+          <div className="absolute z-10 bottom-2 left-0 right-0 flex justify-center gap-1">
+            {activePromotions.map((_, index) => (
+              <button
+                key={`dot-${index}`}
+                className="w-2 h-2 rounded-full bg-white/60 hover:bg-white"
+                onClick={() => api?.scrollTo(index)}
+                aria-label={`Ir a promoción ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </Carousel>
     </div>
   );

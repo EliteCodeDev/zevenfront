@@ -55,7 +55,7 @@ const ButtonInit = ({ documentId, result, phase, className }) => {
                     Tu desafío fue desaprobado. Puedes comprar otro.
                 </p>
                 <a 
-                    href="http://neocapitalfunding.com/desafio-neo/" 
+                    href="http://zevenglobalfunding.com/desafio-zeven/" 
                     className="text-sm text-white font-bold uppercase underline"
                 >
                     CLICK AQUÍ
