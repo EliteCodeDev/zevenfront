@@ -50,15 +50,15 @@ export default function Component({ data = {} as MetricsData }) {
 
     const metrics = [
         { label: "Capital:", value: `$${formatValue(initialCapital)}` },
-        { label: "Beneficio promedio:", value: `$${formatValue(avgWin)}` },
+        { label: "Average profit:", value: `$${formatValue(avgWin)}` },
         { label: "Balance:", value: `$${formatValue(data.balance ?? 0)}` },
-        { label: "Pérdida promedio:", value: `$${formatValue(Math.abs(avgLoss))}` },
-        { label: "No. de trades:", value: tradesCount },  // Sin decimales porque es un contador
-        { label: "RRR Promedio:", value: formatValue(rrr) },
-        { label: "Lotes:", value: formatValue(lots) },
-        { label: "Expectativa:", value: formatValue(expectancy) },
-        { label: "Tasa de éxito:", value: `${formatValue(wonTradesPercent)}%` },
-        { label: "Coeficiente de Beneficio:", value: formatValue(profitFactor) },
+        { label: "Average loss:", value: `$${formatValue(Math.abs(avgLoss))}` },
+        { label: "No. of trades:", value: tradesCount },  // Sin decimales porque es un contador
+        { label: "Average RRR:", value: formatValue(rrr) },
+        { label: "Lots:", value: formatValue(lots) },
+        { label: "Expectation:", value: formatValue(expectancy) },
+        { label: "Success rate:", value: `${formatValue(wonTradesPercent)}%` },
+        { label: "Profit Ratio:", value: formatValue(profitFactor) },
     ];
 
     return (

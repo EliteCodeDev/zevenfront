@@ -169,7 +169,7 @@ export default function MyPage({
   if (!data || data.length === 0) {
     return (
       <div className="text-center p-4 bg-gray-100 dark:bg-zinc-800 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
-        No hay datos disponibles para mostrar.
+        There are no data available to show.
       </div>
     );
   }
@@ -177,7 +177,7 @@ export default function MyPage({
   return (
     <>
       <h2 className="text-lg font-semibold mb-4">
-        Evolución del Balance por hora
+        EVOLUTION OF BALANCE PER HOUR
       </h2>
       <div className="dark:bg-zinc-800  bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
         <LineChart

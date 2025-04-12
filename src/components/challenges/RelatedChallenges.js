@@ -118,7 +118,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
       <div className="mt-6 p-4 bg-white dark:bg-zinc-800 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
-          <span className="ml-3">Cargando challenges relacionados...</span>
+          <span className="ml-3">Loading related challenges...</span>
         </div>
       </div>
     );
@@ -128,7 +128,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
     return (
       <div className="mt-6 p-4 bg-white dark:bg-zinc-800 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
         <div className="text-red-500">
-          Error al cargar challenges relacionados: {error}
+          Error when loading related challenges: {error}
         </div>
       </div>
     );
@@ -146,7 +146,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="text-lg font-semibold">
-          Fases anteriores de este Challenge
+          Previous phases of this Challenge
         </h2>
         {isExpanded ? (
           <ChevronUpIcon className="h-6 w-6" />
@@ -169,7 +169,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">
-                    Fase {challenge.phase} - {" "}
+                    Phase {challenge.phase} - {" "}
                     <span className={statusColors[challenge.result] || "text-gray-500"}>
                       {challenge.result}
                     </span>
@@ -195,7 +195,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
                     <Link href={`/historial/${challenge.documentId}`}>
                       <button className="flex items-center justify-center space-x-2 px-3 py-1 border rounded-lg shadow-sm bg-gray-200 hover:bg-gray-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 border-gray-300 dark:border-zinc-500">
                         <ChartBarIcon className="h-4 w-4 text-gray-600 dark:text-gray-200" />
-                        <span className="text-xs dark:text-gray-200">Historial</span>
+                        <span className="text-xs dark:text-gray-200">Record</span>
                       </button>
                     </Link>
                   )}
