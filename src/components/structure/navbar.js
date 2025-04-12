@@ -1,3 +1,4 @@
+// src/components/structure/navbar.js
 import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
@@ -55,7 +56,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-x-4">
                   <div className="lg:hidden">
                     <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-zinc-900 p-2 text-white hover:bg-zinc-800 hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] focus:ring-offset-2">
-                      <span className="sr-only">Abrir menú principal</span>
+                      <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                       ) : (
@@ -100,7 +101,7 @@ export default function Navbar() {
                     {/* Foto de perfil y menú */}
                     <Menu as="div" className="relative">
                       <Menu.Button className="flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] focus:ring-offset-2">
-                        <span className="sr-only">Abrir menú de usuario</span>
+                        <span className="sr-only">Open user menu</span>
                         <LogoGravatar email={session.user.email} size={40} />
                       </Menu.Button>
                       <Transition
