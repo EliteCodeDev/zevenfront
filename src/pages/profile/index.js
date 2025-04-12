@@ -60,7 +60,7 @@ const ProfilePage = () => {
     if (name === "phone" && !/^\d*$/.test(value)) {
       setError((prev) => ({
         ...prev,
-        [name]: "El teléfono solo debe contener números."
+        [name]: "The phone number should only contain digits."
       }));
       setTimeout(() => setError((prev) => ({ ...prev, [name]: "" })), 2000);
       return;
@@ -73,7 +73,7 @@ const ProfilePage = () => {
     ) {
       setError((prev) => ({
         ...prev,
-        [name]: "El campo no debe exceder los 50 caracteres."
+        [name]: "The field must not exceed 50 characters."
       }));
       setTimeout(() => setError((prev) => ({ ...prev, [name]: "" })), 2000);
       return;
@@ -82,7 +82,7 @@ const ProfilePage = () => {
     if (name === "zipCode" && value.length > 10) {
       setError((prev) => ({
         ...prev,
-        [name]: "El código postal no debe exceder 10 caracteres."
+        [name]: "The postal code must not exceed 10 characters."
       }));
       setTimeout(() => setError((prev) => ({ ...prev, [name]: "" })), 2000);
       return;
@@ -125,13 +125,13 @@ const ProfilePage = () => {
         console.error("Error en la respuesta de Strapi:", errorData);
         toast.error("Error en la respuesta");
         throw new Error(
-          `Error ${response.status} - ${errorData?.error?.message || "Error desconocido"
+          `Error ${response.status} - ${errorData?.error?.message || "Unknown error"
           }`
         );
       }
 
-      setSuccess("Datos actualizados correctamente.");
-      toast.success("Datos actualizados correctamente.");
+      setSuccess("Data updated successfully.");
+      toast.success("Data updated successfully.");
       setTimeout(() => setSuccess(""), 3000);
 
     } catch (error) {
@@ -177,7 +177,7 @@ const ProfilePage = () => {
   }
 
   if (fetchError) {
-    return <Layout>Error al cargar los datos: {fetchError.message}</Layout>;
+    return <Layout>Error loading data: {fetchError.message}</Layout>;
   }
 
   const isVerified = !!data?.isVerified;
@@ -197,7 +197,7 @@ const ProfilePage = () => {
               <UserIcon className="w-5 h-5 text-[var(--app-primary)]" />
             </div>
             <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-              Perfil de Usuario
+              User Profile
             </h1>
           </div>
 
@@ -208,7 +208,7 @@ const ProfilePage = () => {
                 : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
                 }`}
             >
-              {isVerified ? "Verificado" : "Por verificar"}
+              {isVerified ? "Verified" : "Pending Verification"}
             </span>
           </div>
         </div>
@@ -222,7 +222,7 @@ const ProfilePage = () => {
           <div className="relative z-10 mb-4">
             <div className="relative">
               <LogoGravatar
-                email={session.user.email || "usuario@example.com"}
+                email={session.user.email || "user@example.com"}
                 className="w-24 h-24 bg-white rounded-full flex items-center justify-center border-4 border-white dark:border-zinc-700 shadow-md"
               />
               {isVerified && (
@@ -234,21 +234,21 @@ const ProfilePage = () => {
           </div>
 
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-white mb-1">
-            {session.firstName || data.username || "Usuario"}
+            {session.firstName || data.username || "User"}
           </h1>
 
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 mb-4">
             <AtSymbolIcon className="w-4 h-4" />
-            <p className="text-sm">{data.email || "Correo no disponible"}</p>
+            <p className="text-sm">{data.email || "Email not available"}</p>
           </div>
 
           <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-6">
             <CalendarIcon className="w-4 h-4 mr-1" />
-            <span>Miembro desde: </span>
+            <span>Member since: </span>
             <span className="ml-1 font-medium">
               {data.createdAt
                 ? new Date(data.createdAt).toLocaleDateString()
-                : "No disponible"}
+                : "Not available"}
             </span>
           </div>
 
@@ -270,12 +270,12 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
-                    Estado de verificación
+                    Verification Status
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {isVerified
-                      ? "Tu cuenta está completamente verificada"
-                      : "Completa la verificación para desbloquear todas las funciones"}
+                      ? "Your account is fully verified"
+                      : "Complete verification to unlock all features"}
                   </p>
                 </div>
               </div>
@@ -285,7 +285,7 @@ const ProfilePage = () => {
                   className="text-xs px-3 py-1 rounded-md bg-[var(--app-primary)]/90 hover:bg-[var(--app-primary)] text-white transition-colors duration-200 font-medium"
                 // Aquí podrías disparar la lógica de verificación
                 >
-                  Verificar
+                  Verify Account
                 </button>
               )}
             </div>
@@ -305,14 +305,14 @@ const ProfilePage = () => {
                 <UserCircleIcon className="w-5 h-5 text-[var(--app-primary)]" />
               </div>
               <h2 className="text-lg font-semibold text-zinc-800 dark:text-white">
-                Información Personal
+                Personal Information
               </h2>
             </div>
 
             {isVerified && (
               <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm">
                 <PencilIcon className="w-4 h-4 mr-1" />
-                <span>No se puede editar (verificado)</span>
+                <span>Cannot be edited (verified)</span>
               </div>
             )}
           </div>
@@ -326,7 +326,7 @@ const ProfilePage = () => {
                 htmlFor="firstName"
                 className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
-                Nombre
+                First Name
               </Label>
               <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
                 <Input
@@ -335,7 +335,7 @@ const ProfilePage = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="Ingrese su nombre"
+                  placeholder="Enter your first name"
                   disabled={isVerified}
                   className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                     }`}
@@ -356,7 +356,7 @@ const ProfilePage = () => {
                 htmlFor="lastName"
                 className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
-                Apellido
+                Last Name
               </Label>
               <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
                 <Input
@@ -365,7 +365,7 @@ const ProfilePage = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="Ingrese su apellido"
+                  placeholder="Enter your last name"
                   disabled={isVerified}
                   className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                     }`}
@@ -388,7 +388,7 @@ const ProfilePage = () => {
               htmlFor="phone"
               className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
             >
-              Teléfono
+              Phone
             </Label>
             <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
               <Input
@@ -397,7 +397,7 @@ const ProfilePage = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="Ingrese su teléfono"
+                placeholder="Enter your phone number"
                 disabled={isVerified}
                 className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                   }`}
@@ -414,9 +414,9 @@ const ProfilePage = () => {
           {/* País y ciudad */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="country">País</Label>
+              <Label htmlFor="country">Country</Label>
               <CountryDropdown
-                placeholder="Elige un país"
+                placeholder="Choose a country"
                 defaultValue={formData.country}
                 onChange={handleCountryChange}
                 disabled={isVerified}
@@ -425,7 +425,7 @@ const ProfilePage = () => {
               <div className="h-1">
                 {error.country && <div className="text-red-500">{error.country}</div>}
                 {!formData.country && error.form && (
-                  <div className="text-red-500">Campo obligatorio</div>
+                  <div className="text-red-500">Required field</div>
                 )}
               </div>
             </div>
@@ -435,7 +435,7 @@ const ProfilePage = () => {
                 htmlFor="city"
                 className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
-                Ciudad
+                City
               </Label>
               <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
                 <Input
@@ -444,7 +444,7 @@ const ProfilePage = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  placeholder="Ingrese su ciudad"
+                  placeholder="Enter your city"
                   disabled={isVerified}
                   className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                     }`}
@@ -466,7 +466,7 @@ const ProfilePage = () => {
                 htmlFor="street"
                 className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
-                Dirección
+                Address
               </Label>
               <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
                 <Input
@@ -475,7 +475,7 @@ const ProfilePage = () => {
                   name="street"
                   value={formData.street}
                   onChange={handleChange}
-                  placeholder="Ingrese su dirección"
+                  placeholder="Enter your address"
                   disabled={isVerified}
                   className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                     }`}
@@ -496,7 +496,7 @@ const ProfilePage = () => {
                 htmlFor="zipCode"
                 className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
               >
-                Código Postal
+                Postal Code
               </Label>
               <div className={`relative ${isVerified ? "opacity-80" : ""}`}>
                 <Input
@@ -505,7 +505,7 @@ const ProfilePage = () => {
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
-                  placeholder="Ingrese su código postal"
+                  placeholder="Enter your postal code"
                   disabled={isVerified}
                   className={`bg-gray-50 dark:bg-zinc-700/50 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-[var(--app-primary)]/30 focus:border-[var(--app-primary)] transition-all ${isVerified ? "cursor-not-allowed" : ""
                     }`}
@@ -561,19 +561,18 @@ const ProfilePage = () => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  <span>Guardando cambios...</span>
+                  <span>Saving changes...</span>
                 </>
               ) : (
                 <span>
-                  {isVerified ? "Información verificada" : "Guardar cambios"}
+                  {isVerified ? "Verified information" : "Save changes"}
                 </span>
               )}
             </button>
 
             {isVerified && (
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                No es posible editar la información una vez que la cuenta ha
-                sido verificada
+                You cannot edit your information once your account has been verified.
               </p>
             )}
           </div>
