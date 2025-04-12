@@ -25,9 +25,7 @@ export default function ModalRoulette() {
   // };
 
   const handleBuyTicket = () => {
-    // Lógica para comprar ticket
-    console.log("Comprar ticket");
-    window.location.href = `https://zevenglobalfunding.com/rewards`;
+    window.location.href = `https://zevenglobalfunding.com/checkout/?add-to-cart=${TICKET_ID}&quantity=1&user_id=${user.documentId}`;
   };
 
 
@@ -93,7 +91,7 @@ export default function ModalRoulette() {
             <div className="w-16 h-16 rounded-full bg-zinc-800 border-2 border-[var(--app-primary)] flex items-center justify-center shadow-[0_0_10px_rgba(59,130,246,0.2)]">
               <Gift className="h-8 w-8 text-[var(--app-primary)]" />
             </div>
-            <span className="text-[var(--app-primary)]">Mis Tickets</span>
+            <span className="text-[var(--app-primary)]">My Tickets</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -102,7 +100,7 @@ export default function ModalRoulette() {
             onClick={handleBuyTicket}
             className="px-6 py-3 bg-[var(--app-primary)] text-white font-bold rounded-lg hover:brightness-110 transition-all duration-300 shadow-md w-full"
           >
-            Comprar Ticket
+            Buy Ticket
           </button>
         </div>
 

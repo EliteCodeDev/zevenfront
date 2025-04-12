@@ -17,7 +17,7 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
 
   // Función para formatear fechas (si no hay fecha, muestra 'sin limite')
   const formatDate = (dateString) => {
-    if (!dateString) return 'sin limite';
+    if (!dateString) return 'No Limit';
     return new Date(dateString).toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'short',
@@ -35,7 +35,7 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
           setTimeout(() => setCopiado(false), 2000);
         })
         .catch((err) => {
-          console.error('Error al copiar el código: ', err);
+          console.error('Error when copying the code:', err);
         });
     }
   };
@@ -48,7 +48,7 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
           {/* Nombre del reward y botón de copiar código */}
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg text-gray-100 truncate">
-              {ticket?.reward ? ("Premio: " + ticket.reward?.nombre || 'No definido') : 'Sin Premio'}              </h3>
+              {ticket?.reward ? ("Reward: " + ticket.reward?.nombre || 'undefined') : 'No Reward'}              </h3>
 
             {ticket?.codigo && (
               <div className="flex items-center">
@@ -57,13 +57,13 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
                   <button
                     onClick={copiarCodigo}
                     className="p-1.5 rounded-full hover:bg-blue-800/30 transition-all"
-                    title="Copiar código"
+                    title="Copy code"
                   >
                     <ClipboardDocumentIcon className="h-4 w-4 text-gray-300 hover:text-blue-300" />
                   </button>
                   {copiado && (
                     <div className="absolute right-0 mt-1 text-xs text-emerald-400 bg-zinc-800/90 py-0.5 px-1.5 rounded-md whitespace-nowrap shadow-md">
-                      ¡Copiado!
+                      ¡Copied!
                     </div>
                   )}
                 </div>
@@ -74,10 +74,10 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
           <div className="flex items-center text-xs text-gray-400 mt-2 bg-zinc-800/50 p-1.5 rounded">
             <ClockIcon className="h-3.5 w-3.5 mr-1.5 text-blue-300" />
             {ticket.habilitado ? (
-              <span>Disponible hasta: {formatDate(ticket.fechaExpiracionTicket)}</span>
+              <span>Available to:{formatDate(ticket.fechaExpiracionTicket)}</span>
             ) : (
               <div className="flex justify-between w-full">
-                <span>Válido hasta: {formatDate(ticket.fechaExpiracionPremio)}</span>
+                <span>Valid to: {formatDate(ticket.fechaExpiracionPremio)}</span>
               </div>
             )}
           </div>
@@ -108,7 +108,7 @@ const TicketCard = ({ ticket, onOpenRoulette }) => {
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              <span>Girar Ruleta</span>
+              <span>Try Your Luck!</span>
             </button>
           )}
         </div>
@@ -163,8 +163,8 @@ const RouletteModal = ({ isOpen, onClose, ticket, onTicketUsed }) => {
 
         {/* Header text - Mejorado */}
         <div className="relative z-10 text-center py-4 w-full bg-gradient-to-r from-blue-900/50 via-blue-800/30 to-blue-900/50 border-b border-blue-700/50  shadow-md">
-          <h3 className="text-2xl font-bold text-blue-300">¡Gira la Ruleta!</h3>
-          <p className="text-gray-300 text-sm mt-0.5">Consigue premios increíbles</p>
+          <h3 className="text-2xl font-bold text-blue-300">Try Your Luck!</h3>
+          <p className="text-gray-300 text-sm mt-0.5">Get incredible awards</p>
         </div>
 
         {/* Sección para la ruleta - Centrada verticalmente con efectos */}
@@ -246,7 +246,7 @@ export default function TicketsList() {
     return (
       <div className="flex items-center justify-center p-5 bg-zinc-900/50 rounded-lg">
         <div className="animate-spin h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-        <span className="ml-2 text-blue-400 text-sm">Cargando tickets...</span>
+        <span className="ml-2 text-blue-400 text-sm">Loading tickets...</span>
       </div>
     );
   }
@@ -256,8 +256,8 @@ export default function TicketsList() {
     return (
       <div className="text-center p-6 text-red-500 bg-red-900/20 rounded-lg border border-red-700/30">
         <XCircleIcon className="h-12 w-12 mx-auto mb-2" />
-        <p className="font-medium">Error al cargar los tickets</p>
-        <p className="text-sm text-gray-300 mt-2">Por favor, intenta nuevamente más tarde</p>
+        <p className="font-medium">Error loading tickets</p>
+        <p className="text-sm text-gray-300 mt-2">Please try again later</p>
       </div>
     );
   }

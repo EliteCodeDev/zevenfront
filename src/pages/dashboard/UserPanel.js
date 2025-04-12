@@ -119,8 +119,8 @@ export default function Index() {
                             const metrics = await metaStats.getMetrics(challenge.broker_account.idMeta);
                             newBalances[challenge.id] = metrics.balance;
                         } catch (error) {
-                            console.error(`Error obteniendo el balance para ${challenge.broker_account.idMeta}:`, error);
-                            newBalances[challenge.id] = challenge.broker_account.balance || "No disponible";
+                            // console.error(`Error obtaining the balance to ${challenge.broker_account.idMeta}:`, error);
+                            newBalances[challenge.id] = challenge.broker_account.balance || "Not available";
                         }
                     } else {
                         newBalances[challenge.id] = "1000000";
@@ -190,7 +190,7 @@ export default function Index() {
     };
 
     if (isLoading) return <Loader />;
-    if (error) return <p className="text-center text-red-500">Error al cargar los datos: {error.message}</p>;
+    if (error) return <p className="text-center text-red-500">Error loading the data: {error.message}</p>;
 
     const isVerified = data?.isVerified;
     const toggleVisibility = (id) => setVisibility((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -230,7 +230,7 @@ export default function Index() {
 
     // Ordenar los stages por su número de fase
     const sortedStages = Object.keys(groupedChallengesByStage).sort((a, b) => {
-        const phaseOrder = { "Fase 1": 1, "Fase 2": 2, "Fase Real": 3 };
+        const phaseOrder = { "Phase 1": 1, "Phase 2": 2, "Real Phase": 3 };
         return (phaseOrder[a] || 999) - (phaseOrder[b] || 999); // 999 como fallback para fases no mapeadas
     });
 
@@ -255,7 +255,7 @@ export default function Index() {
 
                                 let balanceDisplay;
                                 if (!challenge?.broker_account?.balance) {
-                                    balanceDisplay = "No disponible";
+                                    balanceDisplay = "Not available";
                                 } else {
                                     balanceDisplay = challenge.broker_account.balance;
                                 }
@@ -289,11 +289,11 @@ export default function Index() {
                                                             'text-gray-400 dark:text-gray-300'
                                                     }`}>
                                                     {{
-                                                        init: "Por iniciar",
-                                                        progress: "En curso",
-                                                        disapproved: "Desaprobado",
-                                                        approved: "Aprobado",
-                                                        retry: "Repetir",
+                                                        init: "By starting",
+                                                        progress: "In Progress",
+                                                        disapproved: "Disapproved",
+                                                        approved: "Approved",
+                                                        retry: "Retry",
                                                     }[challenge.result] || challenge.result}
                                                 </span>
                                             </div>
@@ -304,7 +304,7 @@ export default function Index() {
                                                 <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
                                                     <div className="p-2 bg-gray-50 dark:bg-zinc-700/30 rounded-lg transition-colors flex items-center justify-between">
                                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                            Balance
+                                                            balance
                                                         </p>
                                                         <p className="font-bold text-sm text-zinc-800 dark:text-zinc-200">
                                                             {typeof balanceDisplay === "number" ? `$${balanceDisplay.toLocaleString()}` : balanceDisplay}
@@ -313,7 +313,7 @@ export default function Index() {
 
                                                     <div className="p-2 bg-gray-50 dark:bg-zinc-700/30 rounded-lg transition-colors flex items-center justify-between">
                                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                            Inicio
+                                                            Start
                                                         </p>
                                                         <p className="font-bold text-sm text-zinc-800 dark:text-zinc-200">
                                                             {challenge.startDate ? new Date(challenge.startDate).toLocaleDateString() : "-"}
@@ -322,7 +322,7 @@ export default function Index() {
 
                                                     <div className="p-2 bg-gray-50 dark:bg-zinc-700/30 rounded-lg transition-colors flex items-center justify-between">
                                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                            Fin
+                                                            End
                                                         </p>
                                                         <p className="font-bold text-sm text-zinc-800 dark:text-zinc-200">
                                                             {challenge.endDate ? new Date(challenge.endDate).toLocaleDateString() : "-"}
@@ -345,7 +345,7 @@ export default function Index() {
                                                         login={challenge.broker_account?.login || "-"}
                                                         password={challenge.broker_account?.password || "-"}
                                                         server={challenge.broker_account?.server || "-"}
-                                                        platform={challenge.broker_account?.platform || "MT4"}
+                                                        platform={challenge.broker_account?.platform || "MT5"}
                                                         inversorPass={challenge.broker_account?.inversorPass || "-"}
                                                     />
 
@@ -360,7 +360,7 @@ export default function Index() {
                                                     {!isVerified && challenge.phase === 3 &&
                                                         challenge.result === "approved" && (
                                                             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 border-l-2 border-[var(--app-primary)]/30 pl-2">
-                                                                Debes estar verificado para retirar tus ganancias
+                                                                You must be verified to withdraw your profits
                                                             </p>
                                                         )}
 
@@ -392,7 +392,7 @@ export default function Index() {
                                                     htmlFor={`visible-mode-${challenge.id}-${index}`}
                                                     className={`text-sm font-medium ${isVisible ? "text-blue-600 dark:text-blue-500" : "text-gray-600 dark:text-gray-300"}`}
                                                 >
-                                                    {isVisible ? "Mostrar menos" : "Mostrar más"}
+                                                    {isVisible ? "Show less" : "Show more"}
                                                 </Label>
                                             </div>
                                         </div>

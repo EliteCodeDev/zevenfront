@@ -235,7 +235,10 @@ export default function RuletaSorteo({
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      const maxTextWidth = Math.min(radius * 0.75 * Math.sin(arcSize / 2) * 2, 100);
+      const maxTextWidth = Math.min(
+        radius * 0.75 * Math.sin(arcSize / 2) * 2,
+        100
+      );
       const fontSize = 12;
       ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
       const text = options[i].name;
@@ -504,9 +507,7 @@ export default function RuletaSorteo({
 
     const ctx = canvas.getContext("2d");
     ctx.fillStyle =
-      count % 2 === 0
-        ? "rgba(59, 130, 246, 0.12)"
-        : "rgba(37, 99, 235, 0.08)";
+      count % 2 === 0 ? "rgba(59, 130, 246, 0.12)" : "rgba(37, 99, 235, 0.08)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Efecto "respiración"
@@ -575,18 +576,18 @@ export default function RuletaSorteo({
 
       if (!response.ok) {
         throw new Error(
-          `Error en la respuesta del servidor: ${response.status} ${response.statusText}`
+          `Server response error: ${response.status} ${response.statusText}`
         );
       }
       const text = await response.text();
       if (!text || text.trim() === "") {
-        throw new Error("La respuesta del servidor está vacía");
+        throw new Error("The server response is empty");
       }
       const winningOption = JSON.parse(text);
 
       // Verificar error de ticket usado
-      if (winningOption.error && winningOption.error === "ticket usado") {
-        setTicketError("Este ticket ya ha sido utilizado");
+      if (winningOption.error && winningOption.error === "used ticket") {
+        setTicketError("This ticket has already been used");
         setIsSpinning(false);
         setHasSpun(true);
         return;
@@ -594,7 +595,7 @@ export default function RuletaSorteo({
 
       const winningIndex = winningOption.indice;
       if (winningIndex < 0 || winningIndex >= opciones.length) {
-        throw new Error("El índice ganador está fuera de rango");
+        throw new Error("The winning index is out of rank");
       }
       winningIndexRef.current = winningIndex;
       codigoRef.current = winningOption.cupon;
@@ -658,17 +659,19 @@ export default function RuletaSorteo({
 
       animationRef.current = requestAnimationFrame(animate);
     } catch (err) {
-      console.error("Error detallado:", err);
+      // console.error("Error detallado:", err);
       setIsSpinning(false);
 
-      if (err.message && err.message.includes("ticket usado")) {
-        setTicketError("Este ticket ya ha sido utilizado");
-      } else if (err.message && err.message.includes("vacía")) {
-        setTicketError("Error: La respuesta del servidor está vacía");
+      if (err.message && err.message.includes("used ticket")) {
+        setTicketError("This ticket has already been used");
+      } else if (err.message && err.message.includes("empty")) {
+        setTicketError("Error: The server's response is empty");
       } else if (err.message && err.message.includes("JSON")) {
-        setTicketError("Error: Respuesta del servidor inválida");
+        setTicketError("Error: Invalid server response");
       } else {
-        setTicketError("Ha ocurrido un error al procesar tu solicitud");
+        setTicketError(
+          "An error has occurred when processing your application"
+        );
       }
       setHasSpun(true);
 
@@ -686,7 +689,7 @@ export default function RuletaSorteo({
         setCenterImageLoaded(true);
       };
       img.onerror = () => {
-        console.error("Error al cargar la imagen central");
+        console.error("Error when loading the central image");
         setCenterImageLoaded(false);
       };
       img.src = centerImage;
@@ -724,10 +727,10 @@ export default function RuletaSorteo({
         margin: "auto",
       }}
     >
-      {loading && <p style={{ color: "#93c5fd" }}>Cargando...</p>}
-      {error && <p style={{ color: "#ef4444" }}>Error al cargar datos</p>}
+      {loading && <p style={{ color: "#93c5fd" }}>Loading...</p>}
+      {error && <p style={{ color: "#ef4444" }}>Error loading data</p>}
       {opciones.length === 0 ? (
-        <p style={{ color: "#93c5fd" }}>No hay opciones disponibles</p>
+        <p style={{ color: "#93c5fd" }}>There are no options available</p>
       ) : (
         <>
           <div
@@ -800,7 +803,11 @@ export default function RuletaSorteo({
                     height="160%"
                   >
                     <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    <feComposite
+                      in="SourceGraphic"
+                      in2="blur"
+                      operator="over"
+                    />
                   </filter>
                   <filter id="innerGlow">
                     <feFlood floodColor="#4DA6FF" result="color" />
@@ -893,7 +900,7 @@ export default function RuletaSorteo({
                     : "0 4px 15px rgba(37, 99, 235, 0.5), 0 0 10px rgba(59, 130, 246, 0.3)",
                 }}
               >
-                {isSpinning ? "GIRANDO..." : "GIRAR"}
+                {isSpinning ? "Spinning..." : "Spin"}
               </motion.button>
             </div>
           )}
@@ -975,9 +982,7 @@ export default function RuletaSorteo({
                 </>
               ) : (
                 // Si no es solo número, puedes ajustar este texto a tu gusto
-                <>
-                  ¡Ganaste un descuento especial en {selectedOption.name}!
-                </>
+                <>¡Ganaste un descuento especial en {selectedOption.name}!</>
               )}
             </h2>
 
@@ -1007,7 +1012,13 @@ export default function RuletaSorteo({
                   gap: "8px",
                 }}
               >
-                <span style={{ color: "#fff", fontFamily: "monospace", fontSize: "20px" }}>
+                <span
+                  style={{
+                    color: "#fff",
+                    fontFamily: "monospace",
+                    fontSize: "20px",
+                  }}
+                >
                   {codigoRef.current}
                 </span>
 
@@ -1040,7 +1051,11 @@ export default function RuletaSorteo({
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  style={{ fontSize: "12px", color: "#22c55e", marginTop: "6px" }}
+                  style={{
+                    fontSize: "12px",
+                    color: "#22c55e",
+                    marginTop: "6px",
+                  }}
                 >
                   ¡Código copiado!
                 </motion.div>
@@ -1056,7 +1071,8 @@ export default function RuletaSorteo({
                 style={{
                   marginTop: "20px",
                   padding: "10px 20px",
-                  background: "linear-gradient(45deg, #2563eb 0%, #3b82f6 100%)",
+                  background:
+                    "linear-gradient(45deg, #2563eb 0%, #3b82f6 100%)",
                   color: "#fff",
                   fontSize: "16px",
                   fontWeight: "bold",

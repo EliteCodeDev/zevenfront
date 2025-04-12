@@ -11,11 +11,11 @@ const ButtonInit = ({ documentId, result, phase, className }) => {
 
     const sendToWebhook = async () => {
         if (!session) {
-            console.warn("⚠️ Usuario no autenticado.");
+            console.warn("⚠️User not authenticated.");
             return;
         }
         if (!documentId) {
-            console.warn("⚠️ No se recibió un documentId.");
+            console.warn("⚠️No documentId was received.");
             return;
         }
 
@@ -35,11 +35,11 @@ const ButtonInit = ({ documentId, result, phase, className }) => {
             });
 
             if (response.ok) {
-                toast.success('Solicitud procesada exitosamente');
+                toast.success('Application processed successfully');
                 window.location.reload();
             } else {
                 console.error("❌ Error al enviar datos a n8n");
-                toast.error('Error al procesar la solicitud');
+                toast.error('Error when processing the application, please try again later');
             }
         } catch (err) {
             console.error("❌ Error en la solicitud al webhook:", err);
@@ -52,13 +52,13 @@ const ButtonInit = ({ documentId, result, phase, className }) => {
         return (
             <div className="flex items-center py-3 px-4 gap-3 mt-4 border border-red-500 bg-red-500 rounded-lg">
                 <p className="text-sm text-white font-medium">
-                    Tu desafío fue desaprobado. Puedes comprar otro.
+                    Your challenge was disapproved.You can buy another.
                 </p>
-                <a 
-                    href="http://zevenglobalfunding.com/desafio-zeven/" 
+                <a
+                    href="http://zevenglobalfunding.com/desafio-zeven/"
                     className="text-sm text-white font-bold uppercase underline"
                 >
-                    CLICK AQUÍ
+                    Click HERE
                 </a>
             </div>
         );
@@ -71,14 +71,14 @@ const ButtonInit = ({ documentId, result, phase, className }) => {
     return (
         <div className="flex items-center py-1 h-9 px-4 gap-1 border border-[var(--app-primary)] bg-[var(--app-primary)] rounded-lg">
             <p className="text-xs text-black font-medium">
-                Inicia tu challenge haciendo
+                Start your challenge doing
             </p>
             <button
                 onClick={sendToWebhook}
                 className="text-xs text-black font-bold uppercase underline"
                 disabled={isLoading}
             >
-                {isLoading ? "Cargando..." : "CLICK AQUÍ"}
+                {isLoading ? "lOADING..." : "click HERE"}
             </button>
         </div>
     );
