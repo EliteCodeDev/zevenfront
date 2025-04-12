@@ -14,7 +14,7 @@ const NotificationsPage = () => {
 
     // Si hay un error, mostramos el mensaje de error
     if (error) {
-        return <p>Error al cargar las notificaciones: {error.message}</p>;
+        return <p>Error loading notifications: {error.message}</p>;
     }
 
     // Renderizamos las notificaciones si los datos están disponibles
@@ -57,7 +57,7 @@ const NotificationsPage = () => {
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center justify-center bg-[var(--app-primary)] text-black font-medium py-2 px-4 rounded-lg hover:bg-[var(--app-secondary)] transition w-full"
                                     >
-                                        Ver más
+                                        View More
                                     </a>
                                 </div>
                             )}
@@ -65,7 +65,7 @@ const NotificationsPage = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="dark:text-white">No hay notificaciones para mostrar.</div>
+                    <div className="dark:text-white">There are no notifications to display.</div>
                 )}
             </div>
         </div>

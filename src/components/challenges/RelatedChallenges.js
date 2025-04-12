@@ -37,7 +37,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
         setLoading(true);
         // Usar el parentId si existe, o el documentId del challenge actual como parentId
         const parentId = currentChallenge.parentId || currentChallenge.documentId;
-        
+
         // Consultar los challenges relacionados por parentId
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/challenges?filters[parentId][$eq]=${parentId}`,
@@ -54,7 +54,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
         }
 
         const data = await response.json();
-        
+
         // Si la consulta por parentId no devuelve resultados, intentar buscar por documentId
         if (data.data.length === 0 && currentChallenge.documentId) {
           // Puede que el challenge actual sea el padre, buscar por su documentId
@@ -87,11 +87,11 @@ const RelatedChallenges = ({ currentChallenge }) => {
           // Asegurarse de incluir el challenge actual si no está en la lista
           let challenges = data.data;
           const currentIncluded = challenges.some(c => c.documentId === currentChallenge.documentId);
-          
+
           if (!currentIncluded) {
             challenges = [...challenges, currentChallenge];
           }
-          
+
           // Ordenar los challenges por fase
           setRelatedChallenges(
             challenges.sort((a, b) => a.phase - b.phase)
@@ -141,8 +141,8 @@ const RelatedChallenges = ({ currentChallenge }) => {
 
   return (
     <div className="mt-6 p-4 bg-white dark:bg-zinc-800 rounded-lg shadow-md dark:text-white dark:border-zinc-700 dark:shadow-black">
-      <div 
-        className="flex justify-between items-center cursor-pointer" 
+      <div
+        className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h2 className="text-lg font-semibold">
@@ -158,13 +158,12 @@ const RelatedChallenges = ({ currentChallenge }) => {
       {isExpanded && (
         <div className="mt-4 space-y-3">
           {relatedChallenges.map((challenge) => (
-            <div 
-              key={challenge.documentId} 
-              className={`p-3 rounded-lg border ${
-                challenge.documentId === currentChallenge.documentId
-                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  : "border-gray-200 dark:border-zinc-700"
-              }`}
+            <div
+              key={challenge.documentId}
+              className={`p-3 rounded-lg border ${challenge.documentId === currentChallenge.documentId
+                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                : "border-gray-200 dark:border-zinc-700"
+                }`}
             >
               <div className="flex justify-between items-center">
                 <div>
@@ -178,7 +177,7 @@ const RelatedChallenges = ({ currentChallenge }) => {
                     {formatDate(challenge.startDate)} - {formatDate(challenge.endDate)}
                   </p>
                 </div>
-                
+
                 <div>
                   {challenge.documentId === currentChallenge.documentId ? (
                     <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">
