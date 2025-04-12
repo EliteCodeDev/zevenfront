@@ -68,7 +68,7 @@ export default function WinLoss({ data }) {
         <CardContent className="pt-6">
           {noTrades ? (
             <div className="text-center py-8 text-muted-foreground">
-              Sin resultados aún, no se han realizado trades.
+              Without results, no trades have been made.
             </div>
           ) : (
             <>
@@ -137,7 +137,7 @@ export default function WinLoss({ data }) {
                     ${formatCurrency(chartData.averageWin)}
                   </div>
                   <div className="text-sm text-green-600 dark:text-green-400 mt-2">
-                    Total Ganancia: ${formatCurrency(chartData.wonBalance)}
+                    Total profit: ${formatCurrency(chartData.wonBalance)}
                   </div>
                 </div>
 
@@ -149,7 +149,7 @@ export default function WinLoss({ data }) {
                     ${formatCurrency(chartData.averageLoss)}
                   </div>
                   <div className="text-sm text-red-600 dark:text-red-400 mt-2">
-                    Total Pérdida: ${formatCurrency(chartData.lostBalance)}
+                    Total loss: ${formatCurrency(chartData.lostBalance)}
                   </div>
                 </div>
               </div>
@@ -165,13 +165,13 @@ export default function WinLoss({ data }) {
                       {chartData.profitFactor.toFixed(2)}
                     </div>
                     <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-                      (Ratio Ganancia/Pérdida)
+                      (Ratio Profit/loss)
                     </div>
                   </div>
 
                   <div>
                     <div className="text-blue-700 dark:text-blue-400 font-semibold mb-1">
-                      Beneficio Neto
+                      Net profit
                     </div>
                     <div
                       className={`text-2xl font-bold ${
@@ -183,7 +183,7 @@ export default function WinLoss({ data }) {
                       ${formatCurrency(chartData.netProfit)}
                     </div>
                     <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-                      (Total Ganancia - Total Pérdida)
+                      (Total Profit - Total Loss)
                     </div>
                   </div>
                 </div>
