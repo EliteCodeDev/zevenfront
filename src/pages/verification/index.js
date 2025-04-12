@@ -49,15 +49,15 @@ const SocialsPage = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                toast.error(errorData?.error?.message || "Error en la firma del contrato");
+                toast.error(errorData?.error?.message || "Error in signing the contract.");
                 throw new Error(`Error ${response.status}`);
             }
 
-            toast.success("Contrato firmado exitosamente.");
+            toast.success("Contract successfully signed.");
             mutate();
         } catch (error) {
             console.error("Error al firmar el contrato:", error);
-            toast.error("Hubo un problema al firmar el contrato.");
+            toast.error("There was a problem signing the contract.");
         } finally {
             setLoading(false);
         }
@@ -65,12 +65,12 @@ const SocialsPage = () => {
 
     const handlePdf = useCallback(async () => {
         if (isUploadDisabled) {
-            toast.error("No puedes subir un PDF porque el documento ya ha sido verificado por un administrador.");
+            toast.error("You cannot upload a PDF because the document has already been verified by an administrator.");
             return;
         }
 
         if (!pdfFile) {
-            toast.error("Por favor selecciona un archivo PDF primero");
+            toast.error("Please select a PDF file first.");
             return;
         }
 
@@ -109,11 +109,11 @@ const SocialsPage = () => {
                 throw new Error(errorData?.error?.message || "Error updating user with PDF");
             }
 
-            toast.success("PDF subido exitosamente.");
+            toast.success("PDF uploaded successfully.");
             mutate();
         } catch (error) {
             console.error("Error al subir pdf:", error);
-            toast.error("Hubo un problema al subir el PDF: " + error.message);
+            toast.error("There was a problem uploading the PDF: " + error.message);
         } finally {
             setLoading(false);
             setPdfFile(null);
@@ -122,7 +122,7 @@ const SocialsPage = () => {
 
     const handleFileChange = (e) => {
         if (isUploadDisabled) {
-            toast.error("No puedes subir un PDF porque el documento ya ha sido verificado por un administrador.");
+            toast.error("You cannot upload a PDF because the document has already been verified by an administrator.");
             return;
         }
 
@@ -130,7 +130,7 @@ const SocialsPage = () => {
         if (file && file.type === "application/pdf") {
             setPdfFile(file);
         } else {
-            toast.error("Por favor selecciona un archivo PDF válido");
+            toast.error("Please select a valid PDF file.");
             setPdfFile(null);
         }
     };
@@ -152,7 +152,7 @@ const SocialsPage = () => {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error al descargar el PDF:", error);
-            toast.error("Hubo un problema al descargar el PDF.");
+            toast.error("There was a problem downloading the PDF.");
         }
     };
 
@@ -160,7 +160,7 @@ const SocialsPage = () => {
         <Layout>
             {isLoading && <Loader />}
             {error && (
-                <p className="text-red-500">Error al cargar los datos: {error.message}</p>
+                <p className="text-red-500">Error loading data: {error.message}</p>
             )}
             {!isLoading && !error && (
                 <>
