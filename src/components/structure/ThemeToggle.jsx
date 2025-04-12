@@ -17,9 +17,7 @@ export default function MyComponent() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
-            className="p-2 rounded-full hover:bg-zinc-700 transition duration-200"
-          >
+          <button className="p-2 rounded-full hover:bg-zinc-700 transition duration-200">
             <Sun className="h-6 w-6 text-white transition-all dark:hidden" />
             <Moon className="hidden h-6 w-6 text-white transition-all dark:block" />
             <span className="sr-only">Toggle theme</span>
@@ -27,13 +25,13 @@ export default function MyComponent() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setTheme("light")}>
-            Claro
+            Light
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme("dark")}>
-            Oscuro
+            Dark
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme("system")}>
-            Sistema
+            System
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

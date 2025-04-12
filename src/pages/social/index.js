@@ -34,14 +34,14 @@ const SocialsPage = () => {
                             <HeartIcon className="w-5 h-5 text-[var(--app-primary)]" />
                         </div>
                         <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-                            Redes Sociales
+                            Social Media
                         </h1>
                     </div>
 
                     <p className="text-gray-600 dark:text-gray-300 ml-10">
-                        Síguenos en nuestras redes sociales, donde podrás ver las
-                        actualizaciones de nuestra comunidad, eventos y mucho más. Puedes
-                        encontrarnos en las principales plataformas, ¡solo elige tu favorita!
+                        Follow us on our social networks, where you can see the
+                        Updates from our community, events and much more.Can
+                        Find ourselves on the main platforms, just choose your favorite!
                     </p>
                 </div>
             </div>
@@ -70,7 +70,7 @@ const SocialsPage = () => {
                                     )}
                                 </div>
                                 <div className="ml-4">
-                                    <span className="block dark:text-white text-gray-700 font-medium">Plataforma</span>
+                                    <span className="block dark:text-white text-gray-700 font-medium">Platform</span>
                                     <p className="text-gray-900 dark:text-white font-bold text-lg">{plataforma.nombre}</p>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@ const SocialsPage = () => {
                         </div>
                     ))
                 ) : (
-                    <div>No hay datos para mostrar.</div>
+                    <div>There is no data to show.</div>
                 )}
             </div>
         </Layout>
