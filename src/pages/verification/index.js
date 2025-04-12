@@ -1,3 +1,4 @@
+// src/pages/verification/index.js
 import { useState, useMemo, useCallback } from "react";
 import Layout from "../../components/layout/dashboard";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
@@ -48,15 +49,15 @@ const SocialsPage = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                toast.error(errorData?.error?.message || "Error en la firma del contrato");
+                toast.error(errorData?.error?.message || "Error in signing the contract.");
                 throw new Error(`Error ${response.status}`);
             }
 
-            toast.success("Contrato firmado exitosamente.");
+            toast.success("Contract successfully signed.");
             mutate();
         } catch (error) {
             console.error("Error al firmar el contrato:", error);
-            toast.error("Hubo un problema al firmar el contrato.");
+            toast.error("There was a problem signing the contract.");
         } finally {
             setLoading(false);
         }
@@ -64,12 +65,12 @@ const SocialsPage = () => {
 
     const handlePdf = useCallback(async () => {
         if (isUploadDisabled) {
-            toast.error("No puedes subir un PDF porque el documento ya ha sido verificado por un administrador.");
+            toast.error("You cannot upload a PDF because the document has already been verified by an administrator.");
             return;
         }
 
         if (!pdfFile) {
-            toast.error("Por favor selecciona un archivo PDF primero");
+            toast.error("Please select a PDF file first.");
             return;
         }
 
@@ -108,11 +109,11 @@ const SocialsPage = () => {
                 throw new Error(errorData?.error?.message || "Error updating user with PDF");
             }
 
-            toast.success("PDF subido exitosamente.");
+            toast.success("PDF uploaded successfully.");
             mutate();
         } catch (error) {
             console.error("Error al subir pdf:", error);
-            toast.error("Hubo un problema al subir el PDF: " + error.message);
+            toast.error("There was a problem uploading the PDF: " + error.message);
         } finally {
             setLoading(false);
             setPdfFile(null);
@@ -121,7 +122,7 @@ const SocialsPage = () => {
 
     const handleFileChange = (e) => {
         if (isUploadDisabled) {
-            toast.error("No puedes subir un PDF porque el documento ya ha sido verificado por un administrador.");
+            toast.error("You cannot upload a PDF because the document has already been verified by an administrator.");
             return;
         }
 
@@ -129,7 +130,7 @@ const SocialsPage = () => {
         if (file && file.type === "application/pdf") {
             setPdfFile(file);
         } else {
-            toast.error("Por favor selecciona un archivo PDF válido");
+            toast.error("Please select a valid PDF file.");
             setPdfFile(null);
         }
     };
@@ -151,7 +152,7 @@ const SocialsPage = () => {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error al descargar el PDF:", error);
-            toast.error("Hubo un problema al descargar el PDF.");
+            toast.error("There was a problem downloading the PDF.");
         }
     };
 
@@ -159,7 +160,7 @@ const SocialsPage = () => {
         <Layout>
             {isLoading && <Loader />}
             {error && (
-                <p className="text-red-500">Error al cargar los datos: {error.message}</p>
+                <p className="text-red-500">Error loading data: {error.message}</p>
             )}
             {!isLoading && !error && (
                 <>
@@ -173,7 +174,7 @@ const SocialsPage = () => {
                                     <CheckBadgeIcon className="w-5 h-5 text-[var(--app-primary)]" />
                                 </div>
                                 <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-                                    Verificación
+                                    Verification
                                 </h1>
                             </div>
                         </div>
@@ -182,7 +183,7 @@ const SocialsPage = () => {
                     {((!hasPhase3Challenge && (hasPhase1Or2Challenge || newAccount)) && !isVerified) ? (
                         <div className="p-6 dark:bg-zinc-800 bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
                             <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                                La sección de verificación se desbloqueará para usted una vez que esté a punto de firmar o cambiar un contrato con nosotros. Se desbloqueará automáticamente una vez que haya llegado a fase ZevenTrader.
+                                The verification section will be unlocked for you once you are about to sign or change a contract with us. It will automatically unlock once you have reached the ZevenTrader phase.
                             </p>
                         </div>
                     ) : (
@@ -191,17 +192,17 @@ const SocialsPage = () => {
 
                             <div className="mt-6">
                                 <p className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">
-                                    2. Documento PDF
+                                    2. PDF Document
                                 </p>
                                 {statusSign ? (
                                     <div className="p-6 dark:bg-zinc-800 bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
                                         <h2 className="text-xl font-semibold mb-0 flex items-center">
                                             <CheckCircleIcon className="h-6 w-6 mr-2 text-green-500" />
-                                            Contrato verificado
+                                            Contract Verified
                                         </h2>
                                         <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
-                                            Tu contrato ha sido verificado correctamente. Ahora puedes continuar con las operaciones sin restricciones y
-                                            acceder a todas las funcionalidades disponibles en la plataforma.
+                                            Your contract has been successfully verified. You can now continue operating without restrictions 
+                                            and access all the features available on the platform.
                                         </p>
                                     </div>
                                 ) : (
@@ -209,16 +210,16 @@ const SocialsPage = () => {
                                         <div className="mb-4">
                                             <div className="flex justify-between items-center mb-2">
                                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                    Contrato:
+                                                    Contract:
                                                 </p>
                                                 <span className={`flex items-center ${isSigned ? 'text-green-500' : 'text-red-500'}`}>
                                                     {isSigned ? (
                                                         <>
                                                             <CheckCircleIcon className="w-5 h-5 mr-1" />
-                                                            Enviado
+                                                            Sent
                                                         </>
                                                     ) : (
-                                                        "Falta enviar"
+                                                        "Not Sent"
                                                     )}
                                                 </span>
                                             </div>
@@ -231,7 +232,7 @@ const SocialsPage = () => {
 
                                         {isUploadDisabled && (
                                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                                No puedes subir un PDF porque el documento ya ha sido verificado por un administrador.
+                                                You cannot upload a PDF because the document has already been verified by an administrator.
                                             </p>
                                         )}
 
@@ -241,7 +242,7 @@ const SocialsPage = () => {
                                                 className="w-full bg-[var(--app-primary)] hover:bg-blue-600 text-white text-lg font-semibold px-6 py-4 rounded-lg shadow-md transition-all"
                                                 onClick={handleDownload}
                                             >
-                                                Descargar PDF
+                                                Download PDF
                                             </Button>
 
                                             {/* Contenedor para el input y el botón de subida */}
@@ -259,7 +260,7 @@ const SocialsPage = () => {
                                                     disabled={!pdfFile || loading || isUploadDisabled}
                                                     onClick={handlePdf}
                                                 >
-                                                    {loading ? "Subiendo..." : isSigned ? "Subir PDF" : "Subir PDF"}
+                                                    {loading ? "Uploading..." : isSigned ? "Upload PDF" : "Upload PDF"}
                                                 </Button>
                                             </div>
                                         </div>
@@ -276,81 +277,3 @@ const SocialsPage = () => {
 };
 
 export default SocialsPage;
-
-// const { data, error, isLoading, mutate } = useSWR(
-//     token
-//         ? [`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me?populate[challenges][populate]=broker_account`, token]
-//         : null,
-//     ([url, token]) => fetcher(url, token)
-// );
-
-
-
-
-
-
-
-// const Verification = dynamic(() => import("../verification/verification"), { ssr: false });
-
-// const fetcher = async (url, token) => {
-//     try {
-//         const response = await fetch(url, {
-//             headers: { Authorization: `Bearer ${token}` },
-//         });
-//         if (!response.ok) throw new Error(`Error: ${response.status}`);
-//         return response.json();
-//     } catch (error) {
-//         console.error("Fetcher Error:", error);
-//         throw error;
-//     }
-// };
-
-
-
-
-
-
-{/* <div className="mt-6">
-                                <p className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">
-                                    2. Firma de contrato
-                                </p>
-                                <div className="flex flex-col p-6 dark:bg-zinc-800 bg-white shadow-md rounded-lg dark:text-white dark:border-zinc-700 dark:shadow-black">
-                                    <div className="h-64 overflow-y-auto border p-4 rounded-lg bg-gray-100 dark:bg-zinc-900">
-                                        <p className="text-sm text-zinc-900 dark:text-white whitespace-pre-line">
-                                            1. Términos...
-                                            2. Licencia de Uso...
-                                            3. Descargo de responsabilidad...
-                                            4. Limitaciones...
-                                            5. Precisión de los materiales...
-                                            6. Enlaces...
-                                            7. Modificaciones...
-                                            8. Ley Aplicable...
-                                        </p>
-                                    </div>
-
-                                    <label className="flex items-center space-x-2 mt-4">
-                                        <input
-                                            type="checkbox"
-                                            checked={statusSign || accepted}
-                                            onChange={() => !statusSign && setAccepted(prev => !prev)}
-                                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                        />
-                                        <span className="text-sm text-zinc-900 dark:text-white">
-                                            Acepto los términos del contrato
-                                        </span>
-                                    </label>
-
-                                    <Button
-                                        className="mt-4 bg-[#1F6263] hover:bg-[#29716c] text-white text-sm font-medium px-6 py-5 rounded-md"
-                                        disabled={statusSign || !accepted || loading}
-                                        onClick={handleSign}
-                                    >
-                                        {loading ? "Firmando..." : "Firmar"}
-                                    </Button>
-
-
-               
-                                </div>
-
-
-                            </div> */}

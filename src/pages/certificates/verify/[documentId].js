@@ -23,7 +23,7 @@ export default function CertificateVerify() {
       try {
         const response = await fetch(`/api/certificates/${documentId}`);
         if (!response.ok) {
-          throw new Error('Certificado no encontrado');
+          throw new Error('Certificate not found');
         }
         const data = await response.json();
         setCertificate(data); // Acceder a los atributos del certificado
@@ -187,9 +187,9 @@ export default function CertificateVerify() {
                 </button>
               </Link>
               <Link href="/register">
-                <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
-                  Create account
-                </button>
+              <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Create Account
+              </button>
               </Link>
             </div>
           </div>

@@ -108,7 +108,7 @@ export default function Historial() {
         return (
             <Layout>
                 <div className="p-4 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800/50">
-                    Error al cargar los datos: {error.message}
+                    Error loading data: {error.message}
                 </div>
             </Layout>
         );
@@ -136,8 +136,8 @@ export default function Historial() {
 
     // Formatear fecha en formato legible
     const formatDate = (dateString) => {
-        if (!dateString) return "En curso";
-        return new Date(dateString).toLocaleDateString('es-ES', {
+        if (!dateString) return "In progress";
+        return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
@@ -172,7 +172,7 @@ export default function Historial() {
             return (
                 <div className="flex h-8 bg-gray-200 border border-gray-300 justify-center rounded-lg shadow-sm dark:bg-zinc-700/50 dark:border-zinc-600/50 items-center px-3 space-x-1 text-xs text-gray-500 dark:text-gray-400 transition-all duration-200 cursor-not-allowed">
                     <XCircleIcon className="h-4 w-4 mr-1" />
-                    <span>Sin certificado</span>
+                    <span>No certificate</span>
                 </div>
             );
         }
@@ -188,7 +188,7 @@ export default function Historial() {
                     <Link key={`phase-${index}`} href={`/certificates/verify/${cert.documentId}`}>
                         <button className="flex h-8 bg-white border border-gray-300 justify-center rounded-lg shadow-sm dark:bg-zinc-700/90 dark:border-zinc-500/50 dark:hover:bg-zinc-600/80 hover:bg-gray-50 items-center px-3 py-1.5 space-x-1 text-xs transition-all duration-200">
                             <DocumentIcon className="h-4 w-4 mr-1" />
-                            <span>Certificado Fase {cert.tipoChallenge.replace('fase', '')}</span>
+                            <span>Phase Certificate {cert.tipoChallenge.replace('fase', '')}</span>
                         </button>
                     </Link>
                 ))}
@@ -198,7 +198,7 @@ export default function Historial() {
                     <Link key={`withdrawal-${index}`} href={`/certificates/verify/${cert.documentId}`}>
                         <button className="flex h-8 bg-white border border-gray-300 justify-center rounded-lg shadow-sm dark:bg-zinc-700/90 dark:border-zinc-500/50 dark:hover:bg-zinc-600/80 hover:bg-gray-50 items-center px-3 py-1.5 space-x-1 text-xs transition-all duration-200">
                             <DocumentIcon className="h-4 w-4 mr-1" />
-                            <span>Certificado de Retiro</span>
+                            <span>Withdrawal Certificate</span>
                         </button>
                     </Link>
                 ))}
@@ -208,24 +208,6 @@ export default function Historial() {
 
     return (
         <Layout>
-            {/* Cabecera del historial - Mejorada para ambos modos */}
-            {/*
-            <div className="bg-gradient-to-r from-white to-gray-50 p-5 rounded-lg shadow-md border border-gray-100 dark:border-zinc-700/50 dark:bg-gradient-to-r dark:from-zinc-800 dark:to-zinc-900 dark:shadow-black dark:text-white transition-all duration-200">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <ClockIcon className="h-6 w-6 text-gray-600 dark:text-gray-200" />
-                        <h1 className="text-xl font-semibold">Historial de Challenges</h1>
-                    </div>
-                    <button
-                        onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="bg-[var(--app-primary)] rounded-lg text-black font-medium hover:bg-[var(--app-secondary)] inline-flex items-center px-4 py-2 space-x-2 transition-all duration-200 shadow-sm"
-                    >
-                        <FunnelIcon className="h-5 w-5" />
-                        <span className="font-medium">Filtros</span>
-                    </button>
-                </div>
-            </div>
-            */}
             {/* Cabecera del historial */}
             <div className="relative overflow-hidden bg-gradient-to-r from-white to-gray-50 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-all">
                 <div className="absolute h-1 top-0 left-0 right-0 bg-[var(--app-primary)]"></div>
@@ -236,7 +218,7 @@ export default function Historial() {
                             <ClockIcon className="w-5 h-5 text-[var(--app-primary)]" />
                         </div>
                         <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-                            Historial de Challenges
+                            Challenge History
                         </h1>
                     </div>
 
@@ -245,7 +227,7 @@ export default function Historial() {
                         className="bg-[var(--app-primary)] hover:bg-[var(--app-secondary)] text-white px-4 py-2 rounded-lg shadow-sm flex items-center space-x-2 transition-all"
                     >
                         <FunnelIcon className="h-5 w-5" />
-                        <span className="font-medium text-white">Filtros</span>
+                        <span className="font-medium text-white">Filters</span>
                     </button>
                 </div>
             </div>
@@ -254,7 +236,7 @@ export default function Historial() {
             <div className="mt-4">
                 {isFilterOpen && (
                     <div className="bg-white p-5 rounded-lg shadow-md border border-gray-100 dark:border-zinc-700/50 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 dark:shadow-black dark:text-white transition-all duration-200">
-                        <p className="text-base font-semibold mb-3">Opciones de filtrado</p>
+                        <p className="text-base font-semibold mb-3">Filter Options</p>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             <div className="relative">
                                 <div className="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
@@ -262,7 +244,7 @@ export default function Historial() {
                                 </div>
                                 <input
                                     type="text"
-                                    placeholder="Buscar por ID"
+                                    placeholder="Search by ID"
                                     value={searchParentId}
                                     onChange={(e) => setSearchParentId(e.target.value)}
                                     className="border p-2 rounded-lg w-full bg-gray-50 border-gray-200 text-gray-800 dark:bg-zinc-800/80 dark:border-zinc-600 dark:text-white focus:border-transparent focus:ring-[var(--app-primary)] focus:ring-2 pl-10 transition-all duration-200"
@@ -277,7 +259,7 @@ export default function Historial() {
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     className="border p-2 rounded-lg w-full bg-gray-50 border-gray-200 text-gray-800 dark:bg-zinc-800/80 dark:border-zinc-600 dark:text-white focus:border-transparent focus:ring-[var(--app-primary)] focus:ring-2 pl-10 transition-all duration-200"
-                                    placeholder="Fecha inicio"
+                                    placeholder="Start Date"
                                 />
                             </div>
                             <div className="relative">
@@ -289,7 +271,7 @@ export default function Historial() {
                                     value={endDate}
                                     onChange={(e) => setEndDate(e.target.value)}
                                     className="border p-2 rounded-lg w-full bg-gray-50 border-gray-200 text-gray-800 dark:bg-zinc-800/80 dark:border-zinc-600 dark:text-white focus:border-transparent focus:ring-[var(--app-primary)] focus:ring-2 pl-10 transition-all duration-200"
-                                    placeholder="Fecha fin"
+                                    placeholder="End Date"
                                 />
                             </div>
                         </div>
@@ -303,7 +285,7 @@ export default function Historial() {
                 <div className="space-y-4">
                     {Object.entries(filteredGroups).length === 0 ? (
                         <div className="bg-white p-8 rounded-lg text-center dark:bg-zinc-800/80 border border-gray-200 dark:border-zinc-700/70 shadow-sm transition-all duration-200">
-                            <p className="text-gray-500 dark:text-gray-400">No hay challenges que coincidan con los filtros.</p>
+                            <p className="text-gray-500 dark:text-gray-400">No challenges match the filters.</p>
                         </div>
                     ) : (
                         Object.entries(filteredGroups).map(([parentId, challenges]) => {
@@ -361,23 +343,23 @@ export default function Historial() {
                                                                         'bg-orange-500 dark:bg-orange-400'
                                                         }`} />
                                                     <span className={`font-semibold text-sm ${statusColors[status]}`}>
-                                                        {status === 'approved' ? 'Aprobado' :
-                                                            status === 'progress' ? 'En progreso' :
-                                                                status === 'disapproved' ? 'Desaprobado' :
-                                                                    status === 'init' ? 'Por Iniciar' :
-                                                                        status === 'withdrawal' ? 'Retirado' :
-                                                                            status === 'retry' ? 'Rechazado' : 'Desconocido'}
+                                                        {status === 'approved' ? 'Approved' :
+                                                            status === 'progress' ? 'In progress' :
+                                                                status === 'disapproved' ? 'Disapproved' :
+                                                                    status === 'init' ? 'Not Started' :
+                                                                        status === 'withdrawal' ? 'Withdrawn' :
+                                                                            status === 'retry' ? 'Rejected' : 'Unknown'}
                                                     </span>
                                                 </div>
                                                 <span className="text-gray-500 dark:text-gray-400 hidden md:inline">|</span>
-                                                <span className="bg-white/90 backdrop-blur-sm rounded-md text-gray-600 text-xs dark:text-gray-300 px-2 py-0.5 dark:bg-zinc-700/60 border border-gray-200 dark:border-zinc-600/30 shadow-sm transition-all duration-200">
-                                                    Fase {lastChallenge.phase}
+                                                <span className="bg-white/90 backdrop-blur-sm rounded-md text-gray-600 text-xs dark:text-gray-300 px-2 py-0.5 dark:bg-zinc-700/60 border ...">
+                                                    Phase {lastChallenge.phase}
                                                 </span>
                                             </div>
 
                                             {/* Período */}
                                             <div className="flex text-gray-500 text-xs dark:text-gray-400 items-center mb-2">
-                                                <span className="font-medium mr-1">Período:</span>
+                                                <span className="font-medium mr-1">Period:</span>
                                                 <span className="bg-white/90 backdrop-blur-sm rounded-md text-gray-700 dark:text-gray-300 px-2 py-0.5 dark:bg-zinc-700/60 text-xs border border-gray-200 dark:border-zinc-600/30 shadow-sm transition-all duration-200">
                                                     {startDateFormatted} - {endDateFormatted}
                                                 </span>
@@ -385,7 +367,7 @@ export default function Historial() {
 
                                             {/* Última actualización */}
                                             <div className="flex text-xs gap-1 items-center">
-                                                <span className="text-black dark:text-white font-semibold">Última actualización:</span>
+                                                <span className="text-black dark:text-white font-semibold">Last update:</span>
                                                 <span className="bg-white/90 backdrop-blur-sm rounded-md text-gray-600 dark:text-gray-300 px-2 py-0.5 dark:bg-zinc-700/60 border border-gray-200 dark:border-zinc-600/30 shadow-sm transition-all duration-200">
                                                     {formatDate(lastChallenge.endDate ? lastChallenge.endDate : lastChallenge.startDate)}
                                                 </span>
@@ -396,7 +378,7 @@ export default function Historial() {
                                     {/* Detalles del Challenge - Mejorados para ambos modos */}
                                     {isExpanded && (
                                         <div className="bg-white/90 dark:bg-zinc-900/80 border-t border-gray-200 dark:border-zinc-700/60 px-4 py-3 transition-all duration-200">
-                                            <h3 className="text-gray-800 text-xs dark:text-gray-300 font-semibold mb-3">Historial de fases</h3>
+                                            <h3 className="text-gray-800 text-xs dark:text-gray-300 font-semibold mb-3">Phase History</h3>
                                             <div className="space-y-3">
                                                 {challenges.map((challenge, index) => {
                                                     return (
@@ -409,7 +391,7 @@ export default function Historial() {
                                                                 <div className="mb-2 sm:mb-0">
                                                                     <div className="flex items-center mb-1">
                                                                         <span className="text-gray-800 text-sm dark:text-white font-semibold">
-                                                                            Fase {challenge.phase}
+                                                                            Phase {challenge.phase}
                                                                         </span>
                                                                         <span className={`ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[challenge.result]} backdrop-blur-sm ${challenge.result === 'approved' ? 'bg-green-100 dark:bg-green-900/50' :
                                                                             challenge.result === 'progress' ? 'bg-yellow-100 dark:bg-yellow-900/50' :
@@ -426,12 +408,12 @@ export default function Historial() {
                                                                                                 'border-orange-200 dark:border-orange-700/50'
                                                                             } 
                                                                         shadow-sm transition-all duration-200`}>
-                                                                            {challenge.result === 'approved' ? 'Aprobado' :
-                                                                                challenge.result === 'progress' ? 'En progreso' :
-                                                                                    challenge.result === 'disapproved' ? 'Desaprobado' :
-                                                                                        challenge.result === 'init' ? 'Por Iniciar' :
-                                                                                            challenge.result === 'withdrawal' ? 'Retirado' :
-                                                                                                challenge.result === 'retry' ? 'Rechazado' : challenge.result}
+                                                                            {challenge.result === 'approved' ? 'Approved' :
+                                                                                challenge.result === 'progress' ? 'In progress' :
+                                                                                    challenge.result === 'disapproved' ? 'Disapproved' :
+                                                                                        challenge.result === 'init' ? 'Not Started' :
+                                                                                            challenge.result === 'withdrawal' ? 'Withdrawn' :
+                                                                                                challenge.result === 'retry' ? 'Rejected' : challenge.result}
                                                                         </span>
                                                                     </div>
                                                                     <div className="flex text-gray-600 text-xs dark:text-gray-300 items-center mt-1">
@@ -449,7 +431,7 @@ export default function Historial() {
                                                                     <Link href={`/metrix/${challenge.documentId}`}>
                                                                         <button className="flex h-8 bg-white border border-gray-300 justify-center rounded-lg shadow-sm dark:bg-zinc-700/90 dark:border-zinc-500/50 dark:hover:bg-zinc-600/80 hover:bg-gray-50 items-center px-3 py-1.5 space-x-1 text-xs transition-all duration-200">
                                                                             <ChartBarIcon className="h-4 w-4 mr-1" />
-                                                                            <span>Ver detalles</span>
+                                                                            <span>View details</span>
                                                                         </button>
                                                                     </Link>
                                                                 </div>
