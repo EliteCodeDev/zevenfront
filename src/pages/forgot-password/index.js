@@ -24,7 +24,7 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!captchaToken) {
-      toast.error('Por favor, completa el CAPTCHA.');
+      toast.error('Please complete the captcha.');
       return;
     }
     try {
@@ -41,8 +41,8 @@ export default function ForgotPassword() {
       });
 
       if (response.ok) {
-        setMessage('Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico.');
-        toast.success('Se envió un correo electrónico para restablecer la contraseña.');
+        setMessage('A password reset link to your email has been sent.');
+        toast.success('An email was sent to restore the password.');
 
         // Redirigir al usuario a la página de inicio después de un envío exitoso
         router.replace('/login');
@@ -51,8 +51,8 @@ export default function ForgotPassword() {
         setMessage(errorData.message);
       }
     } catch (error) {
-      setMessage('Hubo un error al procesar tu solicitud.');
-      toast.error('Ha ocurrido un error.');
+      setMessage('There was an error when processing your application.');
+      toast.error('A mistake has occurred.');
       console.error(error);
     } finally {
       // Deshabilitar el estado de envío después de que se complete la solicitud (exitosa o fallida)
@@ -101,8 +101,8 @@ export default function ForgotPassword() {
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full rounded-md p-3 text-sm font-semibold transition ${isSubmitting
-                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                    : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-[var(--app-primary)] text-black hover:bg-[var(--app-secondary)] focus:ring-2 focus:ring-[var(--app-primary)]"
                   }`}
               >
                 {isSubmitting ? "Enviando..." : "Enviar correo de reinicio"}
