@@ -23,7 +23,7 @@ export default function CertificateVerify() {
       try {
         const response = await fetch(`/api/certificates/${documentId}`);
         if (!response.ok) {
-          throw new Error('Certificado no encontrado');
+          throw new Error('Certificate not found');
         }
         const data = await response.json();
         setCertificate(data); // Acceder a los atributos del certificado
@@ -61,7 +61,7 @@ export default function CertificateVerify() {
   // Función para copiar al portapapeles y mostrar la notificación
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shareUrl);
-    toast.success('Copiado al portapapeles');
+    toast.success('Copied to clipboard');
   };
 
   return (
@@ -98,7 +98,7 @@ export default function CertificateVerify() {
               />
             </svg>
             <span className="text-sm md:text-lg">
-              La autenticidad de este certificado ha sido verificada exitosamente.
+              The authenticity of this certificate has been successfully verified.
             </span>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function CertificateVerify() {
                 />
             </svg>
             <h2 className="text-xl font-medium dark:text-slate-200">
-                Comparte esta página con otros
+              Share this page with others
             </h2>
             </div>
             <div className="mt-4 text-[var(--app-primary)] break-all">{shareUrl}</div>
@@ -144,7 +144,7 @@ export default function CertificateVerify() {
                     fill="currentColor"
                 />
                 </svg>
-                <span className="ml-2 text-white">Copiar</span>
+                <span className="ml-2 text-white">Copy</span>
             </button>
             </div>
         </div>
@@ -173,14 +173,14 @@ export default function CertificateVerify() {
         {/* Llamada a la acción */}
         <div className="p-4">
           <div className="m-4 mb-10 mt-10 flex flex-col rounded-xl border-2 border-transparent bg-[var(--app-primary)] px-6 py-10 text-white hover:border-blue-600 ">
-            <div className="mt-6 text-center text-3xl font-bold">
-              ¡Obtén el tuyo hoy!
-            </div>
-            <div className="text-md mt-1 text-center font-light">
-              Te recomendamos revisar nuestro{' '}
-              <span className="font-medium">FAQ</span> antes de
-              comenzar un challenge.
-            </div>
+          <div className="mt-6 text-center text-3xl font-bold">
+            Get yours today!
+          </div>
+          <div className="text-md mt-1 text-center font-light">
+            We recommend that you check out our{' '}
+            <span className="font-medium">FAQ</span> before
+            starting a challenge.
+          </div>
             <div className="mt-10 flex flex-row justify-center gap-4">
               <Link href="https://faq.zevenglobalfunding.com/"> 
                 <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
@@ -188,9 +188,9 @@ export default function CertificateVerify() {
                 </button>
               </Link>
               <Link href="/register">
-                <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
-                  Crear Cuenta
-                </button>
+              <button className="rounded-lg bg-white px-6 py-2 text-center text-[var(--app-primary)] hover:bg-blue-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Create Account
+              </button>
               </Link>
             </div>
           </div>
