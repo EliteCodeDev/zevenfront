@@ -18,7 +18,7 @@ const BrokerAccountsRedesign = () => {
         password: "",
         server: "",
         balance: "",
-        platform: "mt4",
+        platform: "mt5",
         used: false,
         inversorPass: ""
     });
@@ -429,7 +429,7 @@ const BrokerAccountsRedesign = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                    
+
                                     {/* Pagination Controls */}
                                     {brokerAccounts.length > 0 && (
                                         <div className="mt-6 flex flex-col items-center gap-4 p-4 border-t border-zinc-200 dark:border-zinc-700">
@@ -441,7 +441,7 @@ const BrokerAccountsRedesign = () => {
                                                 >
                                                     <ChevronLeft className="w-5 h-5" />
                                                 </button>
-                                                
+
                                                 {startPage > 1 && (
                                                     <>
                                                         <button
@@ -453,21 +453,20 @@ const BrokerAccountsRedesign = () => {
                                                         {startPage > 2 && <span className="px-2">...</span>}
                                                     </>
                                                 )}
-                                                
+
                                                 {pageNumbers.map((page) => (
                                                     <button
                                                         key={page}
                                                         onClick={() => goToPage(page)}
-                                                        className={`px-3 py-1 rounded-md transition-colors ${
-                                                            currentPage === page 
-                                                                ? "bg-blue-500 text-white" 
+                                                        className={`px-3 py-1 rounded-md transition-colors ${currentPage === page
+                                                                ? "bg-blue-500 text-white"
                                                                 : "text-zinc-700 dark:text-zinc-300 hover:bg-blue-100"
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {page}
                                                     </button>
                                                 ))}
-                                                
+
                                                 {endPage < totalPages && (
                                                     <>
                                                         {endPage < totalPages - 1 && <span className="px-2">...</span>}
@@ -479,7 +478,7 @@ const BrokerAccountsRedesign = () => {
                                                         </button>
                                                     </>
                                                 )}
-                                                
+
                                                 <button
                                                     onClick={goToNextPage}
                                                     disabled={currentPage === totalPages}
@@ -488,7 +487,7 @@ const BrokerAccountsRedesign = () => {
                                                     <ChevronRight className="w-5 h-5" />
                                                 </button>
                                             </div>
-                                            
+
                                             <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
                                                 <span>
                                                     Mostrando {startIndex + 1} - {Math.min(endIndex, totalItems)} de {totalItems}
