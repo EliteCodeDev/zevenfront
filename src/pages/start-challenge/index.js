@@ -238,7 +238,7 @@ const ChallengeRelations = () => {
       {/* Título de la sección */}
       <div className="bg-white p-4 rounded-lg shadow-md dark:bg-zinc-800 dark:border-zinc-700 dark:shadow-black dark:text-white mb-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-lg font-semibold">Buy your product</h1>
+          <h1 className="text-lg font-semibold">Get your Challenge</h1>
         </div>
       </div>
 

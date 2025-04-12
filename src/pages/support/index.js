@@ -81,7 +81,7 @@ const SupportPage = () => {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center bg-[var(--app-primary)] text-black font-medium py-2 px-4 rounded-lg hover:bg-[var(--app-secondary)] transition w-full"
                             >
-                                {plataforma.accion}
+                                {plataforma.accion === 'Contactar' ? 'Contact Us' : plataforma.accion === 'Unirse' ? 'Join' : ''}
                                 {/* Icono de redirección usando ArrowTopRightOnSquareIcon */}
                                 <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
                             </a>
