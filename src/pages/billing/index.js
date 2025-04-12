@@ -63,17 +63,20 @@ const WithdrawalsPage = () => {
 
     // Función para mostrar el estado del retiro con un color adecuado
     const getStatusBadge = (status) => {
+        let statusMessage = "";
         let bgColor = "bg-yellow-100 text-yellow-800";
 
-        if (status === "paid" || status === "completed") {
+        if (status === "pagado" || status === "completed") {
             bgColor = "bg-green-100 text-green-800";
-        } else if (status === "denied") {
+            statusMessage = "Paid";
+        } else if (status === "cancelado") {
             bgColor = "bg-red-100 text-red-800";
+            statusMessage = "Cancelled";
         }
-
+        statusMessage = "Pending";
         return (
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${bgColor}`}>
-                {status || "In process"}
+                {statusMessage || "processing"}
             </span>
         );
     };
