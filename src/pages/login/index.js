@@ -20,8 +20,8 @@ export default function SignIn() {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!captchaToken) {
-      toast.error("Por favor, completa el CAPTCHA.");
-      return; // Se detiene la ejecución si no se ha completado el CAPTCHA
+      toast.error("Please complete the CAPTCHA.");
+      return;
     }
     setIsSubmitting(true);
 
@@ -38,14 +38,14 @@ export default function SignIn() {
       } else {
         router.replace('/');
       }
-      toast.success('Sesión iniciada correctamente.');
+      toast.success('Logged in successfully.');
     } else {
       // Verificar si el usuario existe y no está confirmado
       const userCheck = await checkUserConfirmation(e.target.email.value);
       if (userCheck.exists && !userCheck.confirmed) {
         router.push('/email-confirmation');
       } else {
-        toast.error('Credenciales incorrectas');
+        toast.error('Incorrect credentials');
       }
       setIsSubmitting(false);
     }
@@ -79,7 +79,7 @@ export default function SignIn() {
       <div className="max-w-md mx-auto px-4 sm:px-0">
 
         {/* Título */}
-        <h2 className="text-2xl font-semibold text-center text-white mb-6">Iniciar sesión</h2>
+        <h2 className="text-2xl font-semibold text-center text-white mb-6">Sign In</h2>
         <SignSocial />
         <div className='mt-6'></div>
         <form className="space-y-6" onSubmit={onSubmit}>
@@ -97,7 +97,7 @@ export default function SignIn() {
           {/* Campo de Correo Electrónico */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Correo electrónico
+              Email address
             </label>
             <div className="mt-2">
               <input
@@ -107,7 +107,7 @@ export default function SignIn() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                placeholder="tu@ejemplo.com"
+                placeholder="you@example.com"
                 required
                 className="w-full rounded-md border border-gray-700 bg-transparent text-white placeholder-gray-500 p-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] transition"
               />
@@ -118,10 +118,10 @@ export default function SignIn() {
           <div>
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-                Contraseña
+                Password
               </label>
               <Link href="/forgot-password" className="text-sm text-[var(--app-primary)] hover:text-[var(--app-secondary)] transition">
-                ¿Has olvidado tu contraseña?
+                Forgot your password?
               </Link>
             </div>
             <div className="mt-2 relative">
@@ -171,10 +171,10 @@ export default function SignIn() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Ingresando...</span>
+                  <span>Signing in...</span>
                 </div>
               ) : (
-                "Ingresar"
+                "Sign In"
               )}
             </button>
           </div>
@@ -182,9 +182,9 @@ export default function SignIn() {
 
         {/* Enlace de Registro */}
         <p className="mt-6 text-sm text-center text-gray-400">
-          ¿No tienes una cuenta?{" "}
+          Don't have an account?{" "}
           <Link href="/register" className="font-semibold text-[var(--app-primary)] hover:text-[var(--app-secondary)] transition">
-            Regístrate ahora
+            Register now
           </Link>
         </p>
       </div>

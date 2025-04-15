@@ -1,3 +1,4 @@
+// src/components/structure/sidebar.js
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { navigation } from './links'; // Importar desde links.js
@@ -73,7 +74,7 @@ export default function Sidebar() {
                 </Link>
 
                 <p className="text-black dark:text-white font-semibold text-lg mt-8">
-                    Menú principal
+                    Main Menu
                 </p>
             </div>
 

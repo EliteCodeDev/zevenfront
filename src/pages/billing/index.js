@@ -26,7 +26,7 @@ const WithdrawalsPage = () => {
         return (
             <Layout>
                 <div className="p-6 text-red-600 dark:text-red-400">
-                    Error al cargar los datos: {error.message}
+                    Error loading data: {error.message}
                 </div>
             </Layout>
         );
@@ -63,17 +63,20 @@ const WithdrawalsPage = () => {
 
     // Función para mostrar el estado del retiro con un color adecuado
     const getStatusBadge = (status) => {
+        let statusMessage = "";
         let bgColor = "bg-yellow-100 text-yellow-800";
 
-        if (status === "pagado" || status === "completado") {
+        if (status === "pagado" || status === "completed") {
             bgColor = "bg-green-100 text-green-800";
-        } else if (status === "rechazado") {
+            statusMessage = "Paid";
+        } else if (status === "cancelado") {
             bgColor = "bg-red-100 text-red-800";
+            statusMessage = "Cancelled";
         }
-
+        statusMessage = "Pending";
         return (
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${bgColor}`}>
-                {status || "proceso"}
+                {statusMessage || "processing"}
             </span>
         );
     };
@@ -83,7 +86,7 @@ const WithdrawalsPage = () => {
         const { phase, challenge_relation } = withdrawal;
 
         // Default fallback if no data is available
-        const fallbackName = `Fase ${phase}`;
+        const fallbackName = `Phase ${phase}`;
 
         // If no challenge_relation or challenge_stages, return fallback
         if (!challenge_relation?.challenge_stages ||
@@ -116,7 +119,7 @@ const WithdrawalsPage = () => {
                             <BanknotesIcon className="w-5 h-5 text-[var(--app-primary)]" />
                         </div>
                         <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-                            Mis Retiros
+                            My Withdrawals
                         </h1>
                     </div>
                 </div>
@@ -127,10 +130,10 @@ const WithdrawalsPage = () => {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Challenge</TableHead>
-                            <TableHead>Fecha</TableHead>
+                            <TableHead>Date</TableHead>
                             <TableHead>Wallet</TableHead>
-                            <TableHead>Monto</TableHead>
-                            <TableHead className="text-right">Estado</TableHead>
+                            <TableHead>Amount</TableHead>
+                            <TableHead className="text-right">State</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -158,7 +161,7 @@ const WithdrawalsPage = () => {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={5} className="text-center py-6">
-                                    No hay retiros para mostrar.
+                                    There are no Withdrawals to show.
                                 </TableCell>
                             </TableRow>
                         )}

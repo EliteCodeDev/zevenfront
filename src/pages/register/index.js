@@ -1,3 +1,4 @@
+// src/pages/register/index.js
 import { useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
@@ -98,14 +99,14 @@ export default function SignUp() {
           },
         }
       );
-      toast.success('Registro exitoso.');
+      toast.success('Registration successful.');
       router.replace('/email-confirmation');
     } catch (error) {
       console.error('Registration failed:', error);
       if (error.response && error.response.data && error.response.data.error) {
-        toast.error(error.response.data.error.message || 'Ha ocurrido un error.');
+        toast.error(error.response.data.error.message || 'An error occurred.');
       } else {
-        toast.error('Ha ocurrido un error al procesar su solicitud.');
+        toast.error('An error occurred while processing your request.');
       }
     } finally {
       setIsSubmitting(false);
@@ -120,7 +121,7 @@ export default function SignUp() {
     <Layout className="bg-zinc-200 min-h-screen">
       <div className="max-w-md mx-auto">
         {/* Título */}
-        <h2 className="text-2xl font-semibold text-center text-white mb-6">Crea una cuenta nueva</h2>
+        <h2 className="text-2xl font-semibold text-center text-white mb-6">Create a new account</h2>
         <SignSocial />
         <div className="mt-6">
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -128,19 +129,19 @@ export default function SignUp() {
             {/* Separador mejorado */}
             <div className="flex items-center justify-center">
               <div className="flex-grow h-px bg-gray-700 max-w-[200px]"></div>
-              <h2 className="text-sm font-semibold text-center text-white px-4">o</h2>
+              <h2 className="text-sm font-semibold text-center text-white px-4">or</h2>
               <div className="flex-grow h-px bg-gray-700 max-w-[200px]"></div>
             </div>
 
             {/* Nombre */}
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300">Nombre</label>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300">First Name</label>
               <div className="mt-2">
                 <input
                   id="firstName"
                   name="firstName"
                   type="text"
-                  placeholder="Tu nombre"
+                  placeholder="Your first name"
                   required
                   value={formData.firstName}
                   onChange={handleChange}
@@ -151,13 +152,13 @@ export default function SignUp() {
 
             {/* Apellido */}
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300">Apellido</label>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300">Last Name</label>
               <div className="mt-2">
                 <input
                   id="lastName"
                   name="lastName"
                   type="text"
-                  placeholder="Tu apellido"
+                  placeholder="Your last name"
                   required
                   value={formData.lastName}
                   onChange={handleChange}
@@ -168,7 +169,7 @@ export default function SignUp() {
 
             {/* Telefono */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-300">Teléfono</label>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-300">Phone</label>
               <div className="mt-2">
                 <PhoneInput
                   value={formData.phone}
@@ -180,14 +181,14 @@ export default function SignUp() {
 
             {/* Correo Electrónico */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">Correo electrónico</label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300">Email address</label>
               <div className="mt-2">
                 <input
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="tu@ejemplo.com"
+                  placeholder="you@example.com"
                   required
                   value={formData.email}
                   onChange={handleChange}
@@ -198,7 +199,7 @@ export default function SignUp() {
 
             {/* Contraseña */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">Contraseña</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
               <div className="mt-2 relative">
                 <input
                   id="password"
@@ -213,7 +214,7 @@ export default function SignUp() {
                 />
                 <button
                   type="button"
-                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-300 transition"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -227,11 +228,11 @@ export default function SignUp() {
               <div className="text-sm text-gray-400">
                 <ul>
                   {[
-                    { condition: passwordConditions.uppercase, label: "Una letra mayúscula" },
-                    { condition: passwordConditions.lowercase, label: "Una letra minúscula" },
-                    { condition: passwordConditions.number, label: "Un número" },
-                    { condition: passwordConditions.specialChar, label: "Un carácter especial" },
-                    { condition: passwordConditions.length, label: "6 caracteres o más" },
+                    { condition: passwordConditions.uppercase, label: "One uppercase letter" },
+                    { condition: passwordConditions.lowercase, label: "One lowercase letter" },
+                    { condition: passwordConditions.number, label: "One number" },
+                    { condition: passwordConditions.specialChar, label: "One special character" },
+                    { condition: passwordConditions.length, label: "6 characters or more" },
                   ].map(({ condition, label }, index) => (
                     <li key={index} className={condition ? "text-[var(--app-primary)]" : "text-gray-500"}>
                       <div className="inline-flex items-center">
@@ -260,10 +261,10 @@ export default function SignUp() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Registrando...
+                    Registering...
                   </span>
                 ) : (
-                  "Regístrate"
+                  "Sign Up"
                 )}
               </button>
             </div>
@@ -271,9 +272,9 @@ export default function SignUp() {
 
           {/* Enlace para iniciar sesión */}
           <p className="mt-6 text-sm text-center text-gray-400">
-            ¿Tienes una cuenta?{" "}
+            Already have an account?{" "}
             <Link href="/login" className="font-semibold text-[var(--app-primary)] hover:text-[var(--app-secondary)] transition">
-              Iniciar sesión
+              Sign In
             </Link>
           </p>
         </div>

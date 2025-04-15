@@ -18,11 +18,11 @@ export default function NeoChallengeCard() {
                     </div>
                     
                     <p className="text-[var(--app-primary)] font-semibold mt-2">
-                        Opere hasta $200,000 en la Zeven Account
+                        Trade up to $200,000 on the Zeven Account
                     </p>
                     
                     <p className="text-sm mt-4 text-gray-600 dark:text-gray-300 max-w-xl">
-                        Demuestre sus habilidades de trading. ¡Apruebe el curso de evaluación y reciba la Zeven Account!
+                        Demonstrate your trading skills. Pass the evaluation course and receive the Zeven Account!
                     </p>
                 </div>
                 
@@ -33,28 +33,28 @@ export default function NeoChallengeCard() {
                             <div className="p-1 rounded-full bg-[var(--app-primary)]/10">
                                 <CheckIcon className="h-4 w-4 text-[var(--app-primary)]" />
                             </div>
-                            <span className="text-gray-700 dark:text-gray-200">Le facilitaremos una Zeven Account de hasta $200,000 USD</span>
+                            <span className="text-gray-700 dark:text-gray-200">We will provide you with a Zeven Account of up to $200,000 USD</span>
                         </div>
                         
                         <div className="flex items-center space-x-2">
                             <div className="p-1 rounded-full bg-[var(--app-primary)]/10">
                                 <CheckIcon className="h-4 w-4 text-[var(--app-primary)]" />
                             </div>
-                            <span className="text-gray-700 dark:text-gray-200">Demuestre sus habilidades de trading</span>
+                            <span className="text-gray-700 dark:text-gray-200">Demonstrate your trading skills</span>
                         </div>
                         
                         <div className="flex items-center space-x-2">
                             <div className="p-1 rounded-full bg-[var(--app-primary)]/10">
                                 <CheckIcon className="h-4 w-4 text-[var(--app-primary)]" />
                             </div>
-                            <span className="text-gray-700 dark:text-gray-200">Análisis completo de cuenta</span>
+                            <span className="text-gray-700 dark:text-gray-200">Full account analysis</span>
                         </div>
                         
                         <div className="flex items-center space-x-2">
                             <div className="p-1 rounded-full bg-[var(--app-primary)]/10">
                                 <CheckIcon className="h-4 w-4 text-[var(--app-primary)]" />
                             </div>
-                            <span className="text-gray-700 dark:text-gray-200">Aplicaciones Premium</span>
+                            <span className="text-gray-700 dark:text-gray-200">Premium applications</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@ export default function NeoChallengeCard() {
                 <div className="mt-6 text-center">
                     <Link href="/start-challenge">
                         <button className="px-6 py-3 w-full md:w-auto md:min-w-[250px] bg-[var(--app-primary)] text-black font-semibold rounded-lg shadow-md hover:bg-[var(--app-secondary)] transition-all">
-                            Iniciar Zeven Challenge
+                            Start Zeven Challenge
                         </button>
                     </Link>
                 </div>

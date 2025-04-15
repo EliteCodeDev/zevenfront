@@ -238,7 +238,7 @@ const ChallengeRelations = () => {
       {/* Título de la sección */}
       <div className="bg-white p-4 rounded-lg shadow-md dark:bg-zinc-800 dark:border-zinc-700 dark:shadow-black dark:text-white mb-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-lg font-semibold">Compra tu producto</h1>
+          <h1 className="text-lg font-semibold">Get your Challenge</h1>
         </div>
       </div>
 
@@ -253,12 +253,13 @@ const ChallengeRelations = () => {
                 <div className="relative ml-2 group">
                   <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                   <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
-                    Selecciona el Challenge que deseas Adquirir
+                    Select the Challenge you want to purchase
                   </div>
                 </div>
               </div>
-              <p className="text-zinc-600 mb-4 text-sm dark:text-zinc-400">Selecciona el Challenge que deseas Adquirir.</p>
-
+              <p className="text-zinc-600 mb-4 text-sm dark:text-zinc-400">
+                Select the Challenge you want to purchase.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 {stepsData.map((item, index) => (
                   <div key={index} className="relative">
@@ -281,9 +282,11 @@ const ChallengeRelations = () => {
                     >
                       <div className="product-info">
                         <span className="block font-medium">{item.step}</span>
-                        {item.relations.length > 1 && (<span className={`block text-xs mt-1 ${selectedStep === item.step ? 'text-white/70' : 'text-zinc-500'}`}>
-                          {item.relations.length} opciones
-                        </span>)}
+                        {item.relations.length > 1 && (
+                          <span className={`block text-xs mt-1 ${selectedStep === item.step ? 'text-white/70' : 'text-zinc-500'}`}>
+                            {item.relations.length} options
+                          </span>
+                        )}
                       </div>
                       {selectedStep === item.step && (
                         <CheckIcon className="absolute top-4 right-4 h-5 w-5 text-white" />
@@ -296,19 +299,17 @@ const ChallengeRelations = () => {
             {selectedRelationId && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <div className="flex items-center mb-3">
-                  <h3 className={appPrimary + " font-medium"}>Saldo de la Cuenta</h3>
+                  <h3 className={appPrimary + " font-medium"}>Account Balance</h3>
                   <div className="relative ml-2 group">
                     <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                     <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
-                      Selecciona el Saldo de la cuenta que deseas adquirir
+                      Select the account balance you want to purchase
                     </div>
                   </div>
                 </div>
                 <p className="text-zinc-600 mb-4 text-sm dark:text-zinc-400">
-                  Elige el Saldo de la cuenta para el challenge {" "}
-                  {selectedStep}.
+                  Choose the account balance for the challenge {selectedStep}.
                 </p>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {(() => {
                     const stepRelations = stepsData.find(item => item.step === selectedStep).relations;
@@ -369,7 +370,7 @@ const ChallengeRelations = () => {
                     } else {
                       return (
                         <p className="text-zinc-500 col-span-3">
-                          No hay productos disponibles
+                          No products available
                         </p>
                       );
                     }
@@ -382,11 +383,11 @@ const ChallengeRelations = () => {
             {selectedProduct && selectedProduct.hasDiscount && selectedProduct.descuento && (
               <section className="bg-white rounded-lg p-5 shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <div className="flex items-center mb-3">
-                  <h3 className={appPrimary + " font-medium"}>Oferta Especial</h3>
+                  <h3 className={appPrimary + " font-medium"}>Special Offer</h3>
                   <div className="relative ml-2 group">
                     <InformationCircleIcon className="h-5 w-5 text-zinc-500 hover:text-zinc-300" />
                     <div className="absolute z-10 invisible group-hover:visible bg-zinc-800 text-xs text-zinc-200 p-2 rounded-md w-48 top-full left-0 mt-1">
-                      Promoción por tiempo limitado
+                      Limited time promotion
                     </div>
                   </div>
                 </div>
@@ -413,13 +414,13 @@ const ChallengeRelations = () => {
               <div className="bg-white rounded-lg shadow-md border border-gray-200 dark:bg-zinc-900 dark:border-zinc-800 overflow-hidden">
                 <header className="p-5 border-b border-gray-200 dark:border-zinc-800">
                   <h3 className={appPrimary + " font-medium text-xl flex gap-4 items-center"}>
-                    <span>Saldo de Cuenta Seleccionado:</span>
+                    <span>Selected Account Balance:</span>
                     {selectedProduct ? (
                       <>
                         <span className="text-xl font-bold dark:text-white">{selectedProduct.name}</span>
                       </>
                     ) : (
-                      <p className="text-zinc-500">Ningún Saldo seleccionado</p>
+                      <p className="text-zinc-500">No balance selected</p>
                     )}
                   </h3>
                 </header>
@@ -434,7 +435,9 @@ const ChallengeRelations = () => {
                                 <span className="text-gray-700 dark:text-zinc-300">Total</span>
                                 <p className={"text-2xl font-semibold " + appPrimary}>${matchingVariation?.precio || "N/A"}</p>
                               </div>
-                              <p className="text-xs text-gray-500 dark:text-zinc-500 text-right">*Precio no incluye tarifa de servicio de pago.</p>
+                              <p className="text-xs text-gray-500 dark:text-zinc-500 text-right">
+                                *Price does not include payment service fee.
+                              </p>
                             </section>
                           </div>
                         </div>
@@ -451,7 +454,7 @@ const ChallengeRelations = () => {
                           : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500"
                           }`}
                       >
-                        <span className="uppercase">Continuar</span>
+                        <span className="uppercase">CONTINUE</span>
                         <ChevronRightIcon className="h-5 w-5 ml-2" />
                       </button>
                     </div>

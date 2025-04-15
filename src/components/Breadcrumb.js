@@ -6,7 +6,7 @@ const Breadcrumb = () => {
     const router = useRouter();
 
     // Limpia la ruta eliminando fragmentos (cualquier cosa después de #)
-    const cleanPath = router.asPath.split("#")[0]; 
+    const cleanPath = router.asPath.split("#")[0];
     const pathSegments = cleanPath.split("/").filter(Boolean); // Obtiene los segmentos reales de la URL
     const query = router.query; // Obtiene las consultas dinámicas, como idcuenta
 
@@ -17,7 +17,7 @@ const Breadcrumb = () => {
             {/* Icono de inicio con texto */}
             <a href="/" className="flex items-center text-gray-400 hover:text-gray-600 transition">
                 <HomeIcon className="w-4 h-4" />
-                {isHomePage && <span className="ml-2 text-gray-700 dark:text-white font-medium">Inicio</span>}
+                {isHomePage && <span className="ml-2 text-gray-700 dark:text-white font-medium">Home</span>}
             </a>
 
             {/* Generación de rutas dinámicas */}

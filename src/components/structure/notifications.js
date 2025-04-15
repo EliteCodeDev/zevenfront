@@ -55,7 +55,7 @@ export default function Example() {
                               onClick={() => setOpen(false)}
                             >
                               <span className="absolute -inset-2.5 " />
-                              <span className="sr-only">Cerrar panel</span>
+                              <span className="sr-only">Close Panel</span>
                               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                             </button>
 

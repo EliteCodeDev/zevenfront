@@ -33,14 +33,14 @@ const SupportPage = () => {
                             <LifebuoyIcon className="w-5 h-5 text-[var(--app-primary)]" />
                         </div>
                         <h1 className="text-xl font-semibold text-zinc-800 dark:text-white">
-                            Soporte al cliente
+                            Customer support
                         </h1>
                     </div>
 
                     <p className="text-gray-600 dark:text-gray-300 ml-10">
-                        Si necesitas ayuda, no dudes en contactarnos a través de nuestras principales plataformas.
-                        Estamos aquí para responder tus preguntas y brindarte el soporte que necesitas.
-                        ¡Conéctate con nosotros ahora!
+                        If you need help, do not hesitate to contact us through our main platforms.
+                        We are here to answer your questions and give you the support you need.
+                        Connect with us now!
                     </p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ const SupportPage = () => {
                                     )}
                                 </div>
                                 <div className="ml-4">
-                                    <span className="block dark:text-white text-gray-700 font-medium">Plataforma</span>
+                                    <span className="block dark:text-white text-gray-700 font-medium">Platform</span>
                                     <p className="text-gray-900 dark:text-white font-bold text-lg">{plataforma.nombre}</p>
                                 </div>
                             </div>
@@ -81,14 +81,14 @@ const SupportPage = () => {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center bg-[var(--app-primary)] text-black font-medium py-2 px-4 rounded-lg hover:bg-[var(--app-secondary)] transition w-full"
                             >
-                                {plataforma.accion}
+                                {plataforma.accion === 'Contactar' ? 'Contact Us' : plataforma.accion === 'Unirse' ? 'Join' : ''}
                                 {/* Icono de redirección usando ArrowTopRightOnSquareIcon */}
                                 <ArrowTopRightOnSquareIcon className="ml-2 w-4 h-4" />
                             </a>
                         </div>
                     ))
                 ) : (
-                    <div>No hay datos para mostrar.</div>
+                    <div>There is no data to show.</div>
                 )}
             </div>
         </Layout>

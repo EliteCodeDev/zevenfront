@@ -16,16 +16,19 @@ const FooterInfo = () => {
                     ))}
                 </div>
                 <p className="mb-4 max-w-full text-xs text-justify">
-                    Toda la información proporcionada en este sitio está destinada exclusivamente a fines educativos relacionados con el trading en mercados financieros y no sirve en
-                    modo alguno como recomendación específica de inversión, recomendación comercial, análisis de oportunidades de inversión o recomendación general similar en relación con
-                    el trading de instrumentos de inversión. {process.env.NEXT_PUBLIC_NAME_APP} sólo ofrece servicios de trading simulado y herramientas educativas para traders.
-                    La información contenida en este sitio no está dirigida a residentes en ningún país o jurisdicción en los que dicha distribución o
-                    utilización sea contraria a las leyes o normativas locales. Las empresas {process.env.NEXT_PUBLIC_NAME_APP} no actúan como brokers y no aceptan depósitos. La solución
-                    técnica ofrecida para las plataformas y la alimentación de datos de {process.env.NEXT_PUBLIC_NAME_APP} está gestionada por proveedores de liquidez.
+                    All the information provided on this site is intended exclusively for educational purposes 
+                    related to trading in financial markets and in no way serves as specific investment advice, 
+                    business recommendation, analysis of investment opportunities, or a similar general recommendation 
+                    regarding the trading of investment instruments. {process.env.NEXT_PUBLIC_NAME_APP} only offers 
+                    simulated trading services and educational tools for traders. The information contained on this 
+                    site is not directed at residents in any country or jurisdiction where such distribution or use 
+                    would violate local laws or regulations. {process.env.NEXT_PUBLIC_NAME_APP} companies do not act 
+                    as brokers and do not accept deposits. The technical solution provided for the platforms and the 
+                    data feed of {process.env.NEXT_PUBLIC_NAME_APP} is managed by liquidity providers.
                 </p>
                 <p className="text-xs">
-                    2025 © Copyright - {process.env.NEXT_PUBLIC_NAME_APP} Hecho con ❤ por el trading.<br />
-                    Versión: 1.1.0
+                    2025 © Copyright - {process.env.NEXT_PUBLIC_NAME_APP} Made with ❤ by trading.
+                    Version: 1.1.0
                 </p>
             </div>
         </div>

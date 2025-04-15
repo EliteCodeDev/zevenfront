@@ -10,10 +10,10 @@ export default function CredencialesModal({ login, password, server, platform, i
 
     const data = [
         { label: 'Login', value: login },
-        { label: 'Contraseña', value: password },
+        { label: 'Password', value: password },
         { label: 'InversorPass', value: inversorPass },
-        { label: 'Servidor', value: server },
-        { label: 'Plataforma', value: platform },
+        { label: 'Server', value: server },
+        { label: 'Platform', value: platform },
     ];
 
     const handleCopy = (label, value) => {
@@ -30,7 +30,7 @@ export default function CredencialesModal({ login, password, server, platform, i
                 onClick={() => setOpen(true)}
             >
                 <KeyIcon className="h-7 w-6 text-[var(--app-primary)]" />
-                <span className="text-xs font-medium text-zinc-700 dark:text-zinc-200">Credenciales</span>
+                <span className="text-xs font-medium text-zinc-700 dark:text-zinc-200">Credentials</span>
             </button>
 
             {/* Modal con z-index aumentado */}
@@ -68,14 +68,14 @@ export default function CredencialesModal({ login, password, server, platform, i
                                             className="rounded-full bg-red-500 text-zinc-50 p-1 hover:bg-red-600 focus:outline-none"
                                             onClick={() => setOpen(false)}
                                         >
-                                            <span className="sr-only">Cerrar</span>
+                                            <span className="sr-only">Close</span>
                                             <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                                         </button>
                                     </div>
 
                                     <div className="mt-2">
                                         <Dialog.Title as="h3" className="text-lg font-semibold leading-6 border-b pb-3 text-gray-900 text-center mb-4 dark:text-white">
-                                            Credenciales de inicio de sesión
+                                            Login credentials
                                         </Dialog.Title>
 
                                         {/* Tabla de credenciales optimizada para móvil */}
@@ -94,7 +94,7 @@ export default function CredencialesModal({ login, password, server, platform, i
                                                         <div className="flex items-center justify-between w-full sm:w-3/4">
                                                             {/* Valor del campo */}
                                                             <div className="flex items-center space-x-2">
-                                                                {item.label === 'Contraseña' ? (
+                                                                {item.label === 'Password' ? (
                                                                     <div className="flex items-center space-x-1">
                                                                         <span className="text-sm dark:text-white text-gray-600 font-mono">
                                                                             {showPassword ? item.value : '••••••••'}
@@ -128,7 +128,7 @@ export default function CredencialesModal({ login, password, server, platform, i
                                                                     >
                                                                         <ClipboardDocumentIcon className="h-5 w-5 text-gray-600 dark:text-white" />
                                                                         {copied[item.label] && (
-                                                                            <span className="ml-1 text-xs text-green-500">¡Copiado!</span>
+                                                                            <span className="ml-1 text-xs text-green-500">Copied!</span>
                                                                         )}
                                                                     </button>
                                                                 </div>

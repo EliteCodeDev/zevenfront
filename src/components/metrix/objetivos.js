@@ -122,7 +122,7 @@ export default function Objetivos({ challengeConfig, metricsData, initBalance })
     }, [challengeConfig, metricsData, balance]);
 
     if (!objetivos.length) {
-        return <div className="bg-zinc-800 text-white rounded p-2 text-xs text-center">Sin datos</div>;
+        return <div className="bg-zinc-800 text-white rounded p-2 text-xs text-center">No data</div>;
     }
 
     return (
