@@ -27,7 +27,7 @@ import { toast } from "sonner";
 import EditUserModal from "./editUserModal";
 import { Switch } from "@/components/ui/switch";
 
-const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_PDF_MANAGE
+const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_PDF_MANAGE || "https://n8n.zevenglobalfunding.com/webhook-test/7072a687-cb6f-48e4-aed3-dca35255a1a9";
 
 const STORAGE_KEY = "usersOriginalOrder";
 
@@ -190,7 +190,6 @@ export default function UsersTable() {
       const response = await fetch(N8N_WEBHOOK_URL, {
         method: "POST",
         headers: {
-          Authorization: `${process.env.NEXT_PUBLIC_N8N_WEBHOOK_TOKEN}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
