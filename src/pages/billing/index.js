@@ -1,19 +1,107 @@
 // src/pages/billing/index.js
-import React from 'react';
-import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
+import { useSession, getSession } from 'next-auth/react';
 import Layout from '../../components/layout/dashboard';
 import Loader from '../../components/loaders/loader';
-import { useStrapiData } from '../../services/strapiServiceJWT';
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table";
 import { DocumentTextIcon, BanknotesIcon } from '@heroicons/react/24/outline';
+import strapiService from '../../services/server/strapiService';
 
-const WithdrawalsPage = () => {
+// Obtener datos desde el servidor
+export async function getServerSideProps(context) {
+    try {
+        // Obtener la sesión del servidor
+        const session = await getSession(context);
+
+        // Si no hay sesión, redirigir al login
+        if (!session) {
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                },
+            };
+        }
+
+        // Obtener el token JWT
+        const token = session.jwt;
+
+        if (!token) {
+            console.error('No JWT token available in session');
+            return {
+                props: {
+                    initialWithdrawals: [],
+                    error: 'Authentication required',
+                },
+            };
+        }
+
+        // Hacer la petición a Strapi con el mismo populate complejo
+        const userData = await strapiService.authenticatedRequest(
+            'users/me?populate[challenges][populate][withdraw]=*&populate[challenges][populate][challenge_relation][populate][challenge_stages]=*',
+            {
+                method: 'GET',
+            },
+            token
+        );
+
+        // Procesar los retiros de la misma manera que en el componente original
+        const withdrawals = [];
+
+        if (userData?.challenges) {
+            userData.challenges.forEach(challenge => {
+                if (challenge.withdraw) {
+                    withdrawals.push({
+                        ...challenge.withdraw,
+                        challengeId: challenge.challengeId,
+                        phase: challenge.phase,
+                        challenge: challenge.documentId,
+                        challenge_relation: challenge.challenge_relation
+                    });
+                }
+            });
+        }
+
+        // Devolver datos procesados al cliente
+        return {
+            props: {
+                initialWithdrawals: withdrawals,
+            },
+        };
+    } catch (error) {
+        console.error('Error in getServerSideProps:', error);
+
+        // Devolver error en caso de fallo
+        return {
+            props: {
+                initialWithdrawals: [],
+                error: error.message || 'Failed to load withdrawals',
+            },
+        };
+    }
+}
+
+// Componente cliente que recibe datos pre-procesados
+const WithdrawalsPage = ({ initialWithdrawals = [], error = null }) => {
+    // Mantener useSession para datos de la sesión actual (como el estado de autenticación)
     const { data: session } = useSession();
-    const token = session?.jwt;
 
-    // Updated API call to include challenge_relation and challenge_stages
-    const { data, error, isLoading } = useStrapiData('users/me?populate[challenges][populate][withdraw]=*&populate[challenges][populate][challenge_relation][populate][challenge_stages]=*', token);
-    // // console.log(data);
+    // Usar estado con los datos iniciales pre-cargados
+    const [withdrawals] = useState(initialWithdrawals);
+    const [isLoading] = useState(false);
+
+    // Si hay un error devuelto desde el servidor
+    if (error) {
+        return (
+            <Layout>
+                <div className="p-6 text-red-600 dark:text-red-400">
+                    Error loading data: {error}
+                </div>
+            </Layout>
+        );
+    }
+
+    // Si está cargando (esto ya no debería ocurrir con SSR, pero lo mantenemos por compatibilidad)
     if (isLoading) {
         return (
             <Layout>
@@ -22,34 +110,6 @@ const WithdrawalsPage = () => {
         );
     }
 
-    if (error) {
-        return (
-            <Layout>
-                <div className="p-6 text-red-600 dark:text-red-400">
-                    Error loading data: {error.message}
-                </div>
-            </Layout>
-        );
-    }
-
-    // Extraer los retiros (withdrawals) de los challenges del usuario
-    const withdrawals = [];
-
-    if (data?.challenges) {
-        data.challenges.forEach(challenge => {
-            if (challenge.withdraw) {
-                withdrawals.push({
-                    ...challenge.withdraw,
-                    challengeId: challenge.challengeId,
-                    phase: challenge.phase,
-                    challenge: challenge.documentId,
-                    // Include challenge_relation for stage name
-                    challenge_relation: challenge.challenge_relation
-                });
-            }
-        });
-    }
-    // // console.log(withdrawals);
     // Función para formatear la fecha
     const formatDate = (dateString) => {
         if (!dateString) return "N/A";
@@ -72,8 +132,10 @@ const WithdrawalsPage = () => {
         } else if (status === "cancelado") {
             bgColor = "bg-red-100 text-red-800";
             statusMessage = "Cancelled";
+        } else {
+            statusMessage = "Pending";
         }
-        statusMessage = "Pending";
+
         return (
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${bgColor}`}>
                 {statusMessage || "processing"}
