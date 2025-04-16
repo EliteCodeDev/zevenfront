@@ -2,104 +2,111 @@
 import { useState, useEffect, useMemo } from 'react';
 import { CheckIcon, ChevronRightIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
-import { useSession, signIn } from "next-auth/react";
-import Loader from '../../components/loaders/loader';
+import { useSession, signIn, getSession } from "next-auth/react";
+// import Loader from '../../components/loaders/loader';
 import Layout from '../../components/layout/dashboard';
-
-// Importar nuestros hooks seguros en lugar de los inseguros
-import { useStrapiData } from '../../services/client/hooks/useStrapiData';
-import { useAuthUser } from '../../services/client/hooks/useAuthUser';
+import strapiService from '../../services/server/strapiService';
 
 // Definimos las constantes de colores
-const appPrimary = 'text-blue-500'; // Para texto
-const appPrimaryBg = 'bg-blue-500'; // Para fondos
-const appSecondaryBg = 'bg-blue-600'; // Para fondos
-const appSecondaryBorder = 'border-blue-600'; // Para bordes
+const appPrimary = 'text-blue-500';
+const appPrimaryBg = 'bg-blue-500';
+const appSecondaryBg = 'bg-blue-600';
+const appSecondaryBorder = 'border-blue-600';
 
-const ChallengeRelations = () => {
-  // Fetch all necessary data usando nuestros hooks seguros
-  const {
-    data: relationsData,
-    error: relationsError,
-    isLoading: isLoadingRelations
-  } = useStrapiData('challenge-relations', {
-    fields: ['id', 'documentId'], // Solo campos necesarios
-    populate: {
-      challenge_step: {
-        fields: ['id', 'name']
-      },
-      challenge_subcategory: {
-        fields: ['id', 'name']
-      },
-      challenge_products: {
-        fields: ['id', 'name', 'hasDiscount']
-      },
-      challenge_stages: {
-        fields: ['id', 'name']
+// Obtener datos desde el servidor - ¡No se exponen en el cliente!
+export async function getServerSideProps(context) {
+  try {
+    // Obtener la sesión del usuario desde el servidor
+    const session = await getSession(context);
+
+    // Hacer peticiones solo con los campos necesarios
+    const relations = await strapiService.get('challenge-relations', {
+      fields: ['id', 'documentId'],
+      populate: {
+        challenge_step: { fields: ['id', 'name'] },
+        challenge_subcategory: { fields: ['id', 'name'] },
+        challenge_products: {
+          fields: ['id', 'name', 'hasDiscount']
+        },
+        challenge_stages: { fields: ['id', 'name'] }
+      }
+    });
+
+    const products = await strapiService.get('challenge-products', {
+      fields: ['id', 'name', 'precio', 'hasDiscount']
+    });
+
+    const configs = await strapiService.get('product-configs', {
+      fields: ['id', 'wooId', 'precio'],
+      populate: {
+        challenge_product: { fields: ['id'] },
+        challenge_relation: { fields: ['id'] }
+      }
+    });
+
+    // Si hay sesión, obtener datos del usuario
+    let userData = null;
+    if (session) {
+      console.log("sesion del usuario", session)
+      try {
+        userData = await strapiService.authenticatedRequest('users/me', {
+          method: 'GET'
+        }, session.jwt);
+      } catch (error) {
+        console.error('Error al obtener datos del usuario:', error);
       }
     }
-  });
+    console.log("userData", userData)
+    console.log("relations", relations)
+    console.log("products", products)
 
-  // Consulta optimizada para products
-  const {
-    data: productsData,
-    error: productsError,
-    isLoading: isLoadingProducts
-  } = useStrapiData('challenge-products', {
-    fields: ['id', 'documentId', 'name', 'precio', 'hasDiscount']
-  });
-
-  // Consulta optimizada para configuraciones
-  const {
-    data: configsData,
-    error: configsError,
-    isLoading: isLoadingConfigs
-  } = useStrapiData('product-configs', {
-    fields: ['id', 'wooId', 'precio'],
-    populate: {
-      challenge_product: {
-        fields: ['id']
-      },
-      challenge_relation: {
-        fields: ['id']
+    // Devolver datos procesados al cliente
+    return {
+      props: {
+        initialRelations: relations.data,
+        initialProducts: products.data,
+        initialConfigs: configs.data,
+        initialUser: userData || null,
       }
-    }
-  });
-  // Usar session y nuestro hook seguro para datos de usuario
+    };
+  } catch (error) {
+    console.error('Error en getServerSideProps:', error);
+
+    // Devolver props vacíos en caso de error
+    return {
+      props: {
+        initialRelations: [],
+        initialProducts: [],
+        initialConfigs: [],
+        initialUser: null,
+        error: true
+      }
+    };
+  }
+}
+
+// Componente cliente que recibe datos ya procesados
+const ChallengeRelations = ({
+  initialRelations,
+  initialProducts,
+  initialConfigs,
+  initialUser,
+  error
+}) => {
   const { data: session } = useSession();
-  console.log("Session data:", session);
-  const { user, isLoading: isLoadingUser } = useAuthUser();
-
-  // State variables
+  const [relations] = useState(initialRelations || []);
+  const [allproducts] = useState(initialProducts || []);
+  const [productConfigs] = useState(initialConfigs || []);
+  const [user] = useState(initialUser);
+  // State variables - igual que antes
   const [selectedStep, setSelectedStep] = useState(null);
   const [selectedRelationId, setSelectedRelationId] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedRelation, setSelectedRelation] = useState(null);
   const [selectedStage, setSelectedStage] = useState(null);
-
-  // Extraer datos reales de las respuestas de API con manejo seguro
-  const relations = useMemo(() => {
-    // Manejar ambas estructuras posibles (array directo o data.data[])
-    if (!relationsData) return [];
-    return Array.isArray(relationsData) ? relationsData :
-      (relationsData.data ? relationsData.data : []);
-  }, [relationsData]);
-
-  const allproducts = useMemo(() => {
-    if (!productsData) return [];
-    return Array.isArray(productsData) ? productsData :
-      (productsData.data ? productsData.data : []);
-  }, [productsData]);
-
-  const productConfigs = useMemo(() => {
-    if (!configsData) return [];
-    return Array.isArray(configsData) ? configsData :
-      (configsData.data ? configsData.data : []);
-  }, [configsData]);
-
   // Memoized steps data with error handling
   const stepsData = useMemo(() => {
-    if (!relations || relations.length === 0) return [];
+    if (!relations || relations === null) return [];
 
     // Acceder de forma segura a la estructura de datos
     return [...new Set(relations.map(relation => {
@@ -200,36 +207,6 @@ const ChallengeRelations = () => {
     }
   }, [stepsData]);
 
-  // Loading and error states
-  if (isLoadingRelations || isLoadingProducts || isLoadingConfigs || isLoadingUser) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <Loader />
-        </div>
-      </Layout>
-    );
-  }
-
-  // Error handling
-  const errorMessages = [
-    relationsError && `Relations Error: ${relationsError.message}`,
-    productsError && `Products Error: ${productsError.message}`,
-    configsError && `Product Configs Error: ${configsError.message}`
-  ].filter(Boolean);
-
-  if (errorMessages.length > 0) {
-    return (
-      <Layout>
-        <div className="p-6 bg-red-50 rounded-lg">
-          <h2 className="text-red-800 font-bold mb-4">Errors Occurred:</h2>
-          {errorMessages.map((message, index) => (
-            <p key={index} className="text-red-600 mb-2">{message}</p>
-          ))}
-        </div>
-      </Layout>
-    );
-  }
 
   // Verify we have minimum required data
   if (!stepsData.length || !allproducts || allproducts.length === 0) {
@@ -365,6 +342,20 @@ const ChallengeRelations = () => {
       window.location.href = `/api/checkout?product_id=${woocommerceId}&quantity=1&document_id=${documentId}&user_id=${userId}`;
     }
   };
+
+  // Error handling
+  if (error) {
+    return (
+      <Layout>
+        <div className="p-6 bg-red-50 rounded-lg">
+          <h2 className="text-red-800 font-bold mb-4">Error Loading Data</h2>
+          <p className="text-red-600 mb-2">Unable to load challenge data. Please try again later.</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  // JSX igual que antes pero usando los datos proporcionados desde el servidor...
 
   return (
     <Layout>
@@ -620,4 +611,5 @@ const ChallengeRelations = () => {
     </Layout>
   );
 };
+
 export default ChallengeRelations;
