@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 // Usamos NEXT_PUBLIC_BACKEND_URL definida en tu .env
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:1337";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Fetcher que añade el header con el token
 const fetcherStrapi = (url) =>
